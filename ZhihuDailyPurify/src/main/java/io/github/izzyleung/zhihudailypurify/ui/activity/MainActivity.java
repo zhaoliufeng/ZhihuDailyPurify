@@ -63,8 +63,7 @@ public class MainActivity extends ActionBarActivity {
 
         SharedPreferences pref = PreferenceManager.
                 getDefaultSharedPreferences(MainActivity.this);
-        boolean isShowShowcase = pref.getBoolean("show_showcase?", true);
-        if (isShowShowcase) {
+        if (pref.getBoolean("show_showcase?", true)) {
             showCase(pref);
         }
 
@@ -82,7 +81,6 @@ public class MainActivity extends ActionBarActivity {
             case R.id.action_pick_date:
                 intent = new Intent();
                 Calendar calendar = Calendar.getInstance();
-                calendar.add(Calendar.DAY_OF_YEAR, -7);
                 intent.putExtra("date", DateUtils.simpleDateFormat.format(calendar.getTime()));
                 intent.setClass(MainActivity.this, PickDateActivity.class);
                 startActivity(intent);

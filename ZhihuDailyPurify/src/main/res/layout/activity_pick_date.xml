@@ -4,14 +4,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <DatePicker
-            android:id="@+id/date_picker"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:calendarViewShown="false">
-
-    </DatePicker>
+    <com.squareup.timessquare.CalendarPickerView
+            android:id="@+id/calendar_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
 
 </RelativeLayout>

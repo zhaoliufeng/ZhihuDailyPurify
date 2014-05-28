@@ -23,7 +23,6 @@ import java.util.Calendar;
 public class PortalActivity extends ActionBarActivity {
     private String displayDate, dateForFragment;
     private Calendar calendar = Calendar.getInstance();
-    private Fragment displayFragment;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -33,14 +32,6 @@ public class PortalActivity extends ActionBarActivity {
         dateForFragment = getIntent().getStringExtra("date");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("first_page?", false);
-        bundle.putBoolean("single?", true);
-        bundle.putString("date", dateForFragment);
-
-        displayFragment = new NewsListFragment();
-        displayFragment.setArguments(bundle);
 
         try {
             calendar.setTime(DateUtils.simpleDateFormat.parse(dateForFragment));
@@ -55,6 +46,7 @@ public class PortalActivity extends ActionBarActivity {
 
         final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         if (pref.getBoolean("accelerate_server_hint", true)) {
+            pref.edit().putBoolean("accelerate_server_hint", false).commit();
             AlertDialog.Builder dialog = new AlertDialog.Builder(this).setCancelable(false);
             dialog.setTitle(getString(R.string.accelerate_server_hint_dialog_title));
             dialog.setMessage(getString(R.string.accelerate_server_hint_dialog_message));
@@ -63,36 +55,20 @@ public class PortalActivity extends ActionBarActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     pref.edit().putBoolean("using_accelerate_server?", true).commit();
 
-                    if (savedInstanceState == null) {
-                        getSupportFragmentManager().beginTransaction()
-                                .add(R.id.container, displayFragment)
-                                .commit();
-                    }
-
-                    pref.edit().putBoolean("accelerate_server_hint", false).commit();
+                    updateView();
                 }
             });
 
             dialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (savedInstanceState == null) {
-                        getSupportFragmentManager().beginTransaction()
-                                .add(R.id.container, displayFragment)
-                                .commit();
-                    }
-
-                    pref.edit().putBoolean("accelerate_server_hint", false).commit();
+                    updateView();
                 }
             });
 
             dialog.show();
         } else {
-            if (savedInstanceState == null) {
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container, displayFragment)
-                        .commit();
-            }
+            updateView();
         }
     }
 
@@ -166,7 +142,7 @@ public class PortalActivity extends ActionBarActivity {
             bundle.putBoolean("first_page?", false);
         }
 
-        displayFragment = new NewsListFragment();
+        Fragment displayFragment = new NewsListFragment();
         displayFragment.setArguments(bundle);
 
         getSupportFragmentManager().beginTransaction()

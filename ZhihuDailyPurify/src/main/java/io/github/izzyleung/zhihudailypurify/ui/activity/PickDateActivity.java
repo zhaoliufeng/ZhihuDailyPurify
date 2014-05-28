@@ -30,7 +30,7 @@ public class PickDateActivity extends ActionBarActivity {
         CalendarPickerView calendar = (CalendarPickerView) findViewById(R.id.calendar_view);
         Calendar nextDay = Calendar.getInstance();
         nextDay.add(Calendar.DAY_OF_YEAR, 1);
-        calendar.init(DateUtils.birthDay.getTime(), nextDay.getTime()).withSelectedDate(pickedDate.getTime());
+        calendar.init(DateUtils.birthDay.getTime(), nextDay.getTime()).withSelectedDate(new Date());
         calendar.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
             @Override
             public void onDateSelected(Date date) {

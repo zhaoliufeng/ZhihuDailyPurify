@@ -13,7 +13,7 @@ A purified version of Zhihu Daily
   - No ads - 没有广告
 
 
-### Dependency - 需求
+### Dependency - 依赖
   - Java Development Kit (JDK) 7 +
   - Android SDK
     - Android SDK Build-tools 19.1 +

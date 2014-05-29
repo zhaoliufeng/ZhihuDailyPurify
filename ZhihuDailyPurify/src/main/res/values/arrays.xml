@@ -8,6 +8,8 @@
         <item>Sticky List Headers (Emil Sjölander)</item>
         <item>Universal Image Loader (Sergey Tarasevich)</item>
         <item>ShowcaseView (Alex Curran)</item>
+        <item>OkHttp (Square)</item>
+        <item>Android Times Square (Square)</item>
     </string-array>
 
     <string-array name="accelerate_servers">

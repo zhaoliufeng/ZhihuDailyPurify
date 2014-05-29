@@ -8,7 +8,7 @@ A purified version of Zhihu Daily
 
 ### Features - 特性
   - All about discussion in [Zhihu](http://www.zhihu.com) - 只提取[知乎](http://www.zhihu.com)讨论
-  - Light weight, 6 times lighter than Zhihu Daily - 更小的体积：只有『知乎日报』的 1/6
+  - Light weighted, 6 times lighter than Zhihu Daily - 更小的体积：只有『知乎日报』的 1/6
   - Do not request useless permission - 不需要多余的权限
   - No ads - 没有广告
 

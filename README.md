@@ -6,6 +6,11 @@ A purified version of Zhihu Daily
 
 ![ZhihuDailyPurify](https://raw.githubusercontent.com/izzyleung/ZhihuDailyPurify/master/ZhihuDailyPurify.png)
 
+__Disclaimer - 声明__  
+*Zhihu* is a trademark of *Zhihu. Inc*. This app is not created nor endorsed by Zhihu Inc. All the infomation and content accessible through Zhihu Daily Purify are subject to Zhihu's copyright and terms of use. This is a free app and does not charge for anything. All content are available for free from [Zhihu](http://www.zhihu.com).  
+
+『知乎』是 *知乎. Inc* 的注册商标。本软件与其代码非由其创作或维护。软件中所包含的信息与内容皆违反版权与知乎用户协议。它是一个免费软件，使用它不收取您任何费用。其中的所有内容均可在[知乎](http://www.zhihu.com)获取。
+
 ### Features - 特性
   - All about discussion in [Zhihu](http://www.zhihu.com) - 只提取[知乎](http://www.zhihu.com)讨论
   - Light weighted, 6 times lighter than Zhihu Daily - 更小的体积：只有『知乎日报』的 1/6

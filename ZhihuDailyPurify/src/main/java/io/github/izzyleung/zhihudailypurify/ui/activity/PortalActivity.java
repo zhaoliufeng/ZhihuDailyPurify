@@ -24,7 +24,6 @@ public class PortalActivity extends ActionBarActivity implements PickDateFragmen
     private String dateForFragment;
     private Calendar calendar = Calendar.getInstance();
     private MenuItem prev, next;
-    private boolean isPickDateFragmentShowing = true;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -42,11 +41,13 @@ public class PortalActivity extends ActionBarActivity implements PickDateFragmen
 
     @Override
     public void onBackPressed() {
-        if (isPickDateFragmentShowing) {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             this.finish();
         } else {
-            showPickDateFragment();
-            isPickDateFragmentShowing = true;
+            for (int i = getSupportFragmentManager().getBackStackEntryCount(); i > 0; i--) {
+                getSupportFragmentManager().popBackStack();
+            }
+
             getSupportActionBar().setTitle(R.string.activity_pick_date);
             prev.setVisible(false);
             next.setVisible(false);
@@ -159,9 +160,8 @@ public class PortalActivity extends ActionBarActivity implements PickDateFragmen
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container, displayFragment)
+                .addToBackStack(null)
                 .commit();
-
-        isPickDateFragmentShowing = false;
 
         String displayDate = new SimpleDateFormat(getString(R.string.display_format)).
                 format(calendar.getTime());

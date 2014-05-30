@@ -15,8 +15,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class PickDateFragment extends Fragment {
-    public static String TAG = "PickDateFragment";
-
     private OnDateSelectedListener mOnDateSelectedListener;
 
     @Override

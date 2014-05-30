@@ -28,7 +28,7 @@ public class PortalActivity extends ActionBarActivity implements PickDateFragmen
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_browse_specific_date);
+        setContentView(R.layout.activity_common);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -37,6 +37,13 @@ public class PortalActivity extends ActionBarActivity implements PickDateFragmen
         } else {
             showPickDateFragment();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        Crouton.cancelAllCroutons();
     }
 
     @Override

@@ -2,34 +2,27 @@ package io.github.izzyleung.zhihudailypurify.ui.activity;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.RelativeLayout;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import io.github.izzyleung.zhihudailypurify.R;
-import io.github.izzyleung.zhihudailypurify.adapter.NewsAdapter;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.support.util.CommonUtils;
 import io.github.izzyleung.zhihudailypurify.support.util.DateUtils;
 import io.github.izzyleung.zhihudailypurify.support.util.URLUtils;
 import io.github.izzyleung.zhihudailypurify.task.BaseDownloadTask;
+import io.github.izzyleung.zhihudailypurify.ui.fragment.SearchFragment;
 import io.github.izzyleung.zhihudailypurify.ui.view.IzzySearchView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -41,16 +34,42 @@ import java.util.Calendar;
 import java.util.List;
 
 public class SearchActivity extends ActionBarActivity {
-    private List<String> dateResultList = new ArrayList<String>();
-    private List<DailyNews> newsList = new ArrayList<DailyNews>();
-    private NewsAdapter newsAdapter;
     private IzzySearchView searchView;
+    private SearchFragment searchFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        setContentView(R.layout.activity_common);
 
+        initView();
+
+        searchFragment = new SearchFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.container, searchFragment)
+                .commit();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        Crouton.cancelAllCroutons();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void initView() {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -84,49 +103,14 @@ public class SearchActivity extends ActionBarActivity {
         RelativeLayout relative = new RelativeLayout(this);
         relative.addView(searchView);
         getSupportActionBar().setCustomView(relative);
-
-        StickyListHeadersListView listView = (StickyListHeadersListView)
-                findViewById(R.id.result_list);
-        newsAdapter = new NewsAdapter(this,
-                newsList,
-                dateResultList);
-        listView.setAdapter(newsAdapter);
-
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            listView.setDivider(null);
-        }
-
-        listView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true));
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                CommonUtils.listOnClick(SearchActivity.this, newsList.get(position));
-            }
-        });
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        Crouton.cancelAllCroutons();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     class SearchTask extends BaseDownloadTask<String, Void, Void> {
         private boolean isSearchSuccess = true;
         private boolean isResultNull = false;
+
+        private List<String> dateResultList = new ArrayList<String>();
+        private List<DailyNews> newsList = new ArrayList<DailyNews>();
 
         private ProgressDialog dialog;
 
@@ -156,9 +140,8 @@ public class SearchActivity extends ActionBarActivity {
         protected Void doInBackground(String... params) {
             String result;
             try {
-                result = Html.fromHtml(Html.fromHtml(
-                        downloadStringFromUrl(
-                                URLUtils.SEARCH_URL + params[0])).toString()).toString();
+                result = Html.fromHtml(Html.fromHtml(downloadStringFromUrl(
+                        URLUtils.SEARCH_URL + params[0])).toString()).toString();
                 if (!TextUtils.isEmpty(result) && !isCancelled()) {
                     JSONArray resultArray = new JSONArray(result);
 
@@ -166,37 +149,15 @@ public class SearchActivity extends ActionBarActivity {
                         isResultNull = true;
                         return null;
                     } else {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                dateResultList.clear();
-                                newsList.clear();
-
-                                newsAdapter.notifyDataSetChanged();
-                            }
-                        });
-
                         for (int i = 0; i < resultArray.length(); i++) {
                             JSONObject newsObject = resultArray.getJSONObject(i);
                             String date = newsObject.getString("date");
-                            final Calendar calendar = Calendar.getInstance();
+                            Calendar calendar = Calendar.getInstance();
                             calendar.setTime(DateUtils.simpleDateFormat.parse(date));
                             calendar.add(Calendar.DAY_OF_YEAR, -1);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    dateResultList.add(simpleDateFormat.format(calendar.getTime()));
-                                }
-                            });
-
-                            final DailyNews news = gson.fromJson(newsObject.getString("content"), newsType);
-
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    newsList.add(news);
-                                }
-                            });
+                            dateResultList.add(simpleDateFormat.format(calendar.getTime()));
+                            DailyNews news = gson.fromJson(newsObject.getString("content"), newsType);
+                            newsList.add(news);
                         }
                     }
                 } else {
@@ -224,7 +185,7 @@ public class SearchActivity extends ActionBarActivity {
             }
 
             if (isSearchSuccess && !isCancelled()) {
-                newsAdapter.notifyDataSetChanged();
+                searchFragment.updateContent(dateResultList, newsList);
             } else {
                 Crouton.makeText(SearchActivity.this,
                         getString(R.string.network_error),

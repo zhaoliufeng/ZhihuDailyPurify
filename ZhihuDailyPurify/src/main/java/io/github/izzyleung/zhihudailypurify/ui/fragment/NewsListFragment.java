@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.GsonBuilder;
@@ -60,7 +59,7 @@ public class NewsListFragment extends ListFragment implements OnRefreshListener 
     private boolean isRecovered = false;
 
     private List<DailyNews> newsList = new ArrayList<DailyNews>();
-    private BaseAdapter listAdapter;
+    private NewsAdapter listAdapter;
     private PullToRefreshLayout mPullToRefreshLayout;
 
     @Override
@@ -230,11 +229,11 @@ public class NewsListFragment extends ListFragment implements OnRefreshListener 
             String beanListToJson = new GsonBuilder()
                     .create().toJson(newsList, listType);
             if (isCached) {
-                ZhihuDailyPurifyApplication.getInstance().
-                        getDataSource().updateNewsList(date, beanListToJson);
+                ZhihuDailyPurifyApplication.getInstance()
+                        .getDataSource().updateNewsList(date, beanListToJson);
             } else {
-                ZhihuDailyPurifyApplication.getInstance().
-                        getDataSource().createDailyNewsList(date, beanListToJson);
+                ZhihuDailyPurifyApplication.getInstance()
+                        .getDataSource().createDailyNewsList(date, beanListToJson);
             }
         }
 
@@ -308,7 +307,7 @@ public class NewsListFragment extends ListFragment implements OnRefreshListener 
 
                     if (!newsList.contains(dailyNews)) {
                         String newsInfoJson = downloadStringFromUrl(URLUtils.ZHIHU_DAILY_OFFLINE_NEWS_URL
-                                        + singleNews.getString("id"));
+                                + singleNews.getString("id"));
                         JSONObject newsDetail = new JSONObject(newsInfoJson);
                         if (newsDetail.has("body")) {
                             Document doc = Jsoup.parse(newsDetail.getString("body"));
@@ -464,16 +463,13 @@ public class NewsListFragment extends ListFragment implements OnRefreshListener 
                 isTheSameContent = false;
                 newsList = tempNewsList;
                 if (getActivity() != null && isAdded()) {
-                    listAdapter = new NewsAdapter(
-                            getActivity(),
-                            newsList);
-                    setListAdapter(listAdapter);
+                    listAdapter.setNewsList(newsList);
+                    listAdapter.notifyDataSetChanged();
                 }
             }
 
             super.onPostExecute(aVoid);
         }
-
     }
 
     private enum SERVERS {SAE, HEROKU}

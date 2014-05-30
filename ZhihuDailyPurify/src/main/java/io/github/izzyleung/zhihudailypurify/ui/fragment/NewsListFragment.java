@@ -307,16 +307,17 @@ public class NewsListFragment extends ListFragment implements OnRefreshListener 
                     dailyNews.setDailyTitle(singleNews.getString("title"));
 
                     if (!newsList.contains(dailyNews)) {
-                        String newsInfoJson =
-                                downloadStringFromUrl(URLUtils.ZHIHU_DAILY_OFFLINE_NEWS_URL
+                        String newsInfoJson = downloadStringFromUrl(URLUtils.ZHIHU_DAILY_OFFLINE_NEWS_URL
                                         + singleNews.getString("id"));
-                        Document doc = Jsoup.parse(new JSONObject(newsInfoJson).getString("body"));
+                        JSONObject newsDetail = new JSONObject(newsInfoJson);
+                        if (newsDetail.has("body")) {
+                            Document doc = Jsoup.parse(newsDetail.getString("body"));
+                            boolean shouldPublish = updateDailyNews(doc, singleNews.getString("title"), dailyNews);
 
-                        isTheSameContent = false;
-                        boolean shouldPublish = updateDailyNews(doc, singleNews.getString("title"), dailyNews);
-
-                        if (shouldPublish) {
-                            publishProgress(dailyNews);
+                            if (shouldPublish) {
+                                isTheSameContent = false;
+                                publishProgress(dailyNews);
+                            }
                         }
                     }
                 }

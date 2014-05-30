@@ -62,7 +62,7 @@ public final class CommonUtils {
         }
     }
 
-    public static void goToZhihu(Context context, String url) {
+    private static void goToZhihu(Context context, String url) {
         boolean isUsingClient = PreferenceManager
                 .getDefaultSharedPreferences(context)
                 .getBoolean("using_client?", false);
@@ -81,7 +81,7 @@ public final class CommonUtils {
         }
     }
 
-    public static void openUsingBrowser(Context context, String url) {
+    private static void openUsingBrowser(Context context, String url) {
         try {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             context.startActivity(browserIntent);

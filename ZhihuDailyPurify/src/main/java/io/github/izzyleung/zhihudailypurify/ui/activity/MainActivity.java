@@ -80,9 +80,7 @@ public class MainActivity extends ActionBarActivity {
                 return true;
             case R.id.action_pick_date:
                 intent = new Intent();
-                Calendar calendar = Calendar.getInstance();
-                intent.putExtra("date", DateUtils.simpleDateFormat.format(calendar.getTime()));
-                intent.setClass(MainActivity.this, PickDateActivity.class);
+                intent.setClass(MainActivity.this, PortalActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.action_go_to_search:

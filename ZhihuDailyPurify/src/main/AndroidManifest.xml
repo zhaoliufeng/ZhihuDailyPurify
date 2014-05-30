@@ -31,11 +31,6 @@
         </activity>
 
         <activity
-                android:name=".ui.activity.PickDateActivity"
-                android:label="@string/activity_pick_date">
-        </activity>
-
-        <activity
                 android:name=".ui.activity.PortalActivity"
                 android:configChanges="orientation|keyboardHidden|screenSize"
                 android:alwaysRetainTaskState="true">
@@ -46,8 +41,8 @@
                 android:configChanges="orientation|keyboardHidden|screenSize"
                 android:alwaysRetainTaskState="true">
         </activity>
-        <meta-data android:name="com.crashlytics.ApiKey" android:value="8c4f455d761dd549f56cc2e4ccc3951074c5498e"/>
 
+        <meta-data android:name="com.crashlytics.ApiKey" android:value="8c4f455d761dd549f56cc2e4ccc3951074c5498e"/>
     </application>
 
 </manifest>

@@ -13,8 +13,7 @@
     <string name="close">Close</string>
     <string name="licences_header">"Zhihu Daily Purify is built based on the open source projects list down below:
 
-"
-    </string>
+"</string>
     <string name="licenses_subheader">"Every project is licensed under the Apache License, Version 2.0.
 
 Copyright [2014] [Izzy Leung]
@@ -29,8 +28,7 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License.
-    </string>
+limitations under the License.</string>
     <string name="action_pick_date">Pick a Date</string>
     <string name="activity_pick_date">Pick a Date</string>
     <string name="using_client">Open Link Using Zhihu Client</string>
@@ -63,4 +61,6 @@ limitations under the License.
     <string name="accelerate_server_dialog_title">Please select one accelerate server</string>
     <string name="accelerate_server_hint_dialog_title">Do you want to use the accelerate server?</string>
     <string name="accelerate_server_hint_dialog_message">The server will save your data budget and bring you faster speed when browsing old days\' news.</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

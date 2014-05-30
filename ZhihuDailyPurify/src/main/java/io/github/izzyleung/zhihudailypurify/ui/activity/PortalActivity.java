@@ -2,7 +2,6 @@ package io.github.izzyleung.zhihudailypurify.ui.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -15,75 +14,54 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.support.util.DateUtils;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.NewsListFragment;
+import io.github.izzyleung.zhihudailypurify.ui.fragment.PickDateFragment;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
-public class PortalActivity extends ActionBarActivity {
-    private String displayDate, dateForFragment;
+public class PortalActivity extends ActionBarActivity implements PickDateFragment.OnDateSelectedListener {
+    private String dateForFragment;
     private Calendar calendar = Calendar.getInstance();
+    private MenuItem prev, next;
+    private boolean isPickDateFragmentShowing = true;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_specific_date);
-
-        dateForFragment = getIntent().getStringExtra("date");
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        try {
-            calendar.setTime(DateUtils.simpleDateFormat.parse(dateForFragment));
-            calendar.add(Calendar.DAY_OF_YEAR, -1);
-            displayDate =
-                    new SimpleDateFormat(getString(R.string.display_format)).
-                            format(calendar.getTime());
-            getSupportActionBar().setTitle(displayDate);
-        } catch (ParseException ignored) {
-
-        }
-
-        final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         if (pref.getBoolean("accelerate_server_hint", true)) {
-            pref.edit().putBoolean("accelerate_server_hint", false).commit();
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this).setCancelable(false);
-            dialog.setTitle(getString(R.string.accelerate_server_hint_dialog_title));
-            dialog.setMessage(getString(R.string.accelerate_server_hint_dialog_message));
-            dialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    pref.edit().putBoolean("using_accelerate_server?", true).commit();
-
-                    updateView();
-                }
-            });
-
-            dialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    updateView();
-                }
-            });
-
-            dialog.show();
+            showDialogOnFirstLaunch(pref);
         } else {
-            updateView();
+            showPickDateFragment();
         }
     }
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent();
-        intent.putExtra("date", DateUtils.simpleDateFormat.format(calendar.getTime()));
-        intent.setClass(PortalActivity.this, PickDateActivity.class);
-        startActivity(intent);
-        this.finish();
+        if (isPickDateFragmentShowing) {
+            this.finish();
+        } else {
+            showPickDateFragment();
+            isPickDateFragmentShowing = true;
+            getSupportActionBar().setTitle(R.string.activity_pick_date);
+            prev.setVisible(false);
+            next.setVisible(false);
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.browse_date, menu);
+        prev = menu.findItem(R.id.back);
+        next = menu.findItem(R.id.forward);
+
+        prev.setVisible(false);
+        next.setVisible(false);
+
         return true;
     }
 
@@ -94,24 +72,19 @@ public class PortalActivity extends ActionBarActivity {
                 onBackPressed();
                 return true;
             case R.id.forward:
-                Calendar tempCalendar = Calendar.getInstance();
-                if (DateUtils.isSameDay(tempCalendar, calendar)) {
-                    Crouton.makeText(this,
-                            getString(R.string.this_is_today),
-                            Style.INFO).show();
+                if (DateUtils.isSameDay(Calendar.getInstance(), calendar)) {
+                    showCrouton(R.string.this_is_today, Style.INFO);
                     return true;
                 }
-                updateFields(1);
+                updateFields(ACTION.ACTION_NEXT_DAY);
                 updateView();
                 return true;
             case R.id.back:
                 if (DateUtils.isSameDay(DateUtils.birthDay, calendar)) {
-                    Crouton.makeText(this,
-                            getString(R.string.this_is_birthday),
-                            Style.INFO).show();
+                    showCrouton(R.string.this_is_birthday, Style.INFO);
                     return true;
                 }
-                updateFields(2);
+                updateFields(ACTION.ACTION_PREVIOUS_DAY);
                 updateView();
                 return true;
             default:
@@ -119,8 +92,46 @@ public class PortalActivity extends ActionBarActivity {
         }
     }
 
-    private void updateFields(int which) {
-        if (which == 1) {
+    private void showDialogOnFirstLaunch(final SharedPreferences pref) {
+        pref.edit().putBoolean("accelerate_server_hint", false).commit();
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this).setCancelable(false);
+        dialog.setTitle(getString(R.string.accelerate_server_hint_dialog_title));
+        dialog.setMessage(getString(R.string.accelerate_server_hint_dialog_message));
+        dialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                pref.edit().putBoolean("using_accelerate_server?", true).commit();
+                showPickDateFragment();
+            }
+        });
+
+        dialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                showPickDateFragment();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void showPickDateFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putString("date", DateUtils.simpleDateFormat.format(calendar.getTime()));
+
+        Fragment displayFragment = new PickDateFragment();
+        displayFragment.setArguments(bundle);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container, displayFragment)
+                .commit();
+
+        getSupportActionBar().setTitle(R.string.activity_pick_date);
+    }
+
+    private void updateFields(ACTION action) {
+        if (action == ACTION.ACTION_NEXT_DAY) {
             calendar.add(Calendar.DAY_OF_YEAR, 2);
             dateForFragment = DateUtils.simpleDateFormat.format(calendar.getTime());
             calendar.add(Calendar.DAY_OF_YEAR, -1);
@@ -145,13 +156,49 @@ public class PortalActivity extends ActionBarActivity {
         Fragment displayFragment = new NewsListFragment();
         displayFragment.setArguments(bundle);
 
-        getSupportFragmentManager().beginTransaction()
+        getSupportFragmentManager()
+                .beginTransaction()
                 .replace(R.id.container, displayFragment)
                 .commit();
 
-        displayDate = new SimpleDateFormat(getString(R.string.display_format)).
+        isPickDateFragmentShowing = false;
+
+        String displayDate = new SimpleDateFormat(getString(R.string.display_format)).
                 format(calendar.getTime());
 
         getSupportActionBar().setTitle(displayDate);
     }
+
+    @Override
+    public void onValidDateSelected(Date date) {
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        dateForFragment = DateUtils.simpleDateFormat.format(calendar.getTime());
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+
+        prev.setVisible(true);
+        next.setVisible(true);
+
+        updateView();
+    }
+
+    @Override
+    public void onInvalidDateSelected(Date date) {
+        if (date.after(new Date())) {
+            showCrouton(R.string.not_coming, Style.ALERT);
+        } else {
+            showCrouton(R.string.not_born, Style.ALERT);
+        }
+    }
+
+    @Override
+    public Date getDate() {
+        return calendar.getTime();
+    }
+
+    private void showCrouton(int resId, Style style) {
+        Crouton.makeText(PortalActivity.this, getString(resId), style).show();
+    }
+
+    private enum ACTION {ACTION_PREVIOUS_DAY, ACTION_NEXT_DAY}
 }

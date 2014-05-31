@@ -25,6 +25,12 @@ android {
         versionCode Integer.parseInt(project.VERSION_CODE)
         versionName project.VERSION_NAME
     }
+
+    buildTypes {
+        debug {
+    	   zipAlign true
+        }
+    }
     
     lintOptions {
         abortOnError false

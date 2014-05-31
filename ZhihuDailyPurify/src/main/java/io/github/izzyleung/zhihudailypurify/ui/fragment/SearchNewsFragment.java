@@ -3,7 +3,6 @@ package io.github.izzyleung.zhihudailypurify.ui.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,27 +10,20 @@ import android.widget.AdapterView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
 import io.github.izzyleung.zhihudailypurify.R;
-import io.github.izzyleung.zhihudailypurify.adapter.NewsAdapter;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.support.util.CommonUtils;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchFragment extends Fragment {
+public class SearchNewsFragment extends BaseNewsFragment {
     private List<String> dateResultList = new ArrayList<String>();
-    private List<DailyNews> newsList = new ArrayList<DailyNews>();
-    private NewsAdapter newsAdapter;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        newsAdapter = new NewsAdapter(
-                activity,
-                newsList,
-                dateResultList);
+        listAdapter.setDateResultList(dateResultList);
     }
 
     @Override
@@ -41,13 +33,12 @@ public class SearchFragment extends Fragment {
         assert view != null;
         StickyListHeadersListView listView = (StickyListHeadersListView)
                 view.findViewById(R.id.result_list);
-
-        listView.setAdapter(newsAdapter);
+        listView.setAdapter(listAdapter);
         listView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                CommonUtils.listOnClick(getActivity(), newsList.get(position));
+                listItemOnclick(position);
             }
         });
 
@@ -58,9 +49,9 @@ public class SearchFragment extends Fragment {
         this.dateResultList = dateResultList;
         this.newsList = newsList;
 
-        newsAdapter.setDateResultList(dateResultList);
-        newsAdapter.setNewsList(newsList);
+        listAdapter.setDateResultList(dateResultList);
+        listAdapter.setNewsList(newsList);
 
-        newsAdapter.notifyDataSetChanged();
+        listAdapter.notifyDataSetChanged();
     }
 }

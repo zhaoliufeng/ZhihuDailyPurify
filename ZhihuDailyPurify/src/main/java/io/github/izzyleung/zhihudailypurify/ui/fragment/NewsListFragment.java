@@ -6,13 +6,13 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ListFragment;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.GsonBuilder;
@@ -23,11 +23,9 @@ import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import io.github.izzyleung.zhihudailypurify.R;
-import io.github.izzyleung.zhihudailypurify.adapter.NewsAdapter;
 import io.github.izzyleung.zhihudailypurify.application.ZhihuDailyPurifyApplication;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
-import io.github.izzyleung.zhihudailypurify.support.util.CommonUtils;
 import io.github.izzyleung.zhihudailypurify.support.util.URLUtils;
 import io.github.izzyleung.zhihudailypurify.task.BaseDownloadTask;
 import org.json.JSONArray;
@@ -42,11 +40,10 @@ import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class NewsListFragment extends ListFragment implements OnRefreshListener {
+public class NewsListFragment extends BaseNewsFragment implements OnRefreshListener {
     private String date;
 
     private boolean isAutoRefresh;
@@ -58,8 +55,6 @@ public class NewsListFragment extends ListFragment implements OnRefreshListener 
     private boolean isCached = false;
     private boolean isRecovered = false;
 
-    private List<DailyNews> newsList = new ArrayList<DailyNews>();
-    private NewsAdapter listAdapter;
     private PullToRefreshLayout mPullToRefreshLayout;
 
     @Override
@@ -83,23 +78,22 @@ public class NewsListFragment extends ListFragment implements OnRefreshListener 
         @SuppressLint("InflateParams")
         View view = inflater.inflate(R.layout.fragment_news_list, null);
         assert view != null;
-        ListView listView = (ListView) view.findViewById(android.R.id.list);
-        listView.setOnScrollListener(
-                new PauseOnScrollListener(ImageLoader.getInstance(), false, true));
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        ViewGroup viewGroup = (ViewGroup) view;
-        mPullToRefreshLayout = new PullToRefreshLayout(viewGroup.getContext());
+        ListView listView = (ListView) view.findViewById(R.id.news_list);
+        listView.setAdapter(listAdapter);
+        listView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true));
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                listItemOnclick(position);
+            }
+        });
+        mPullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.ptr_layout);
         ActionBarPullToRefresh.from(getActivity())
-                .insertLayoutInto(viewGroup)
-                .theseChildrenArePullable(getListView(), getListView().getEmptyView())
+                .allChildrenArePullable()
                 .listener(this)
                 .setup(mPullToRefreshLayout);
+
+        return view;
     }
 
     @Override
@@ -156,11 +150,6 @@ public class NewsListFragment extends ListFragment implements OnRefreshListener 
     }
 
     @Override
-    public void onListItemClick(ListView l, View v, final int position, long id) {
-        CommonUtils.listOnClick(getActivity(), newsList.get(position));
-    }
-
-    @Override
     public void onRefreshStarted(View view) {
         refresh();
     }
@@ -186,34 +175,26 @@ public class NewsListFragment extends ListFragment implements OnRefreshListener 
         }
     }
 
-    final class RecoverNewsListTask extends MyAsyncTask<Void, Void, Void> {
+    private class RecoverNewsListTask extends MyAsyncTask<Void, Void, List<DailyNews>> {
 
         @Override
-        protected Void doInBackground(Void... params) {
-            fileToBeans();
-            return null;
+        protected List<DailyNews> doInBackground(Void... params) {
+            return ZhihuDailyPurifyApplication.getInstance().getDataSource().getDailyNewsList(date);
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(List<DailyNews> newsListRecovered) {
             isRecovered = true;
-            listAdapter = new NewsAdapter(
-                    getActivity(),
-                    newsList);
-            setListAdapter(listAdapter);
-        }
-
-        private void fileToBeans() {
-            List<DailyNews> result = ZhihuDailyPurifyApplication
-                    .getInstance().getDataSource().getDailyNewsList(date);
-            if (result != null) {
+            if (newsListRecovered != null) {
                 isCached = true;
-                newsList = result;
+                newsList = newsListRecovered;
+                listAdapter.setNewsList(newsListRecovered);
+                listAdapter.notifyDataSetChanged();
             }
         }
     }
 
-    final class SaveNewsListTask extends MyAsyncTask<Void, Void, Void> {
+    private class SaveNewsListTask extends MyAsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {

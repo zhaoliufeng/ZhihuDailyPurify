@@ -18,7 +18,7 @@ import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.util.DateUtils;
 import io.github.izzyleung.zhihudailypurify.support.util.URLUtils;
 import io.github.izzyleung.zhihudailypurify.task.BaseDownloadTask;
-import io.github.izzyleung.zhihudailypurify.ui.fragment.SearchFragment;
+import io.github.izzyleung.zhihudailypurify.ui.fragment.SearchNewsFragment;
 import io.github.izzyleung.zhihudailypurify.ui.view.IzzySearchView;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,7 +35,7 @@ import java.util.List;
 
 public class SearchActivity extends ActionBarActivity {
     private IzzySearchView searchView;
-    private SearchFragment searchFragment;
+    private SearchNewsFragment searchNewsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +44,10 @@ public class SearchActivity extends ActionBarActivity {
 
         initView();
 
-        searchFragment = new SearchFragment();
+        searchNewsFragment = new SearchNewsFragment();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.container, searchFragment)
+                .add(R.id.container, searchNewsFragment)
                 .commit();
     }
 
@@ -185,7 +185,7 @@ public class SearchActivity extends ActionBarActivity {
             }
 
             if (isSearchSuccess && !isCancelled()) {
-                searchFragment.updateContent(dateResultList, newsList);
+                searchNewsFragment.updateContent(dateResultList, newsList);
             } else {
                 Crouton.makeText(SearchActivity.this,
                         getString(R.string.network_error),

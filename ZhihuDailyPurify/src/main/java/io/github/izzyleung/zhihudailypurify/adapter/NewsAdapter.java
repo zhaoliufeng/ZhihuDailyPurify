@@ -16,7 +16,6 @@ import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.support.util.CommonUtils;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import taobe.tec.jcc.JChineseConvertor;
 
@@ -27,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 
 public final class NewsAdapter extends BaseAdapter implements StickyListHeadersAdapter {
+
     private LayoutInflater mInflater;
 
     private List<DailyNews> newsList;
@@ -118,7 +118,8 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
         if (shouldConvert && canConvert) {
             if (dailyNews.isMulti()) {
                 holder.questionTitle.setText(convertor.s2t(dailyNews.getDailyTitle()));
-                holder.dailyTitle.setText(CommonUtils.traditionalMultiQuestion);
+                String traditionalMultiQuestion = "這裏包含多個知乎討論，請點擊後選擇";
+                holder.dailyTitle.setText(traditionalMultiQuestion);
             } else {
                 holder.questionTitle.setText(convertor.s2t(dailyNews.getQuestionTitle()));
                 holder.dailyTitle.setText(convertor.s2t(dailyNews.getDailyTitle()));
@@ -126,7 +127,8 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
         } else {
             if (dailyNews.isMulti()) {
                 holder.questionTitle.setText(dailyNews.getDailyTitle());
-                holder.dailyTitle.setText(CommonUtils.simplifiedMultiQuestion);
+                String simplifiedMultiQuestion = "这里包含多个知乎讨论，请点击后选择";
+                holder.dailyTitle.setText(simplifiedMultiQuestion);
             } else {
                 holder.questionTitle.setText(dailyNews.getQuestionTitle());
                 holder.dailyTitle.setText(dailyNews.getDailyTitle());

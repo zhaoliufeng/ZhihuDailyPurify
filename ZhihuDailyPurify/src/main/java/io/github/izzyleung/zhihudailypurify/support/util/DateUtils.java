@@ -6,7 +6,6 @@ import java.util.Calendar;
 
 public final class DateUtils {
     public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-
     public static final Calendar birthDay = Calendar.getInstance();
 
     private DateUtils() {

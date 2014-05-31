@@ -1,31 +1,38 @@
-package io.github.izzyleung.zhihudailypurify.support.util;
+package io.github.izzyleung.zhihudailypurify.ui.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.widget.Toast;
 import io.github.izzyleung.zhihudailypurify.R;
-import io.github.izzyleung.zhihudailypurify.application.ZhihuDailyPurifyApplication;
+import io.github.izzyleung.zhihudailypurify.adapter.NewsAdapter;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import taobe.tec.jcc.JChineseConvertor;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-public final class CommonUtils {
-    public static final String simplifiedMultiQuestion = "这里包含多个知乎讨论，请点击后选择";
-    public static final String traditionalMultiQuestion = "這裏包含多個知乎討論，請點擊後選擇";
+public class BaseNewsFragment extends Fragment {
+    protected List<DailyNews> newsList = new ArrayList<DailyNews>();
+    protected NewsAdapter listAdapter;
 
-    private CommonUtils() {
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
 
+        listAdapter = new NewsAdapter(activity, newsList);
     }
 
-    public static void listOnClick(final Context context, final DailyNews dailyNews) {
-        //If the chosen news contains multi news, show an dialog for the user to choose one
+    protected void listItemOnclick(final int position) {
+        DailyNews dailyNews = newsList.get(position);
+
         if (dailyNews.isMulti()) {
             String[] questionTitles = dailyNews.
                     getQuestionTitleList().
@@ -48,48 +55,45 @@ public final class CommonUtils {
                 }
             }
 
-            new AlertDialog.Builder(context)
+            new AlertDialog.Builder(getActivity())
                     .setTitle(dailyNews.getDailyTitle())
                     .setItems(questionTitles, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            goToZhihu(context, dailyNews.getQuestionUrlList().get(which));
+                            goToZhihu(newsList.get(position).getQuestionUrlList().get(which));
                         }
                     }).show();
         } else {
             //Or, just go to Zhihu
-            goToZhihu(context, dailyNews.getQuestionUrl());
+            goToZhihu(dailyNews.getQuestionUrl());
         }
     }
 
-    private static void goToZhihu(Context context, String url) {
+    private void goToZhihu(String url) {
         boolean isUsingClient = PreferenceManager
-                .getDefaultSharedPreferences(context)
+                .getDefaultSharedPreferences(getActivity())
                 .getBoolean("using_client?", false);
 
         if (!isUsingClient) {
-            openUsingBrowser(context, url);
+            openUsingBrowser(url);
         } else {
             //Open using Zhihu's official client
             try {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 browserIntent.setPackage("com.zhihu.android");
-                context.startActivity(browserIntent);
+                getActivity().startActivity(browserIntent);
             } catch (ActivityNotFoundException e) {
-                openUsingBrowser(context, url);
+                openUsingBrowser(url);
             }
         }
     }
 
-    private static void openUsingBrowser(Context context, String url) {
+    private void openUsingBrowser(String url) {
         try {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            context.startActivity(browserIntent);
+            getActivity().startActivity(browserIntent);
         } catch (ActivityNotFoundException ane) {
-            Toast.makeText(
-                    ZhihuDailyPurifyApplication.getInstance(),
-                    ZhihuDailyPurifyApplication.getInstance().getResources().getString(R.string.no_browser),
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getString(R.string.no_browser), Toast.LENGTH_SHORT).show();
         }
     }
 }

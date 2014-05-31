@@ -1,2 +1,2 @@
 include ':ZhihuDailyPurify'
-include ':ShowCaseViewLibrary'
+include ':ShowcaseView'

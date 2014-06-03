@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- From: file:/home/izzy/Dropbox/Android/Projects/ZhihuDailyPurify%20-%20Version%2010/ShowcaseView/res/values/attrs.xml -->
+    <!-- From: file:/home/izzy/Dropbox/Android/Projects/ZhihuDailyPurify/ShowcaseView/res/values/attrs.xml -->
     <eat-comment />
 
     <declare-styleable name="CustomTheme">
@@ -18,17 +18,17 @@
         <attr name="sv_titleTextAppearance" format="reference" />
         <attr name="sv_showcaseColor" format="color|reference" />
     </declare-styleable>
-    <!-- From: file:/home/izzy/Dropbox/Android/Projects/ZhihuDailyPurify%20-%20Version%2010/ShowcaseView/res/values/ids.xml -->
+    <!-- From: file:/home/izzy/Dropbox/Android/Projects/ZhihuDailyPurify/ShowcaseView/res/values/ids.xml -->
     <eat-comment />
 
     <item name="showcase_button" type="id"/>
     <item name="showcase_sub_text" type="id"/>
     <item name="showcase_title_text" type="id"/>
-    <!-- From: file:/home/izzy/Dropbox/Android/Projects/ZhihuDailyPurify%20-%20Version%2010/ShowcaseView/res/values/strings.xml -->
+    <!-- From: file:/home/izzy/Dropbox/Android/Projects/ZhihuDailyPurify/ShowcaseView/res/values/strings.xml -->
     <eat-comment />
 
     <string name="ok">OK</string>
-    <!-- From: file:/home/izzy/Dropbox/Android/Projects/ZhihuDailyPurify%20-%20Version%2010/ShowcaseView/res/values/styles.xml -->
+    <!-- From: file:/home/izzy/Dropbox/Android/Projects/ZhihuDailyPurify/ShowcaseView/res/values/styles.xml -->
     <eat-comment />
 
     <style name="ShowcaseButton">

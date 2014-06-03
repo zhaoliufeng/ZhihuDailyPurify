@@ -2,10 +2,10 @@
 <merger>
 
     <dataSet config="main" >
-        <source path="/home/izzy/Dropbox/Android/Projects/ZhihuDailyPurify - Version 10/ShowcaseView/src/main/assets" />
+        <source path="/home/izzy/Dropbox/Android/Projects/ZhihuDailyPurify/ShowcaseView/src/main/assets" />
     </dataSet>
     <dataSet config="release" >
-        <source path="/home/izzy/Dropbox/Android/Projects/ZhihuDailyPurify - Version 10/ShowcaseView/src/release/assets" />
+        <source path="/home/izzy/Dropbox/Android/Projects/ZhihuDailyPurify/ShowcaseView/src/release/assets" />
     </dataSet>
 
 </merger>

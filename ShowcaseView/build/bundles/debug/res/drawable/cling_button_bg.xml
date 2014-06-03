@@ -18,4 +18,4 @@
     <item android:state_pressed="true" android:drawable="@drawable/btn_cling_pressed"/>
     <item android:drawable="@drawable/btn_cling_normal"/>
 </selector>
-<!-- From: file:/home/izzy/Dropbox/Android/Projects/ZhihuDailyPurify%20-%20Version%2010/ShowcaseView/res/drawable/cling_button_bg.xml -->
+<!-- From: file:/home/izzy/Dropbox/Android/Projects/ZhihuDailyPurify/ShowcaseView/res/drawable/cling_button_bg.xml -->

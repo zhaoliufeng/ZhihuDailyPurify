@@ -8,13 +8,11 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.crashlytics.android.Crashlytics;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -23,7 +21,7 @@ import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import io.github.izzyleung.zhihudailypurify.R;
-import io.github.izzyleung.zhihudailypurify.application.ZhihuDailyPurifyApplication;
+import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
 import io.github.izzyleung.zhihudailypurify.support.util.URLUtils;
@@ -40,7 +38,6 @@ import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.List;
 
 public class NewsListFragment extends BaseNewsFragment implements OnRefreshListener {
@@ -243,7 +240,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
             isRefreshed = true;
         }
 
-        protected void warning(Exception e) {
+        protected void warning() {
             if (isAdded() && getActivity() != null) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -254,11 +251,6 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
 
                     }
                 });
-
-                Crashlytics.log(
-                        Log.ERROR,
-                        "Error from Warning",
-                        Arrays.toString(e.getStackTrace()));
             }
         }
     }
@@ -303,10 +295,10 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                 }
             } catch (JSONException e) {
                 isRefreshSuccess = false;
-                warning(e);
+                warning();
             } catch (IOException e) {
                 isRefreshSuccess = false;
-                warning(e);
+                warning();
             }
 
             return null;
@@ -416,7 +408,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                 }
             } catch (IOException e) {
                 isRefreshSuccess = false;
-                warning(e);
+                warning();
                 return null;
             }
 
@@ -429,11 +421,11 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                             fromJson(newsListJSON, listType);
                 } catch (JsonSyntaxException e) {
                     isRefreshSuccess = false;
-                    warning(e);
+                    warning();
                 }
             } else {
                 isRefreshSuccess = false;
-                warning(new IOException("Nothing from web"));
+                warning();
             }
             return null;
         }

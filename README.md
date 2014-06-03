@@ -16,6 +16,8 @@ __Disclaimer - 声明__
   - Light weighted, 6 times lighter than Zhihu Daily - 更小的体积：只有『知乎日报』的 1/6
   - Do not request useless permission - 不需要多余的权限
   - No ads - 没有广告
+  - No push services, or any background activity - 没有推送消息，甚至没有任何的后台进程
+  - No tracking modules, do not collect your private data - 没有追踪模块，不收集您的任何隐私信息
 
 
 ### Dependency - 依赖

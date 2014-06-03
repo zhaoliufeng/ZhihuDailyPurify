@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Locale;
 
 public final class NewsAdapter extends BaseAdapter implements StickyListHeadersAdapter {
-
     private LayoutInflater mInflater;
 
     private List<DailyNews> newsList;

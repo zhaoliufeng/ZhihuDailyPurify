@@ -1,5 +1,6 @@
 package io.github.izzyleung.zhihudailypurify.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -91,6 +92,7 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
         return position;
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         CardViewHolder holder;
@@ -146,6 +148,7 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
         return dateResultList.get(position).hashCode();
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public View getHeaderView(int position, View convertView, ViewGroup parent) {
         HeaderViewHolder holder;

@@ -1,6 +1,6 @@
 .gradle
 build/
-/ShowcaseView/build
+/libs/ShowcaseView/build/
 *.iml
 /.idea/
 ZhihuDailyAPI.md

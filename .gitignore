@@ -1,12 +1,8 @@
-/.gradle/
-/ZhihuDailyPurify/build/
-/.idea/
-/ZhihuDailyPurify - Version 10.iml
-ShowCaseViewLibrary/build/
-/ShowCaseViewLibrary/build/
-ZhihuDailyAPI.md
+.gradle
+build/
+/ShowcaseView/build
 *.iml
-ZhihuDailyPurify/src/main/res/values/com_crashlytics_export_strings.xml
+/.idea/
+ZhihuDailyAPI.md
 local.properties
-ZhihuDailyPurify/crashlytics.properties
 .gradletasknamecache

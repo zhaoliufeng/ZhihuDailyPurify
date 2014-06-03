@@ -96,7 +96,7 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
         CardViewHolder holder;
         if (convertView == null) {
             holder = new CardViewHolder();
-            convertView = mInflater.inflate(R.layout.news_list_item, parent, false);
+            convertView = mInflater.inflate(R.layout.news_list_item, null);
 
             assert convertView != null;
             holder.newsImage = (ImageView)
@@ -151,7 +151,7 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
         HeaderViewHolder holder;
         if (convertView == null) {
             holder = new HeaderViewHolder();
-            convertView = mInflater.inflate(R.layout.search_result_list_header, parent, false);
+            convertView = mInflater.inflate(R.layout.search_result_list_header, null);
 
             assert convertView != null;
             holder.headerTitle = (TextView)

@@ -28,7 +28,7 @@ __Disclaimer - 声明__
 
 
 ### Build - 构建
-`./gradlew assembldeDebug` | `./gradlew assemble` | `./gradlew build`
+`./gradlew assembldeDebug` || `./gradlew assemble` || `./gradlew build`
 
 Then find the apk under `ZhihuDailyPurify/build/apk`   
 编译好的 apk 文件在 `ZhihuDailyPurify/build/apk` 路径下

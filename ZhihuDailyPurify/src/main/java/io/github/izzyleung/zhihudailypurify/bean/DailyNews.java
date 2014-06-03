@@ -42,7 +42,7 @@ public final class DailyNews {
 
     @Override
     public boolean equals(Object o) {
-        if (thumbnailUrl == null) return false;
+        if (thumbnailUrl == null) return o == null;
 
         if (this == o) return true;
         if (!(o instanceof DailyNews)) return false;
@@ -112,5 +112,4 @@ public final class DailyNews {
     public void addQuestionUrl(String questionUrl) {
         questionUrlList.add(questionUrl);
     }
-
 }

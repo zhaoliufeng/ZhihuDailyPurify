@@ -1,6 +1,5 @@
 package io.github.izzyleung.zhihudailypurify.ui.fragment;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,12 +14,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class PickDateFragment extends Fragment {
-    private OnDateSelectedListener mOnDateSelectedListener;
+    private PickDateListener mOnDateSelectedListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        @SuppressLint("InflateParams")
-        View view = inflater.inflate(R.layout.fragment_pick_date, null);
+        View view = inflater.inflate(R.layout.fragment_pick_date, container, false);
         assert view != null;
         CalendarPickerView calendarPickerView = (CalendarPickerView) view.findViewById(R.id.calendar_view);
         Calendar nextDay = Calendar.getInstance();
@@ -52,13 +50,20 @@ public class PickDateFragment extends Fragment {
         super.onAttach(activity);
 
         try {
-            mOnDateSelectedListener = (OnDateSelectedListener) activity;
+            mOnDateSelectedListener = (PickDateListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement OnDateSelectedListener");
         }
     }
 
-    public interface OnDateSelectedListener {
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        mOnDateSelectedListener = null;
+    }
+
+    public interface PickDateListener {
         public void onValidDateSelected(Date date);
 
         public void onInvalidDateSelected(Date date);

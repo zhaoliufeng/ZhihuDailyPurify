@@ -38,6 +38,5 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.0.0-RC1'
 
     compile project(':ShowcaseView')
-
-    compile files('src/main/libs/jcc-bate-0.7.3.jar')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
 }

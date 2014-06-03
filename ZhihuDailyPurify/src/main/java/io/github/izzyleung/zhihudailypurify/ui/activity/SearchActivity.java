@@ -56,6 +56,7 @@ public class SearchActivity extends ActionBarActivity {
         super.onDestroy();
 
         Crouton.cancelAllCroutons();
+        searchNewsFragment = null;
     }
 
     @Override
@@ -185,7 +186,7 @@ public class SearchActivity extends ActionBarActivity {
             }
 
             if (isSearchSuccess && !isCancelled()) {
-                searchNewsFragment.updateContent(dateResultList, newsList);
+                searchNewsFragment.updateContent(newsList, dateResultList);
             } else {
                 Crouton.makeText(SearchActivity.this,
                         getString(R.string.network_error),

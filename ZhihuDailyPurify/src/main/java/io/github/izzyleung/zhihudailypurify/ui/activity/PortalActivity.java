@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class PortalActivity extends ActionBarActivity implements PickDateFragment.OnDateSelectedListener {
+public class PortalActivity extends ActionBarActivity implements PickDateFragment.PickDateListener {
     private String dateForFragment;
     private Calendar calendar = Calendar.getInstance();
     private MenuItem prev, next;

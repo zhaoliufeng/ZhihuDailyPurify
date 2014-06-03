@@ -1,6 +1,5 @@
 package io.github.izzyleung.zhihudailypurify.ui.fragment;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -72,8 +71,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        @SuppressLint("InflateParams")
-        View view = inflater.inflate(R.layout.fragment_news_list, null);
+        View view = inflater.inflate(R.layout.fragment_news_list, container, false);
         assert view != null;
         ListView listView = (ListView) view.findViewById(R.id.news_list);
         listView.setAdapter(listAdapter);
@@ -84,23 +82,19 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                 listItemOnclick(position);
             }
         });
+
         mPullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.ptr_layout);
         ActionBarPullToRefresh.from(getActivity())
                 .allChildrenArePullable()
                 .listener(this)
                 .setup(mPullToRefreshLayout);
 
-        return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
         if (!isRecovered) {
             new RecoverNewsListTask().
                     executeOnExecutor(MyAsyncTask.THREAD_POOL_EXECUTOR);
         }
+
+        return view;
     }
 
     @Override
@@ -110,10 +104,10 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
         SharedPreferences pref = PreferenceManager.
                 getDefaultSharedPreferences(getActivity());
         isAutoRefresh = pref.getBoolean("auto_refresh?", true);
-
         boolean isShowcase = pref.getBoolean("show_showcase?", true);
 
-        if (isFirstPage || isSingle) {
+//        if (isFirstPage || isSingle) {
+        if (isSingle) {
             if (isAutoRefresh && !isRefreshed) {
                 if (!isShowcase) {
                     refresh();
@@ -186,7 +180,10 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                 isCached = true;
                 newsList = newsListRecovered;
                 listAdapter.setNewsList(newsListRecovered);
-                listAdapter.notifyDataSetChanged();
+            }
+
+            if (isFirstPage) {
+                refresh();
             }
         }
     }

@@ -1,6 +1,5 @@
 package io.github.izzyleung.zhihudailypurify.ui.fragment;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -28,8 +27,7 @@ public class SearchNewsFragment extends BaseNewsFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        @SuppressLint("InflateParams")
-        View view = inflater.inflate(R.layout.fragment_search, null);
+        View view = inflater.inflate(R.layout.fragment_search, container, false);
         assert view != null;
         StickyListHeadersListView listView = (StickyListHeadersListView)
                 view.findViewById(R.id.result_list);
@@ -45,13 +43,10 @@ public class SearchNewsFragment extends BaseNewsFragment {
         return view;
     }
 
-    public void updateContent(List<String> dateResultList, List<DailyNews> newsList) {
-        this.dateResultList = dateResultList;
+    public void updateContent(List<DailyNews> newsList, List<String> dateResultList) {
         this.newsList = newsList;
+        this.dateResultList = dateResultList;
 
-        listAdapter.setDateResultList(dateResultList);
-        listAdapter.setNewsList(newsList);
-
-        listAdapter.notifyDataSetChanged();
+        listAdapter.setContents(newsList, dateResultList);
     }
 }

@@ -1,14 +1,14 @@
 package io.github.izzyleung.zhihudailypurify.ui.activity;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -20,7 +20,6 @@ import io.github.izzyleung.zhihudailypurify.support.util.DateUtils;
 import io.github.izzyleung.zhihudailypurify.support.util.URLUtils;
 import io.github.izzyleung.zhihudailypurify.task.BaseDownloadTask;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.SearchNewsFragment;
-import io.github.izzyleung.zhihudailypurify.ui.view.IzzySearchView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,8 +33,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class SearchActivity extends ActionBarActivity {
-    private IzzySearchView searchView;
+public class SearchActivity extends FragmentActivity {
+    private SearchView searchView;
     private SearchNewsFragment searchNewsFragment;
 
     @Override
@@ -72,25 +71,21 @@ public class SearchActivity extends ActionBarActivity {
     }
 
     private void initView() {
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getActionBar().setDisplayShowTitleEnabled(false);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayShowCustomEnabled(true);
 
-        @SuppressLint("InflateParams")
-        View view = getLayoutInflater().inflate(R.layout.action_bar_activity_search, null);
-
-        assert view != null;
-        searchView = (IzzySearchView) view.findViewById(R.id.search_view);
+        searchView = new SearchView(this);
         searchView.setIconifiedByDefault(true);
         searchView.setIconified(false);
-        searchView.setOnCloseListener(new IzzySearchView.OnCloseListener() {
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             public boolean onClose() {
                 return true;
             }
         });
         searchView.setQueryHint(getString(R.string.search_hint));
 
-        searchView.setOnQueryTextListener(new IzzySearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -106,7 +101,9 @@ public class SearchActivity extends ActionBarActivity {
             }
         });
 
-        getSupportActionBar().setCustomView(view);
+        RelativeLayout relative = new RelativeLayout(this);
+        relative.addView(searchView);
+        getActionBar().setCustomView(relative);
     }
 
     class SearchTask extends BaseDownloadTask<String, Void, Void> {
@@ -123,8 +120,7 @@ public class SearchActivity extends ActionBarActivity {
         }.getType();
         private Gson gson = new GsonBuilder().create();
 
-        private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-                getString(R.string.display_format));
+        private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.display_format));
 
         @Override
         protected void onPreExecute() {

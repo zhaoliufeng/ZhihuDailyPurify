@@ -32,8 +32,8 @@ import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 import java.io.IOException;
@@ -194,6 +194,8 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
             }
         }
     }
+
+    private enum SERVERS {SAE, HEROKU}
 
     private class RecoverNewsListTask extends MyAsyncTask<Void, Void, List<DailyNews>> {
 
@@ -470,6 +472,4 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
             super.onPostExecute(aVoid);
         }
     }
-
-    private enum SERVERS {SAE, HEROKU}
 }

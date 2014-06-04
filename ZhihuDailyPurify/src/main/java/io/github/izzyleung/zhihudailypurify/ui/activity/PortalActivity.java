@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class PortalActivity extends ActionBarActivity implements PickDateFragment.PickDateListener {
+public class PortalActivity extends FragmentActivity implements PickDateFragment.PickDateListener {
     private String dateForFragment;
     private Calendar calendar = Calendar.getInstance();
     private MenuItem prev, next;
@@ -29,7 +29,7 @@ public class PortalActivity extends ActionBarActivity implements PickDateFragmen
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_common);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         if (pref.getBoolean("accelerate_server_hint", true)) {
@@ -55,7 +55,7 @@ public class PortalActivity extends ActionBarActivity implements PickDateFragmen
                 getSupportFragmentManager().popBackStack();
             }
 
-            getSupportActionBar().setTitle(R.string.activity_pick_date);
+            getActionBar().setTitle(R.string.activity_pick_date);
             prev.setVisible(false);
             next.setVisible(false);
         }
@@ -135,7 +135,7 @@ public class PortalActivity extends ActionBarActivity implements PickDateFragmen
                 .replace(R.id.container, displayFragment)
                 .commit();
 
-        getSupportActionBar().setTitle(R.string.activity_pick_date);
+        getActionBar().setTitle(R.string.activity_pick_date);
     }
 
     private void updateFields(ACTION action) {
@@ -173,7 +173,7 @@ public class PortalActivity extends ActionBarActivity implements PickDateFragmen
         String displayDate = new SimpleDateFormat(getString(R.string.display_format)).
                 format(calendar.getTime());
 
-        getSupportActionBar().setTitle(displayDate);
+        getActionBar().setTitle(displayDate);
     }
 
     @Override

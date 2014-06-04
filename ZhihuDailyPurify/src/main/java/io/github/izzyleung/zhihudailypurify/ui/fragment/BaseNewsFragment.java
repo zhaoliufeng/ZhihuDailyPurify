@@ -8,8 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.view.ActionMode;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -204,7 +203,7 @@ public abstract class BaseNewsFragment extends Fragment {
         checkItemAtPosition(position);
 
         longClickItemIndex = position;
-        mActionMode = ((ActionBarActivity) getActivity()).startSupportActionMode(mActionModeCallback);
+        mActionMode = getActivity().startActionMode(mActionModeCallback);
         if (newsList.get(position).isMulti()) {
             Spinner spinner = new Spinner(getActivity());
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(

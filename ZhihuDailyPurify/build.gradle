@@ -13,10 +13,10 @@ android {
 
     buildTypes {
         debug {
-    	   zipAlign true
+            zipAlign true
         }
     }
-    
+
     lintOptions {
         abortOnError false
     }
@@ -35,7 +35,6 @@ dependencies {
     compile('de.keyboardsurfer.android.widget:crouton:1.8.+') {
         exclude group: 'com.google.android', module: 'support-v4'
     }
-    compile 'com.squareup.okhttp:okhttp:2.0.0-RC1'
 
     compile project(':ShowcaseView')
     compile fileTree(dir: 'libs', include: ['*.jar'])

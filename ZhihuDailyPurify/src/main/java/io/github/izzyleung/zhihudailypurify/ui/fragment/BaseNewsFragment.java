@@ -12,13 +12,15 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.Toast;
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.adapter.NewsAdapter;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
+import io.github.izzyleung.zhihudailypurify.ui.view.SpinnerICS;
 import taobe.tec.jcc.JChineseConvertor;
 
 import java.io.IOException;
@@ -31,6 +33,7 @@ public abstract class BaseNewsFragment extends Fragment {
     protected NewsAdapter listAdapter;
 
     protected int longClickItemIndex = 0;
+    protected int spinnerSelectedItemIndex = 0;
 
     protected ActionMode mActionMode;
     protected ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -57,8 +60,7 @@ public abstract class BaseNewsFragment extends Fragment {
 
                     String url;
                     if (actionMode.getCustomView() != null) {
-                        url = newsList.get(longClickItemIndex).getQuestionUrlList()
-                                        .get(((Spinner) actionMode.getCustomView()).getSelectedItemPosition());
+                        url = newsList.get(longClickItemIndex).getQuestionUrlList().get(spinnerSelectedItemIndex);
                     } else {
                         url = newsList.get(longClickItemIndex).getQuestionUrl();
                     }
@@ -208,14 +210,25 @@ public abstract class BaseNewsFragment extends Fragment {
         longClickItemIndex = position;
         mActionMode = ((ActionBarActivity) getActivity()).startSupportActionMode(mActionModeCallback);
         if (newsList.get(position).isMulti()) {
-            Spinner spinner = new Spinner(getActivity());
+            final SpinnerICS spinner = new SpinnerICS(getActivity());
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                     getActivity(),
                     android.R.layout.simple_spinner_item,
                     newsList.get(position).getQuestionTitleList());
-            adapter.setDropDownViewResource(R.layout.spinner_item);
+            adapter.setDropDownViewResource(R.layout.spinner_dropdpwn_item);
             spinner.setAdapter(adapter);
-            mActionMode.setCustomView(spinner);
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    spinnerSelectedItemIndex = position;
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    spinnerSelectedItemIndex = 0;
+                }
+            });
+            mActionMode.setCustomView(spinner.getView());
         } else {
             mActionMode.setTitle(newsList.get(position).getQuestionTitle());
         }

@@ -28,11 +28,7 @@ __Disclaimer - 声明__
 
 
 ### Build - 构建
-`./gradlew assemble`
-
-Then find the apk under `ZhihuDailyPurify/build/apk`   
-编译好的 apk 文件在 `ZhihuDailyPurify/build/apk` 路径下
-
+`./gradlew assemble`  
 
 ### API Reference - API 分析
 [APIs](https://github.com/izzyleung/ZhihuDailyPurify/wiki/%E7%9F%A5%E4%B9%8E%E6%97%A5%E6%8A%A5-API-%E5%88%86%E6%9E%90)

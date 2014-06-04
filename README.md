@@ -19,13 +19,11 @@ __Disclaimer - 声明__
   - No push services, or any background activity - 没有推送消息，甚至没有任何的后台进程
   - No tracking modules, do not collect any of private data - 没有追踪模块，不收集您的任何隐私信息
 
-
 ### Dependency - 依赖
   - Java Development Kit (JDK) 7 +
   - Android SDK
     - Android SDK Build-tools 19.1 +
     - Android Support Repository 5 +
-
 
 ### Build - 构建
 `./gradlew assemble`  

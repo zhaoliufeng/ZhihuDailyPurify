@@ -42,7 +42,6 @@
                 android:alwaysRetainTaskState="true">
         </activity>
 
-        <meta-data android:name="com.crashlytics.ApiKey" android:value="8c4f455d761dd549f56cc2e4ccc3951074c5498e"/>
     </application>
 
 </manifest>

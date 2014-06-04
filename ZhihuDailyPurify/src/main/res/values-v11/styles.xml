@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Theme.ZhihuDailyPurify" parent="AppBaseTheme">
+    <style name="Theme.ZhihuDailyPurify" parent="@style/Theme.AppCompat.Light">
         <item name="android:actionBarStyle">@style/Theme.ZhihuDailyPurify.ActionBarStyle</item>
         <item name="android:actionModeStyle" tools:ignore="NewApi">@style/Theme.ZhihuDailyPurify.Widget.ActionMode
         </item>
@@ -14,7 +14,7 @@
         <item name="android:titleTextStyle">@style/Theme.ZhihuDailyPurify.ActionBarStyle.TitleTextStyle</item>
     </style>
 
-    <style name="Theme.ZhihuDailyPurify.Widget.ActionMode" parent="Widget.AppCompat.ActionMode">
+    <style name="Theme.ZhihuDailyPurify.Widget.ActionMode" parent="@style/Widget.AppCompat.ActionMode">
         <item name="android:background">@drawable/abc_cab_background_top_holo_dark</item>
         <item name="android:backgroundSplit" tools:ignore="NewApi">@drawable/abc_cab_background_bottom_holo_dark</item>
         <item name="android:titleTextStyle">@style/Theme.ZhihuDailyPurify.ActionBarStyle.ActionMode.TitleTextStyle

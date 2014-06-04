@@ -210,12 +210,12 @@ public abstract class BaseNewsFragment extends Fragment {
         longClickItemIndex = position;
         mActionMode = ((ActionBarActivity) getActivity()).startSupportActionMode(mActionModeCallback);
         if (newsList.get(position).isMulti()) {
-            final SpinnerICS spinner = new SpinnerICS(getActivity());
+            SpinnerICS spinner = new SpinnerICS(getActivity());
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                     getActivity(),
-                    android.R.layout.simple_spinner_item,
+                    R.layout.support_simple_spinner_dropdown_item,
                     newsList.get(position).getQuestionTitleList());
-            adapter.setDropDownViewResource(R.layout.spinner_dropdpwn_item);
+            adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
             spinner.setAdapter(adapter);
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override

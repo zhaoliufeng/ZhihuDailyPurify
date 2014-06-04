@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.widget.ListView;
 import android.widget.Toast;
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.adapter.NewsAdapter;
@@ -22,6 +23,7 @@ import java.util.Locale;
 public class BaseNewsFragment extends Fragment {
     protected List<DailyNews> newsList = new ArrayList<DailyNews>();
     protected NewsAdapter listAdapter;
+    protected ListView listView;
 
     @Override
     public void onAttach(Activity activity) {

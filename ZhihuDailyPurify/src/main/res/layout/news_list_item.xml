@@ -49,8 +49,5 @@
                     android:paddingRight="15.0dip"
                     android:textSize="14.0sp"/>
         </LinearLayout>
-
-
     </LinearLayout>
-
 </FrameLayout>

@@ -1,17 +1,17 @@
 package io.github.izzyleung.zhihudailypurify.ui.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.view.ActionMode;
 import android.text.Html;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.view.*;
+import android.widget.*;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -51,7 +51,54 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
     private boolean isCached = false;
     private boolean isRecovered = false;
 
+    private int longClickItemIndex = 0;
+
     private PullToRefreshLayout mPullToRefreshLayout;
+
+    private ActionMode mActionMode;
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+        @Override
+        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+            actionMode.getMenuInflater().inflate(R.menu.contextual_news_list, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.action_share_url:
+                    if (actionMode.getCustomView() != null) {
+                        ((Spinner) actionMode.getCustomView()).getSelectedItemPosition();
+                    } else {
+                        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                        share.setType("text/plain");
+                        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+
+                        share.putExtra(Intent.EXTRA_SUBJECT, "This is extra subject");
+                        share.putExtra(Intent.EXTRA_TEXT, newsList.get(longClickItemIndex).getQuestionUrl());
+
+                        startActivity(Intent.createChooser(share, "Share to..."));
+                    }
+                    actionMode.finish();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode actionMode) {
+            mActionMode = null;
+            listView.clearChoices();
+            listAdapter.notifyDataSetChanged();
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,15 +120,76 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
         assert view != null;
-        ListView listView = (ListView) view.findViewById(R.id.news_list);
+        listView = (ListView) view.findViewById(R.id.news_list);
         listView.setAdapter(listAdapter);
-        listView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true));
+        listView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true, new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (mActionMode != null) {
+                    int position = listView.getCheckedItemPosition();
+                    if (listView.getFirstVisiblePosition() > position
+                            || listView.getLastVisiblePosition() < position) {
+                        clearActionMode();
+                    }
+                }
+            }
+        }));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (resetActionMode()) {
+                    return;
+                }
+
+                listView.clearChoices();
                 listItemOnclick(position);
             }
+
+            private boolean resetActionMode() {
+                if (mActionMode != null) {
+                    listView.clearChoices();
+                    mActionMode.finish();
+                    mActionMode = null;
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         });
+
+        listView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                if (mActionMode != null) {
+                    mActionMode.finish();
+                    mActionMode = null;
+                }
+
+                listView.setItemChecked(position, true);
+                longClickItemIndex = position;
+                mActionMode = ((ActionBarActivity) getActivity()).startSupportActionMode(mActionModeCallback);
+                if (newsList.get(position).isMulti()) {
+                    Spinner spinner = new Spinner(getActivity());
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                            getActivity(),
+                            android.R.layout.simple_spinner_item,
+                            newsList.get(position).getQuestionTitleList());
+                    adapter.setDropDownViewResource(R.layout.action_bar_spinner_item);
+                    spinner.setAdapter(adapter);
+                    mActionMode.setCustomView(spinner);
+                } else {
+                    mActionMode.setTitle(newsList.get(position).getDailyTitle());
+                }
+                return true;
+            }
+        });
+
 
         mPullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.ptr_layout);
         ActionBarPullToRefresh.from(getActivity())
@@ -100,6 +208,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
     @Override
     public void onResume() {
         super.onResume();
+        clearActionMode();
 
         SharedPreferences pref = PreferenceManager.
                 getDefaultSharedPreferences(getActivity());
@@ -143,6 +252,16 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
     @Override
     public void onRefreshStarted(View view) {
         refresh();
+    }
+
+    private void clearActionMode() {
+        if (mActionMode != null) {
+            mActionMode.finish();
+            mActionMode = null;
+        }
+
+        listView.clearChoices();
+        listAdapter.notifyDataSetChanged();
     }
 
     public void refresh() {

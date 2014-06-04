@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
@@ -29,14 +30,25 @@ public class SearchNewsFragment extends BaseNewsFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         assert view != null;
-        StickyListHeadersListView listView = (StickyListHeadersListView)
+        stickyListHeadersListView = (StickyListHeadersListView)
                 view.findViewById(R.id.result_list);
-        listView.setAdapter(listAdapter);
-        listView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true));
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        stickyListHeadersListView.setAdapter(listAdapter);
+        stickyListHeadersListView.setOnScrollListener(
+                new PauseOnScrollListener(ImageLoader.getInstance(),
+                        false,
+                        true,
+                        onScrollListener));
+        stickyListHeadersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                listItemOnclick(position);
+                listItemOnClick(position);
+            }
+        });
+        stickyListHeadersListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        stickyListHeadersListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                return listItemOnLongClick(position);
             }
         });
 

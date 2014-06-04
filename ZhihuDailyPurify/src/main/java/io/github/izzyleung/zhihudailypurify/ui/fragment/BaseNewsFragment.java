@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -13,13 +14,15 @@ import android.support.v7.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.adapter.NewsAdapter;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
+import io.github.izzyleung.zhihudailypurify.ui.view.AdapterViewICS;
 import io.github.izzyleung.zhihudailypurify.ui.view.SpinnerICS;
 import taobe.tec.jcc.JChineseConvertor;
 
@@ -211,24 +214,41 @@ public abstract class BaseNewsFragment extends Fragment {
         mActionMode = ((ActionBarActivity) getActivity()).startSupportActionMode(mActionModeCallback);
         if (newsList.get(position).isMulti()) {
             SpinnerICS spinner = new SpinnerICS(getActivity());
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                    getActivity(),
-                    R.layout.support_simple_spinner_dropdown_item,
-                    newsList.get(position).getQuestionTitleList());
+            ArrayAdapter<String> adapter;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                adapter = new ArrayAdapter<String>(
+                        getActivity(),
+                        R.layout.support_simple_spinner_dropdown_item,
+                        newsList.get(position).getQuestionTitleList());
+            } else {
+                adapter = new ArrayAdapter<String>(
+                        getActivity(),
+                        R.layout.support_simple_spinner_dropdown_item,
+                        newsList.get(position).getQuestionTitleList()) {
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        View v = super.getView(position, convertView, parent);
+                        assert v != null;
+                        ((TextView) v).setTextColor(getResources().getColor(android.R.color.white));
+                        return v;
+                    }
+                };
+            }
+
             adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
             spinner.setAdapter(adapter);
-            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            spinner.setOnItemSelectedListener(new AdapterViewICS.OnItemSelectedListener() {
                 @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                public void onItemSelected(AdapterViewICS<?> parent, View view, int position, long id) {
                     spinnerSelectedItemIndex = position;
                 }
 
                 @Override
-                public void onNothingSelected(AdapterView<?> parent) {
+                public void onNothingSelected(AdapterViewICS<?> parent) {
                     spinnerSelectedItemIndex = 0;
                 }
             });
-            mActionMode.setCustomView(spinner.getView());
+            mActionMode.setCustomView(spinner);
         } else {
             mActionMode.setTitle(newsList.get(position).getQuestionTitle());
         }

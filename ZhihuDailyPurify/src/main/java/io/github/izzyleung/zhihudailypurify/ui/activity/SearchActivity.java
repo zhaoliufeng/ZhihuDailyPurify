@@ -1,5 +1,6 @@
 package io.github.izzyleung.zhihudailypurify.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -7,7 +8,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
+import android.view.View;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -75,7 +76,11 @@ public class SearchActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
 
-        searchView = new IzzySearchView(this);
+        @SuppressLint("InflateParams")
+        View view = getLayoutInflater().inflate(R.layout.action_bar_activity_search, null);
+
+        assert view != null;
+        searchView = (IzzySearchView) view.findViewById(R.id.search_view);
         searchView.setIconifiedByDefault(true);
         searchView.setIconified(false);
         searchView.setOnCloseListener(new IzzySearchView.OnCloseListener() {
@@ -101,9 +106,7 @@ public class SearchActivity extends ActionBarActivity {
             }
         });
 
-        RelativeLayout relative = new RelativeLayout(this);
-        relative.addView(searchView);
-        getSupportActionBar().setCustomView(relative);
+        getSupportActionBar().setCustomView(view);
     }
 
     class SearchTask extends BaseDownloadTask<String, Void, Void> {

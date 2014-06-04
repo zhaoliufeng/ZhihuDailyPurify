@@ -19,11 +19,20 @@ import java.util.List;
 public class SearchNewsFragment extends BaseNewsFragment {
     private List<String> dateResultList = new ArrayList<String>();
 
+    private StickyListHeadersListView stickyListHeadersListView;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
         listAdapter.setDateResultList(dateResultList);
+    }
+
+    @Override
+    protected boolean isCleanListChoice() {
+        int position = stickyListHeadersListView.getCheckedItemPosition();
+        return stickyListHeadersListView.getFirstVisiblePosition() > position
+                || stickyListHeadersListView.getLastVisiblePosition() < position;
     }
 
     @Override
@@ -53,6 +62,20 @@ public class SearchNewsFragment extends BaseNewsFragment {
         });
 
         return view;
+    }
+
+    @Override
+    protected void clearListChoice() {
+        for (int i = 0; i < newsList.size(); i++) {
+            stickyListHeadersListView.setItemChecked(i, false);
+        }
+
+        listAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void checkItemAtPosition(int position) {
+        stickyListHeadersListView.setItemChecked(position, true);
     }
 
     public void updateContent(List<DailyNews> newsList, List<String> dateResultList) {

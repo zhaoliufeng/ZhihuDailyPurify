@@ -52,6 +52,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
     private boolean isCached = false;
     private boolean isRecovered = false;
 
+    private ListView listView;
     private PullToRefreshLayout mPullToRefreshLayout;
 
     @Override
@@ -154,6 +155,23 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
     @Override
     public void onRefreshStarted(View view) {
         refresh();
+    }
+
+    @Override
+    protected boolean isCleanListChoice() {
+        int position = listView.getCheckedItemPosition();
+        return listView.getFirstVisiblePosition() > position || listView.getLastVisiblePosition() < position;
+    }
+
+    @Override
+    protected void clearListChoice() {
+        listView.clearChoices();
+        listAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void checkItemAtPosition(int position) {
+        listView.setItemChecked(position, true);
     }
 
     public void refresh() {

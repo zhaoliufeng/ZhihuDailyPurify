@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v7.appcompat.R;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -657,6 +658,9 @@ public class SpinnerICS extends AbsSpinnerICS implements OnClickListener {
 
         @Override
         public void show() {
+
+            Log.d("AdapterDebug", "show() called at SpinnerICS line 662");
+
             final int spinnerPaddingLeft = SpinnerICS.this.getPaddingLeft();
             if (mDropDownWidth == WRAP_CONTENT) {
                 final int spinnerWidth = SpinnerICS.this.getWidth();

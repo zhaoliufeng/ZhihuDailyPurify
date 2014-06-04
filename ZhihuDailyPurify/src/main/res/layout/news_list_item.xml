@@ -5,7 +5,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/listPreferredItemHeight"
-        android:background="?attr/listChoiceBackgroundIndicator">
+        android:background="?android:attr/activatedBackgroundIndicator">
 
     <LinearLayout
             android:id="@+id/news_list_ll"
@@ -16,6 +16,8 @@
             android:layout_marginLeft="7dp"
             android:layout_marginRight="7dp"
             android:layout_marginTop="4dp"
+            android:background="@drawable/background_cards"
+            android:divider="@null"
             tools:ignore="UselessParent">
 
         <ImageView
@@ -39,7 +41,8 @@
                     android:paddingTop="7.0dip"
                     android:paddingRight="15.0dip"
                     android:textSize="17.0sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    android:textIsSelectable="false"/>
 
             <TextView
                     android:id="@+id/daily_title"
@@ -48,7 +51,8 @@
                     android:paddingLeft="8.0dip"
                     android:paddingTop="4.0dip"
                     android:paddingRight="15.0dip"
-                    android:textSize="14.0sp"/>
+                    android:textSize="14.0sp"
+                    android:textIsSelectable="false"/>
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

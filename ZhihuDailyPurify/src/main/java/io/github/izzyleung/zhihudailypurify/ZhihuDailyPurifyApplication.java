@@ -17,6 +17,7 @@ public final class ZhihuDailyPurifyApplication extends Application {
         DisplayImageOptions options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.noimage)
                 .showImageOnFail(R.drawable.noimage)
+                .showImageForEmptyUri(R.drawable.lks_for_blank_url)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .considerExifParams(true)

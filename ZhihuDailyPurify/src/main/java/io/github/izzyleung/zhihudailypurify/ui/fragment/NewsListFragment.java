@@ -1,6 +1,5 @@
 package io.github.izzyleung.zhihudailypurify.ui.fragment;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -119,6 +118,8 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
         if (isVisibleToUser) {
             if (isAutoRefresh && !isRefreshed) {
                 refresh();
@@ -229,7 +230,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
 
     private abstract class BaseGetNewsTask extends BaseDownloadTask<Void, Void, Void> {
         protected boolean isRefreshSuccess = true;
-        protected boolean isTheSameContent = true;
+        protected boolean isTheSameContent = false;
 
         protected List<DailyNews> resultNewsList = new ArrayList<DailyNews>();
 
@@ -240,6 +241,14 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
 
         @Override
         protected void onPostExecute(Void result) {
+            if (isRefreshSuccess && !newsList.equals(resultNewsList)) {
+                isTheSameContent = false;
+                newsList = resultNewsList;
+                if (getActivity() != null && isAdded()) {
+                    listAdapter.updateNewsList(newsList);
+                }
+            }
+
             if (isRefreshSuccess && !isTheSameContent) {
                 new SaveNewsListTask().execute();
             }
@@ -258,16 +267,11 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
     }
 
     private class OriginalGetNewsTask extends BaseGetNewsTask {
-        private boolean isNewDay = false;
 
         @Override
         protected Void doInBackground(Void... voids) {
             try {
                 JSONObject contents = new JSONObject(downloadStringFromUrl(URLUtils.ZHIHU_DAILY_BEFORE_URL + date));
-
-                if (isToday) {
-                    checkDate(getActivity(), contents.getString("date"));
-                }
 
                 JSONArray newsArray = contents.getJSONArray("stories");
                 for (int i = 0; i < newsArray.length(); i++) {
@@ -278,19 +282,17 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                             ? (String) singleNews.getJSONArray("images").get(0)
                             : null);
                     dailyNews.setDailyTitle(singleNews.getString("title"));
-
-                    if (!newsList.contains(dailyNews)) {
-                        String newsInfoJson = downloadStringFromUrl(URLUtils.ZHIHU_DAILY_OFFLINE_NEWS_URL
-                                + singleNews.getString("id"));
-                        JSONObject newsDetail = new JSONObject(newsInfoJson);
-                        if (newsDetail.has("body")) {
-                            Document doc = Jsoup.parse(newsDetail.getString("body"));
-                            if (updateDailyNews(doc, singleNews.getString("title"), dailyNews)) {
-                                isTheSameContent = false;
-                                resultNewsList.add(dailyNews);
-                            }
+                    String newsInfoJson = downloadStringFromUrl(URLUtils.ZHIHU_DAILY_OFFLINE_NEWS_URL
+                            + singleNews.getString("id"));
+                    JSONObject newsDetail = new JSONObject(newsInfoJson);
+                    if (newsDetail.has("body")) {
+                        Document doc = Jsoup.parse(newsDetail.getString("body"));
+                        if (updateDailyNews(doc, singleNews.getString("title"), dailyNews)) {
+                            isTheSameContent = false;
+                            resultNewsList.add(dailyNews);
                         }
                     }
+
                 }
             } catch (JSONException e) {
                 isRefreshSuccess = false;
@@ -299,34 +301,6 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
             }
 
             return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            if (!isTheSameContent) {
-                if (isNewDay) {
-                    newsList = resultNewsList;
-                    listAdapter.updateNewsList(resultNewsList);
-                } else {
-                    resultNewsList.addAll(newsList);
-                    newsList = resultNewsList;
-                    listAdapter.updateNewsList(newsList);
-                }
-            }
-
-            super.onPostExecute(aVoid);
-        }
-
-        private void checkDate(Activity activity, String dateString) {
-            if (activity != null) {
-                SharedPreferences sharedPreferences = PreferenceManager.
-                        getDefaultSharedPreferences(activity);
-                String cachedDateString = sharedPreferences.getString("date", null);
-
-                isNewDay = cachedDateString == null || dateString.equals(cachedDateString);
-
-                sharedPreferences.edit().putString("date", dateString).commit();
-            }
         }
 
         private boolean updateDailyNews(
@@ -423,20 +397,6 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
             }
 
             return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            if (isRefreshSuccess && !newsList.equals(resultNewsList)) {
-                isTheSameContent = false;
-                newsList = resultNewsList;
-                if (getActivity() != null && isAdded()) {
-                    listAdapter.updateNewsList(newsList);
-                    listAdapter.notifyDataSetChanged();
-                }
-            }
-
-            super.onPostExecute(aVoid);
         }
     }
 }

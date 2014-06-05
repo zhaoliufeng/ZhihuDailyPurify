@@ -42,19 +42,17 @@ public final class DailyNews {
 
     @Override
     public boolean equals(Object o) {
-        if (thumbnailUrl == null) return o == null;
-
         if (this == o) return true;
-        if (!(o instanceof DailyNews)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         DailyNews dailyNews = (DailyNews) o;
 
-        return thumbnailUrl.equals(dailyNews.thumbnailUrl);
+        return dailyTitle.equals(dailyNews.dailyTitle);
     }
 
     @Override
     public int hashCode() {
-        return thumbnailUrl.hashCode();
+        return dailyTitle.hashCode();
     }
 
     public String getQuestionUrl() {

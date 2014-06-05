@@ -98,10 +98,12 @@ public abstract class BaseNewsFragment extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
 
-        clearActionMode();
+        if (!isVisibleToUser && isAdded()) {
+            clearActionMode();
+        }
     }
 
     protected boolean resetActionMode() {

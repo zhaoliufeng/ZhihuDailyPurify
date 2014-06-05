@@ -25,6 +25,8 @@ import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
 import io.github.izzyleung.zhihudailypurify.support.util.URLUtils;
 import io.github.izzyleung.zhihudailypurify.task.BaseDownloadTask;
+import io.github.izzyleung.zhihudailypurify.task.SaveNewsListTask;
+import io.github.izzyleung.zhihudailypurify.task.Server;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,6 +66,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
             isSingle = bundle.getBoolean("single?");
 
             setRetainInstance(true);
+            setHasOptionsMenu(isSingle);
         }
     }
 
@@ -173,11 +176,11 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                         PreferenceManager.getDefaultSharedPreferences(getActivity());
 
                 if (sharedPreferences.getBoolean("using_accelerate_server?", false)) {
-                    SERVER server;
+                    Server server;
                     if (Integer.parseInt(sharedPreferences.getString("which_accelerate_server", "1")) == 1) {
-                        server = SERVER.SAE;
+                        server = Server.SAE;
                     } else {
-                        server = SERVER.HEROKU;
+                        server = Server.HEROKU;
                     }
 
                     new AccelerateGetNewsTask(server).execute();
@@ -187,8 +190,6 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
             }
         }
     }
-
-    private enum SERVER {SAE, HEROKU}
 
     private class RecoverNewsListTask extends MyAsyncTask<Void, Void, List<DailyNews>> {
 
@@ -207,24 +208,6 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
             if (isToday) {
                 refresh();
             }
-        }
-    }
-
-    private class SaveNewsListTask extends MyAsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            saveNewsList(newsList);
-            return null;
-        }
-
-        private void saveNewsList(List<DailyNews> newsList) {
-            Type listType = new TypeToken<List<DailyNews>>() {
-
-            }.getType();
-
-            ZhihuDailyPurifyApplication.getInstance().getDataSource().
-                    insertOrUpdateNewsList(date, new GsonBuilder().create().toJson(newsList, listType));
         }
     }
 
@@ -250,7 +233,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
             }
 
             if (isRefreshSuccess && !isTheSameContent) {
-                new SaveNewsListTask().execute();
+                new SaveNewsListTask(date, newsList).execute();
             }
 
             mPullToRefreshLayout.setRefreshComplete();
@@ -356,9 +339,9 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
     }
 
     private class AccelerateGetNewsTask extends BaseGetNewsTask {
-        private SERVER server;
+        private Server server;
 
-        public AccelerateGetNewsTask(SERVER server) {
+        public AccelerateGetNewsTask(Server server) {
             this.server = server;
         }
 
@@ -370,7 +353,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
 
             String jsonFromWeb;
             try {
-                if (server == SERVER.SAE) {
+                if (server == Server.SAE) {
                     jsonFromWeb = downloadStringFromUrl(URLUtils.
                             ZHIHU_DAILY_PURIFY_SAE_BEFORE_URL + date);
                 } else {

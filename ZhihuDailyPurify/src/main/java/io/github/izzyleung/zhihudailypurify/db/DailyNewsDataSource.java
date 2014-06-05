@@ -3,14 +3,11 @@ package io.github.izzyleung.zhihudailypurify.db;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.db.DBHelper;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -28,15 +25,11 @@ public final class DailyNewsDataSource {
         dbHelper = new DBHelper(context);
     }
 
-    public void open()  throws SQLException {
+    public void open() throws SQLException {
         database = dbHelper.getWritableDatabase();
     }
 
-    public void close() {
-        dbHelper.close();
-    }
-
-    public List<DailyNews> createDailyNewsList(String date, String content) {
+    public List<DailyNews> insertDailyNewsList(String date, String content) {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_DATE, date);
         values.put(DBHelper.COLUMN_CONTENT, content);
@@ -52,27 +45,23 @@ public final class DailyNewsDataSource {
         return newsList;
     }
 
-    public void deleteDailyNewsList(String date) {
-        database.delete(DBHelper.TABLE_NAME, DBHelper.COLUMN_DATE
-                + " = " + date, null);
-    }
-
     public void updateNewsList(String date, String content) {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_DATE, date);
         values.put(DBHelper.COLUMN_CONTENT, content);
-
         database.update(DBHelper.TABLE_NAME, values, DBHelper.COLUMN_DATE + "=" + date, null);
     }
 
-    public List<DailyNews> getDailyNewsList(int id) {
-        Cursor cursor = database.query(DBHelper.TABLE_NAME,
-                allColumns, DBHelper.COLUMN_ID + " = " + id, null,
-                null, null, null);
-        cursor.moveToFirst();
-        List<DailyNews> newsList = cursorToDailyNews(cursor);
-        cursor.close();
-        return newsList;
+    public void deleteDailyNewsList(String date) {
+        database.delete(DBHelper.TABLE_NAME, DBHelper.COLUMN_DATE + " = " + date, null);
+    }
+
+    public void insertOrUpdateNewsList(String date, String content) {
+        if (getDailyNewsList(date) != null) {
+            updateNewsList(date, content);
+        } else {
+            insertDailyNewsList(date, content);
+        }
     }
 
     public List<DailyNews> getDailyNewsList(String date) {
@@ -86,10 +75,6 @@ public final class DailyNewsDataSource {
         return newsList;
     }
 
-    public long count() {
-        return DatabaseUtils.queryNumEntries(database, DBHelper.TABLE_NAME);
-    }
-
     private List<DailyNews> cursorToDailyNews(Cursor cursor) {
         if (cursor != null && cursor.getCount() > 0) {
             String string = cursor.getString(2);
@@ -97,9 +82,7 @@ public final class DailyNewsDataSource {
 
             }.getType();
 
-            Gson gson = new GsonBuilder().create();
-
-            return gson.fromJson(string, listType);
+            return new GsonBuilder().create().fromJson(string, listType);
         } else {
             return null;
         }

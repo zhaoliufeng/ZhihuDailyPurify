@@ -38,6 +38,7 @@ import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 public class NewsListFragment extends BaseNewsFragment implements OnRefreshListener {
@@ -49,8 +50,6 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
     // Fragment is single in PortalActivity
     private boolean isSingle;
     private boolean isRefreshed = false;
-    private boolean isCached = false;
-    private boolean isRecovered = false;
 
     private ListView listView;
     private PullToRefreshLayout mPullToRefreshLayout;
@@ -65,9 +64,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
             isToday = bundle.getBoolean("first_page?");
             isSingle = bundle.getBoolean("single?");
 
-            if (!isSingle) {
-                setRetainInstance(true);
-            }
+            setRetainInstance(true);
         }
     }
 
@@ -93,16 +90,13 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
             }
         });
 
-
         mPullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.ptr_layout);
         ActionBarPullToRefresh.from(getActivity())
                 .allChildrenArePullable()
                 .listener(this)
                 .setup(mPullToRefreshLayout);
 
-        if (!isRecovered) {
-            new RecoverNewsListTask().executeOnExecutor(MyAsyncTask.THREAD_POOL_EXECUTOR);
-        }
+        new RecoverNewsListTask().executeOnExecutor(MyAsyncTask.THREAD_POOL_EXECUTOR);
 
         return view;
     }
@@ -178,11 +172,14 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                         PreferenceManager.getDefaultSharedPreferences(getActivity());
 
                 if (sharedPreferences.getBoolean("using_accelerate_server?", false)) {
+                    SERVER server;
                     if (Integer.parseInt(sharedPreferences.getString("which_accelerate_server", "1")) == 1) {
-                        new AccelerateGetNewsTask().execute(SERVERS.SAE);
+                        server = SERVER.SAE;
                     } else {
-                        new AccelerateGetNewsTask().execute(SERVERS.HEROKU);
+                        server = SERVER.HEROKU;
                     }
+
+                    new AccelerateGetNewsTask(server).execute();
                 } else {
                     new OriginalGetNewsTask().execute();
                 }
@@ -190,7 +187,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
         }
     }
 
-    private enum SERVERS {SAE, HEROKU}
+    private enum SERVER {SAE, HEROKU}
 
     private class RecoverNewsListTask extends MyAsyncTask<Void, Void, List<DailyNews>> {
 
@@ -201,9 +198,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
 
         @Override
         protected void onPostExecute(List<DailyNews> newsListRecovered) {
-            isRecovered = true;
             if (newsListRecovered != null) {
-                isCached = true;
                 newsList = newsListRecovered;
                 listAdapter.updateNewsList(newsListRecovered);
             }
@@ -227,26 +222,16 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
 
             }.getType();
 
-            String beanListToJson = new GsonBuilder()
-                    .create().toJson(newsList, listType);
-            if (isCached) {
-                ZhihuDailyPurifyApplication.getInstance()
-                        .getDataSource().updateNewsList(date, beanListToJson);
-            } else {
-                ZhihuDailyPurifyApplication.getInstance()
-                        .getDataSource().createDailyNewsList(date, beanListToJson);
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            isCached = true;
+            ZhihuDailyPurifyApplication.getInstance().getDataSource().
+                    insertOrUpdateNewsList(date, new GsonBuilder().create().toJson(newsList, listType));
         }
     }
 
-    private abstract class BaseGetNewsTask<Params, Progress, Result> extends BaseDownloadTask<Params, Progress, Result> {
+    private abstract class BaseGetNewsTask extends BaseDownloadTask<Void, Void, Void> {
         protected boolean isRefreshSuccess = true;
         protected boolean isTheSameContent = true;
+
+        protected List<DailyNews> resultNewsList = new ArrayList<DailyNews>();
 
         @Override
         protected void onPreExecute() {
@@ -254,38 +239,31 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
         }
 
         @Override
-        protected void onPostExecute(Result result) {
+        protected void onPostExecute(Void result) {
             if (isRefreshSuccess && !isTheSameContent) {
                 new SaveNewsListTask().execute();
             }
 
             mPullToRefreshLayout.setRefreshComplete();
             isRefreshed = true;
+
+            if (!isRefreshSuccess && isAdded()) {
+                warning();
+            }
         }
 
         protected void warning() {
-            if (isAdded() && getActivity() != null) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Crouton.makeText(getActivity(),
-                                getActivity().getString(R.string.network_error),
-                                Style.ALERT).show();
-
-                    }
-                });
-            }
+            Crouton.makeText(getActivity(), getActivity().getString(R.string.network_error), Style.ALERT).show();
         }
     }
 
-    private class OriginalGetNewsTask extends BaseGetNewsTask<Void, DailyNews, Void> {
-        private int position = 0;
+    private class OriginalGetNewsTask extends BaseGetNewsTask {
+        private boolean isNewDay = false;
 
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                JSONObject contents = new JSONObject(
-                        downloadStringFromUrl(URLUtils.ZHIHU_DAILY_BEFORE_URL + date));
+                JSONObject contents = new JSONObject(downloadStringFromUrl(URLUtils.ZHIHU_DAILY_BEFORE_URL + date));
 
                 if (isToday) {
                     checkDate(getActivity(), contents.getString("date"));
@@ -307,34 +285,36 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                         JSONObject newsDetail = new JSONObject(newsInfoJson);
                         if (newsDetail.has("body")) {
                             Document doc = Jsoup.parse(newsDetail.getString("body"));
-                            boolean shouldPublish = updateDailyNews(doc, singleNews.getString("title"), dailyNews);
-
-                            if (shouldPublish) {
+                            if (updateDailyNews(doc, singleNews.getString("title"), dailyNews)) {
                                 isTheSameContent = false;
-                                publishProgress(dailyNews);
+                                resultNewsList.add(dailyNews);
                             }
                         }
                     }
                 }
             } catch (JSONException e) {
                 isRefreshSuccess = false;
-                warning();
             } catch (IOException e) {
                 isRefreshSuccess = false;
-                warning();
             }
 
             return null;
         }
 
         @Override
-        protected void onProgressUpdate(DailyNews... values) {
-            if (!isCached) {
-                newsList.add(values[0]);
-            } else {
-                newsList.add(position++, values[0]);
+        protected void onPostExecute(Void aVoid) {
+            if (!isTheSameContent) {
+                if (isNewDay) {
+                    newsList = resultNewsList;
+                    listAdapter.updateNewsList(resultNewsList);
+                } else {
+                    resultNewsList.addAll(newsList);
+                    newsList = resultNewsList;
+                    listAdapter.updateNewsList(newsList);
+                }
             }
-            listAdapter.notifyDataSetChanged();
+
+            super.onPostExecute(aVoid);
         }
 
         private void checkDate(Activity activity, String dateString) {
@@ -342,18 +322,8 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                 SharedPreferences sharedPreferences = PreferenceManager.
                         getDefaultSharedPreferences(activity);
                 String cachedDateString = sharedPreferences.getString("date", null);
-                boolean isSameDay = cachedDateString == null
-                        || dateString.equals(cachedDateString);
 
-                if (!isSameDay) {
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            newsList.clear();
-                            listAdapter.notifyDataSetChanged();
-                        }
-                    });
-                }
+                isNewDay = cachedDateString == null || dateString.equals(cachedDateString);
 
                 sharedPreferences.edit().putString("date", dateString).commit();
             }
@@ -411,18 +381,22 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
         }
     }
 
-    private class AccelerateGetNewsTask extends BaseGetNewsTask<SERVERS, DailyNews, Void> {
-        private List<DailyNews> tempNewsList;
+    private class AccelerateGetNewsTask extends BaseGetNewsTask {
+        private SERVER server;
+
+        public AccelerateGetNewsTask(SERVER server) {
+            this.server = server;
+        }
 
         @Override
-        protected Void doInBackground(SERVERS... serverTypes) {
+        protected Void doInBackground(Void... aVoid) {
             Type listType = new TypeToken<List<DailyNews>>() {
 
             }.getType();
 
             String jsonFromWeb;
             try {
-                if (serverTypes[0] == SERVERS.SAE) {
+                if (server == SERVER.SAE) {
                     jsonFromWeb = downloadStringFromUrl(URLUtils.
                             ZHIHU_DAILY_PURIFY_SAE_BEFORE_URL + date);
                 } else {
@@ -431,7 +405,6 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                 }
             } catch (IOException e) {
                 isRefreshSuccess = false;
-                warning();
                 return null;
             }
 
@@ -440,24 +413,23 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
 
             if (!TextUtils.isEmpty(newsListJSON)) {
                 try {
-                    tempNewsList = new GsonBuilder().create().
+                    resultNewsList = new GsonBuilder().create().
                             fromJson(newsListJSON, listType);
                 } catch (JsonSyntaxException e) {
                     isRefreshSuccess = false;
-                    warning();
                 }
             } else {
                 isRefreshSuccess = false;
-                warning();
             }
+
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (isRefreshSuccess && !newsList.equals(tempNewsList)) {
+            if (isRefreshSuccess && !newsList.equals(resultNewsList)) {
                 isTheSameContent = false;
-                newsList = tempNewsList;
+                newsList = resultNewsList;
                 if (getActivity() != null && isAdded()) {
                     listAdapter.updateNewsList(newsList);
                     listAdapter.notifyDataSetChanged();

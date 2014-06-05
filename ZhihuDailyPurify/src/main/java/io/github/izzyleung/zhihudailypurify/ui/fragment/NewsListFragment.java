@@ -194,7 +194,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
 
         @Override
         protected List<DailyNews> doInBackground(Void... params) {
-            return ZhihuDailyPurifyApplication.getInstance().getDataSource().getDailyNewsList(date);
+            return ZhihuDailyPurifyApplication.getInstance().getDataSource().newsListAtDate(date);
         }
 
         @Override

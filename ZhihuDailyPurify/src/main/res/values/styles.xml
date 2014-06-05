@@ -7,7 +7,7 @@
         <item name="android:actionModeCloseDrawable">@drawable/ic_cab_done_holo_dark</item>
         <item name="android:dropDownSpinnerStyle">@style/Theme.ZhihuDailyPurify.SpinnerDropDownStyle</item>
         <item name="android:spinnerItemStyle">@style/Theme.ZhihuDailyPurify.SpinnerItemStyle</item>
-        <item name="searchViewCloseIcon">@drawable/abc_ic_clear</item>
+        <item name="searchViewCloseIcon">@drawable/ic_clear</item>
     </style>
 
     <style name="Theme.ZhihuDailyPurify.ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">

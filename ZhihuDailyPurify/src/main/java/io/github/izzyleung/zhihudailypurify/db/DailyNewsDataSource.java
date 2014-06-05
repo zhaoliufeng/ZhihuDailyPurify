@@ -40,7 +40,7 @@ public final class DailyNewsDataSource {
                 allColumns, DBHelper.COLUMN_ID + " = " + insertId, null,
                 null, null, null);
         cursor.moveToFirst();
-        List<DailyNews> newsList = cursorToDailyNews(cursor);
+        List<DailyNews> newsList = cursorToNewsList(cursor);
         cursor.close();
         return newsList;
     }
@@ -57,25 +57,25 @@ public final class DailyNewsDataSource {
     }
 
     public void insertOrUpdateNewsList(String date, String content) {
-        if (getDailyNewsList(date) != null) {
+        if (newsListAtDate(date) != null) {
             updateNewsList(date, content);
         } else {
             insertDailyNewsList(date, content);
         }
     }
 
-    public List<DailyNews> getDailyNewsList(String date) {
+    public List<DailyNews> newsListAtDate(String date) {
         Cursor cursor = database.query(DBHelper.TABLE_NAME,
                 allColumns, DBHelper.COLUMN_DATE + " = " + date, null,
                 null, null, null);
 
         cursor.moveToFirst();
-        List<DailyNews> newsList = cursorToDailyNews(cursor);
+        List<DailyNews> newsList = cursorToNewsList(cursor);
         cursor.close();
         return newsList;
     }
 
-    private List<DailyNews> cursorToDailyNews(Cursor cursor) {
+    private List<DailyNews> cursorToNewsList(Cursor cursor) {
         if (cursor != null && cursor.getCount() > 0) {
             String string = cursor.getString(2);
             Type listType = new TypeToken<List<DailyNews>>() {

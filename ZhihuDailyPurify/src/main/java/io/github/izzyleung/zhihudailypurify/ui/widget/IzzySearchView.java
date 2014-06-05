@@ -111,6 +111,7 @@ public class IzzySearchView extends LinearLayout {
             }
         });
 
+        setFocusable(true);
         updateViewsVisibility();
     }
 
@@ -267,7 +268,7 @@ public class IzzySearchView extends LinearLayout {
     private CharSequence getDecoratedHint(CharSequence hintText) {
         SpannableStringBuilder ssb = new SpannableStringBuilder("   "); // for the icon
         ssb.append(hintText);
-        Drawable searchIcon = getContext().getResources().getDrawable(R.drawable.ic_search);
+        Drawable searchIcon = getContext().getResources().getDrawable(R.drawable.search_view_ic_search);
         int textSize = (int) (mQueryTextView.getTextSize() * 1.25);
         searchIcon.setBounds(0, 0, textSize, textSize);
         ssb.setSpan(new ImageSpan(searchIcon), 1, 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -440,7 +441,7 @@ public class IzzySearchView extends LinearLayout {
             if (doBeforeTextChanged != null) {
                 try {
                     doBeforeTextChanged.invoke(view);
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
         }
@@ -449,7 +450,7 @@ public class IzzySearchView extends LinearLayout {
             if (doAfterTextChanged != null) {
                 try {
                     doAfterTextChanged.invoke(view);
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
         }
@@ -458,7 +459,7 @@ public class IzzySearchView extends LinearLayout {
             if (ensureImeVisible != null) {
                 try {
                     ensureImeVisible.invoke(view, visible);
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
         }
@@ -468,7 +469,7 @@ public class IzzySearchView extends LinearLayout {
                 try {
                     showSoftInputUnchecked.invoke(imm, flags, null);
                     return;
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
 

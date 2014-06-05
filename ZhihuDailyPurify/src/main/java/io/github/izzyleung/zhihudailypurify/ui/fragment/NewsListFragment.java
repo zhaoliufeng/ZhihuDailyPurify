@@ -66,7 +66,6 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
             isSingle = bundle.getBoolean("single?");
 
             setRetainInstance(true);
-            setHasOptionsMenu(isSingle);
         }
     }
 

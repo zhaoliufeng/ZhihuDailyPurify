@@ -7,7 +7,6 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import io.github.izzyleung.zhihudailypurify.db.DailyNewsDataSource;
 
 public final class ZhihuDailyPurifyApplication extends Application {
@@ -21,7 +20,6 @@ public final class ZhihuDailyPurifyApplication extends Application {
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .considerExifParams(true)
-                .displayer(new RoundedBitmapDisplayer(20))
                 .build();
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
                 .denyCacheImageMultipleSizesInMemory()

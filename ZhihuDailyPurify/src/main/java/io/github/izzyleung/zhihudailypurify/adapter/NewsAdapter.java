@@ -19,6 +19,8 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import taobe.tec.jcc.JChineseConvertor;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -52,19 +54,19 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
         }
     }
 
-    public void setNewsList(List<DailyNews> newsList) {
+    public void updateNewsList(List<DailyNews> newsList) {
         this.newsList = newsList;
         notifyDataSetChanged();
     }
 
-    public void setDateResultList(List<String> dateResultList) {
+    public void updateDateResultList(List<String> dateResultList) {
         this.dateResultList = dateResultList;
         notifyDataSetChanged();
     }
 
-    public void setContents(List<DailyNews> newsList, List<String> dateResultList) {
-        setNewsList(newsList);
-        setDateResultList(dateResultList);
+    public void updateContents(List<DailyNews> newsList, List<String> dateResultList) {
+        updateNewsList(newsList);
+        updateDateResultList(dateResultList);
     }
 
     @Override
@@ -167,12 +169,17 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
     }
 
     private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {
+        static final List<String> displayedImages = Collections.synchronizedList(new LinkedList<String>());
 
         @Override
         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
             if (loadedImage != null) {
                 ImageView imageView = (ImageView) view;
-                FadeInBitmapDisplayer.animate(imageView, 500);
+                boolean firstDisplay = !displayedImages.contains(imageUri);
+                if (firstDisplay) {
+                    FadeInBitmapDisplayer.animate(imageView, 500);
+                    displayedImages.add(imageUri);
+                }
             }
         }
     }

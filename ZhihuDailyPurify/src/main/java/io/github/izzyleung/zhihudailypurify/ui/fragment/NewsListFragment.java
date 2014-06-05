@@ -44,7 +44,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
     private String date;
 
     private boolean isAutoRefresh;
-    private boolean isFirstPage;
+    private boolean isToday;
 
     // Fragment is single in PortalActivity
     private boolean isSingle;
@@ -62,7 +62,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
         if (savedInstanceState == null) {
             Bundle bundle = getArguments();
             date = bundle.getString("date");
-            isFirstPage = bundle.getBoolean("first_page?");
+            isToday = bundle.getBoolean("first_page?");
             isSingle = bundle.getBoolean("single?");
 
             if (!isSingle) {
@@ -77,7 +77,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
         assert view != null;
         listView = (ListView) view.findViewById(R.id.news_list);
         listView.setAdapter(listAdapter);
-        listView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true));
+        listView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true, onScrollListener));
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -101,8 +101,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                 .setup(mPullToRefreshLayout);
 
         if (!isRecovered) {
-            new RecoverNewsListTask().
-                    executeOnExecutor(MyAsyncTask.THREAD_POOL_EXECUTOR);
+            new RecoverNewsListTask().executeOnExecutor(MyAsyncTask.THREAD_POOL_EXECUTOR);
         }
 
         return view;
@@ -116,14 +115,10 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
         SharedPreferences pref = PreferenceManager.
                 getDefaultSharedPreferences(getActivity());
         isAutoRefresh = pref.getBoolean("auto_refresh?", true);
-        boolean isShowcase = pref.getBoolean("show_showcase?", true);
 
-//        if (isFirstPage || isSingle) {
         if (isSingle) {
             if (isAutoRefresh && !isRefreshed) {
-                if (!isShowcase) {
-                    refresh();
-                }
+                refresh();
             }
         }
     }
@@ -175,7 +170,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
     }
 
     public void refresh() {
-        if (isFirstPage) {
+        if (isToday) {
             new OriginalGetNewsTask().execute();
         } else {
             if (getActivity() != null) {
@@ -210,10 +205,10 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
             if (newsListRecovered != null) {
                 isCached = true;
                 newsList = newsListRecovered;
-                listAdapter.setNewsList(newsListRecovered);
+                listAdapter.updateNewsList(newsListRecovered);
             }
 
-            if (isFirstPage) {
+            if (isToday) {
                 refresh();
             }
         }
@@ -292,7 +287,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                 JSONObject contents = new JSONObject(
                         downloadStringFromUrl(URLUtils.ZHIHU_DAILY_BEFORE_URL + date));
 
-                if (isFirstPage) {
+                if (isToday) {
                     checkDate(getActivity(), contents.getString("date"));
                 }
 
@@ -464,7 +459,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                 isTheSameContent = false;
                 newsList = tempNewsList;
                 if (getActivity() != null && isAdded()) {
-                    listAdapter.setNewsList(newsList);
+                    listAdapter.updateNewsList(newsList);
                     listAdapter.notifyDataSetChanged();
                 }
             }

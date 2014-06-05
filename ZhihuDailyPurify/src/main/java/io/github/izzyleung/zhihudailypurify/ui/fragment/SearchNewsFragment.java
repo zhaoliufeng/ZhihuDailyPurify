@@ -25,7 +25,7 @@ public class SearchNewsFragment extends BaseNewsFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        listAdapter.setDateResultList(dateResultList);
+        listAdapter.updateDateResultList(dateResultList);
     }
 
     @Override
@@ -82,6 +82,6 @@ public class SearchNewsFragment extends BaseNewsFragment {
         this.newsList = newsList;
         this.dateResultList = dateResultList;
 
-        listAdapter.setContents(newsList, dateResultList);
+        listAdapter.updateContents(newsList, dateResultList);
     }
 }

@@ -26,6 +26,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -86,7 +87,8 @@ public class SearchActivity extends FragmentActivity {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                new SearchTask().execute(query);
+                //noinspection deprecation
+                new SearchTask().execute(URLEncoder.encode(query.trim()).replace("+", "%20"));
                 searchView.clearFocus();
                 return true;
             }

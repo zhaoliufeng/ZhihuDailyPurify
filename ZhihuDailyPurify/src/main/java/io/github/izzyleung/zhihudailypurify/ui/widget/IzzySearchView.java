@@ -23,12 +23,15 @@ import java.lang.reflect.Method;
 public class IzzySearchView extends LinearLayout {
     static final AutoCompleteTextViewReflector HIDDEN_METHOD_INVOKER = new AutoCompleteTextViewReflector();
     private final TextView.OnEditorActionListener mOnEditorActionListener = new TextView.OnEditorActionListener() {
-
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
             onSubmitQuery();
             return true;
         }
     };
+
+    private int mMaxWidth;
+    private boolean mClearingFocus;
+
     private SearchAutoComplete mQueryTextView;
     private View mSearchPlate;
     private ImageView mCloseButton;
@@ -108,12 +111,67 @@ public class IzzySearchView extends LinearLayout {
             }
         });
 
-        setFocusable(true);
+        updateViewsVisibility();
     }
 
     static boolean isLandscapeMode(Context context) {
         return context.getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
+    }
+
+    @Override
+    public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
+        if (mClearingFocus) return false;
+        if (!isFocusable()) return false;
+
+        boolean result = mQueryTextView.requestFocus(direction, previouslyFocusedRect);
+        if (result) {
+            updateViewsVisibility();
+        }
+        return result;
+    }
+
+    @Override
+    public void clearFocus() {
+        mClearingFocus = true;
+        setImeVisibility(false);
+        super.clearFocus();
+        mQueryTextView.clearFocus();
+        mClearingFocus = false;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+
+        switch (widthMode) {
+            case MeasureSpec.AT_MOST:
+                // If there is an upper limit, don't exceed maximum width (explicit or implicit)
+                if (mMaxWidth > 0) {
+                    width = Math.min(mMaxWidth, width);
+                } else {
+                    width = Math.min(getPreferredWidth(), width);
+                }
+                break;
+            case MeasureSpec.EXACTLY:
+                // If an exact width is specified, still don't exceed any specified maximum width
+                if (mMaxWidth > 0) {
+                    width = Math.min(mMaxWidth, width);
+                }
+                break;
+            case MeasureSpec.UNSPECIFIED:
+                // Use maximum width, if specified, else preferred width
+                width = mMaxWidth > 0 ? mMaxWidth : getPreferredWidth();
+                break;
+        }
+        widthMode = MeasureSpec.EXACTLY;
+        super.onMeasure(MeasureSpec.makeMeasureSpec(width, widthMode), heightMeasureSpec);
+    }
+
+    private int getPreferredWidth() {
+        return getContext().getResources()
+                .getDimensionPixelSize(R.dimen.abc_search_view_preferred_width);
     }
 
     public void setOnQueryTextListener(OnQueryTextListener listener) {
@@ -150,8 +208,6 @@ public class IzzySearchView extends LinearLayout {
 
     void onTextFocusChanged() {
         updateViewsVisibility();
-        // Delayed update to make sure that the focus has settled down and window focus changes
-        // don't affect it. A synchronous update was not working.
         postUpdateFocusedState();
         if (mQueryTextView.hasFocus()) {
             forceSuggestionQuery();
@@ -159,8 +215,6 @@ public class IzzySearchView extends LinearLayout {
     }
 
     private void updateViewsVisibility() {
-        final boolean hasText = !TextUtils.isEmpty(mQueryTextView.getText());
-
         updateCloseButton();
     }
 
@@ -213,7 +267,7 @@ public class IzzySearchView extends LinearLayout {
     private CharSequence getDecoratedHint(CharSequence hintText) {
         SpannableStringBuilder ssb = new SpannableStringBuilder("   "); // for the icon
         ssb.append(hintText);
-        Drawable searchIcon = getContext().getResources().getDrawable(R.drawable.abc_ic_search);
+        Drawable searchIcon = getContext().getResources().getDrawable(R.drawable.ic_search);
         int textSize = (int) (mQueryTextView.getTextSize() * 1.25);
         searchIcon.setBounds(0, 0, textSize, textSize);
         ssb.setSpan(new ImageSpan(searchIcon), 1, 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

@@ -1,10 +1,7 @@
 package io.github.izzyleung.zhihudailypurify.ui.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -12,23 +9,15 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import com.astuetz.PagerSlidingTabStrip;
-import com.espian.showcaseview.ShowcaseView;
-import com.espian.showcaseview.ShowcaseViews;
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.support.util.DateUtils;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.NewsListFragment;
 
-import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class MainActivity extends FragmentActivity {
-    private LinearLayout mainFrame;
-    private MainPagerAdapter adapter;
-    private boolean isGetFirstPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,22 +25,11 @@ public class MainActivity extends FragmentActivity {
 
         setContentView(R.layout.activity_main);
 
-        SharedPreferences pref = PreferenceManager.
-                getDefaultSharedPreferences(this);
-        isGetFirstPage = pref.getBoolean("get_first_page?", true);
-
-        if (isGetFirstPage) {
-            SharedPreferences.Editor editor = pref.edit();
-            editor.putBoolean("get_first_page?", false);
-            editor.commit();
-            mainFrame = (LinearLayout) findViewById(R.id.main_frame);
-        }
-
         PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.main_pager_tabs);
         ViewPager viewPager = (ViewPager) findViewById(R.id.main_pager);
         viewPager.setOffscreenPageLimit(7);
 
-        adapter = new MainPagerAdapter(getSupportFragmentManager());
+        MainPagerAdapter adapter = new MainPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         tabs.setViewPager(viewPager);
         tabs.setIndicatorColor(getResources().getColor(R.color.holo_blue));
@@ -60,12 +38,6 @@ public class MainActivity extends FragmentActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-
-        SharedPreferences pref = PreferenceManager.
-                getDefaultSharedPreferences(MainActivity.this);
-        if (pref.getBoolean("show_showcase?", true)) {
-            showCase(pref);
-        }
 
         return true;
     }
@@ -92,57 +64,7 @@ public class MainActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void showCase(SharedPreferences pref) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            mainFrame.setAlpha(0.1f);
-        }
-
-        ShowcaseView.ConfigOptions options = new ShowcaseView.ConfigOptions();
-        options.hideOnClickOutside = false;
-
-        ShowcaseViews showcaseViews = new ShowcaseViews(this, new ShowcaseViews.
-                OnShowcaseAcknowledged() {
-            @Override
-            public void onShowCaseAcknowledged(ShowcaseView showcaseView) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                    mainFrame.setAlpha(1.0f);
-                }
-
-                NewsListFragment firstPage = adapter.getFirstPage();
-                if (firstPage != null) {
-                    adapter.getFirstPage().refresh();
-                }
-            }
-        });
-
-        showcaseViews.addView(new ShowcaseViews.ItemViewProperties(
-                R.id.action_go_to_search,
-                R.string.showcase_search_title,
-                R.string.showcase_search_message,
-                ShowcaseView.ITEM_ACTION_ITEM,
-                0.5f,
-                options
-        ));
-
-        showcaseViews.addView(new ShowcaseViews.ItemViewProperties(
-                R.id.action_pick_date,
-                R.string.showcase_calendar_title,
-                R.string.showcase_calendar_message,
-                ShowcaseView.ITEM_ACTION_ITEM,
-                0.5f,
-                options
-        ));
-
-        showcaseViews.show();
-
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putBoolean("show_showcase?", false);
-        editor.commit();
-    }
-
     final class MainPagerAdapter extends FragmentStatePagerAdapter {
-        private WeakReference<NewsListFragment> firstPage;
-
         public MainPagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -162,29 +84,6 @@ public class MainActivity extends FragmentActivity {
             bundle.putString("date", date);
 
             return newFragment;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            Object object = super.instantiateItem(container, position);
-
-            if (position == 0 && isGetFirstPage) {
-                firstPage = new WeakReference<NewsListFragment>((NewsListFragment) object);
-            }
-
-            return object;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            if (position == 0 && isGetFirstPage && firstPage != null) {
-                firstPage.clear();
-            }
-            super.destroyItem(container, position, object);
-        }
-
-        public NewsListFragment getFirstPage() {
-            return firstPage == null ? null : firstPage.get();
         }
 
         @Override

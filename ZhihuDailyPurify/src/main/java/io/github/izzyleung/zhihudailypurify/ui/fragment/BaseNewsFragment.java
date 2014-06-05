@@ -97,6 +97,13 @@ public abstract class BaseNewsFragment extends Fragment {
         listAdapter = new NewsAdapter(activity, newsList);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        clearActionMode();
+    }
+
     protected boolean resetActionMode() {
         if (mActionMode != null) {
             clearActionMode();

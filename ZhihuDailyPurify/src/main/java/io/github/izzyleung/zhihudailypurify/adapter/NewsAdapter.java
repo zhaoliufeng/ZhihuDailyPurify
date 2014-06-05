@@ -9,19 +9,16 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import taobe.tec.jcc.JChineseConvertor;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,15 +28,8 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
     private List<DailyNews> newsList;
     private List<String> dateResultList;
 
-    private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
-    private DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .showImageOnLoading(R.drawable.noimage)
-            .showImageOnFail(R.drawable.noimage)
-            .cacheInMemory(true)
-            .cacheOnDisc(true)
-            .considerExifParams(true)
-            .build();
     private ImageLoader imageLoader = ImageLoader.getInstance();
+    private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
 
     private JChineseConvertor convertor;
     private boolean canConvert = true;
@@ -115,10 +105,7 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
 
         DailyNews dailyNews = new DailyNews(newsList.get(position));
 
-        imageLoader.displayImage(dailyNews.getThumbnailUrl(),
-                holder.newsImage,
-                options,
-                animateFirstListener);
+        imageLoader.displayImage(dailyNews.getThumbnailUrl(), holder.newsImage, animateFirstListener);
 
         if (shouldConvert && canConvert) {
             if (dailyNews.isMulti()) {
@@ -180,17 +167,12 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
     }
 
     private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {
-        static final List<String> displayedImages = Collections.synchronizedList(new LinkedList<String>());
 
         @Override
         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
             if (loadedImage != null) {
                 ImageView imageView = (ImageView) view;
-                boolean firstDisplay = !displayedImages.contains(imageUri);
-                if (firstDisplay) {
-                    FadeInBitmapDisplayer.animate(imageView, 500);
-                    displayedImages.add(imageUri);
-                }
+                FadeInBitmapDisplayer.animate(imageView, 500);
             }
         }
     }

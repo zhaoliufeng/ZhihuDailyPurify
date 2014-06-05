@@ -17,7 +17,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
+import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import io.github.izzyleung.zhihudailypurify.R;
@@ -77,7 +77,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
         assert view != null;
         listView = (ListView) view.findViewById(R.id.news_list);
         listView.setAdapter(listAdapter);
-        listView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true, onScrollListener));
+        listView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true));
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

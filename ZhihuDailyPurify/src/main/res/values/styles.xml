@@ -31,7 +31,7 @@
         <item name="android:background">@drawable/actionbar_dropdown_navigation_item_background_light</item>
         <item name="android:gravity">center_vertical|left</item>
         <item name="android:spinnerMode">dropdown</item>
-        <item name="android:dropDownWidth">300dp</item>
+        <item name="android:dropDownWidth">270dp</item>
         <item name="android:dropDownVerticalOffset">0dip</item>
         <item name="android:dropDownHorizontalOffset">0dip</item>
     </style>

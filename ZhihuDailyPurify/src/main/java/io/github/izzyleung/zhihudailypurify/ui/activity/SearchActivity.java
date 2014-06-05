@@ -8,7 +8,6 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
-import android.widget.SearchView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -20,13 +19,13 @@ import io.github.izzyleung.zhihudailypurify.support.util.DateUtils;
 import io.github.izzyleung.zhihudailypurify.support.util.URLUtils;
 import io.github.izzyleung.zhihudailypurify.task.BaseDownloadTask;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.SearchNewsFragment;
+import io.github.izzyleung.zhihudailypurify.ui.widget.IzzySearchView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class SearchActivity extends FragmentActivity {
-    private SearchView searchView;
+    private IzzySearchView searchView;
     private SearchNewsFragment searchNewsFragment;
 
     @Override
@@ -75,22 +74,19 @@ public class SearchActivity extends FragmentActivity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setDisplayShowCustomEnabled(true);
 
-        searchView = new SearchView(this);
-        searchView.setIconifiedByDefault(true);
-        searchView.setIconified(false);
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+        searchView = new IzzySearchView(this);
+        searchView.setOnCloseListener(new IzzySearchView.OnCloseListener() {
             public boolean onClose() {
                 return true;
             }
         });
-        searchView.setQueryHint(getString(R.string.search_hint));
+        searchView.setQueryHint(getResources().getString(R.string.search_hint));
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new IzzySearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                //noinspection deprecation
-                new SearchTask().execute(URLEncoder.encode(query.trim()).replace("+", "%20"));
+                new SearchTask().execute(query);
                 searchView.clearFocus();
                 return true;
             }
@@ -118,6 +114,7 @@ public class SearchActivity extends FragmentActivity {
         private Type newsType = new TypeToken<DailyNews>() {
 
         }.getType();
+
         private Gson gson = new GsonBuilder().create();
 
         private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.display_format));
@@ -165,13 +162,10 @@ public class SearchActivity extends FragmentActivity {
                 }
             } catch (IOException e) {
                 isSearchSuccess = false;
-                return null;
             } catch (JSONException e) {
                 isSearchSuccess = false;
-                return null;
             } catch (ParseException ignored) {
                 isSearchSuccess = false;
-                return null;
             }
 
             return null;

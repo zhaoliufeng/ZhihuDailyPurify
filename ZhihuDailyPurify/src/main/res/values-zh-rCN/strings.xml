@@ -52,10 +52,6 @@
     <string name="search_hint">输入关键词以搜索</string>
     <string name="no_result_found">抱歉，未找到相应结果</string>
     <string name="searching">搜索中，请稍候…</string>
-    <string name="showcase_search_title">搜索往日『知乎日报』美好记忆！</string>
-    <string name="showcase_search_message">只需一个简单关键词，往昔珍贵碎片即刻重现。</string>
-    <string name="showcase_calendar_title">轻松倒转时光，回到『知乎日报』任意时刻。</string>
-    <string name="showcase_calendar_message">即便没有时光机器，亦可轻松回到过往！</string>
     <string name="which_accelerate_server_title">使用哪个加速服务器？</string>
     <string name="accelerate_server_dialog_title">请从下列加速服务器中选择</string>
     <string name="accelerate_server_hint_dialog_title">是否使用加速服务器？</string>

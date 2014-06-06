@@ -53,10 +53,6 @@ limitations under the License.
     <string name="search_hint">輸入關鍵詞以搜索</string>
     <string name="no_result_found">抱歉，未找到相應結果</string>
     <string name="searching">搜索中，請稍候…</string>
-    <string name="showcase_search_title">搜尋往日『知乎日報』美好記憶！</string>
-    <string name="showcase_search_message">只需一個簡單關鍵詞，往昔珍貴碎片即刻重現。</string>
-    <string name="showcase_calendar_title">輕鬆倒轉時光，回到『知乎日報』任意時刻。</string>
-    <string name="showcase_calendar_message">即便沒有時光機器，亦可輕鬆回到過往！</string>
     <string name="display_format">yyyy年M月d日 EEEE</string>
     <string name="which_accelerate_server_title">使用哪個加速服務器?</string>
     <string name="accelerate_server_dialog_title">請從下列服務器中選擇</string>

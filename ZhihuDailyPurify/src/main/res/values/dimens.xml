@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="abc_search_view_preferred_width">320dip</dimen>
+    <dimen name="search_view_preferred_width">320dip</dimen>
 </resources>

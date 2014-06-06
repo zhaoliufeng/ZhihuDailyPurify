@@ -22,12 +22,6 @@ import java.lang.reflect.Method;
 
 public class IzzySearchView extends LinearLayout {
     static final AutoCompleteTextViewReflector HIDDEN_METHOD_INVOKER = new AutoCompleteTextViewReflector();
-    private final TextView.OnEditorActionListener mOnEditorActionListener = new TextView.OnEditorActionListener() {
-        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            onSubmitQuery();
-            return true;
-        }
-    };
 
     private int mMaxWidth;
     private boolean mClearingFocus;
@@ -35,16 +29,6 @@ public class IzzySearchView extends LinearLayout {
     private SearchAutoComplete mQueryTextView;
     private View mSearchPlate;
     private ImageView mCloseButton;
-    private final OnClickListener mOnClickListener = new OnClickListener() {
-
-        public void onClick(View v) {
-            if (v == mCloseButton) {
-                onCloseClicked();
-            } else if (v == mQueryTextView) {
-                forceSuggestionQuery();
-            }
-        }
-    };
     private OnCloseListener mOnCloseListener;
     private OnQueryTextListener mOnQueryChangeListener;
     private OnFocusChangeListener mOnQueryTextFocusChangeListener;
@@ -65,19 +49,6 @@ public class IzzySearchView extends LinearLayout {
             updateFocusedState();
         }
     };
-    private TextWatcher mTextWatcher = new TextWatcher() {
-
-        public void beforeTextChanged(CharSequence s, int start, int before, int after) {
-        }
-
-        public void onTextChanged(CharSequence s, int start,
-                                  int before, int after) {
-            IzzySearchView.this.onTextChanged(s);
-        }
-
-        public void afterTextChanged(Editable s) {
-        }
-    };
 
     public IzzySearchView(Context context) {
         this(context, null);
@@ -96,10 +67,39 @@ public class IzzySearchView extends LinearLayout {
         mSearchPlate = findViewById(R.id.search_plate);
         mCloseButton = (ImageView) findViewById(R.id.search_close_btn);
 
+        OnClickListener mOnClickListener = new OnClickListener() {
+
+            public void onClick(View v) {
+                if (v == mCloseButton) {
+                    onCloseClicked();
+                } else if (v == mQueryTextView) {
+                    forceSuggestionQuery();
+                }
+            }
+        };
         mCloseButton.setOnClickListener(mOnClickListener);
         mQueryTextView.setOnClickListener(mOnClickListener);
 
+        TextWatcher mTextWatcher = new TextWatcher() {
+
+            public void beforeTextChanged(CharSequence s, int start, int before, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int after) {
+                IzzySearchView.this.onTextChanged(s);
+            }
+
+            public void afterTextChanged(Editable s) {
+            }
+        };
         mQueryTextView.addTextChangedListener(mTextWatcher);
+        TextView.OnEditorActionListener mOnEditorActionListener = new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                onSubmitQuery();
+                return true;
+            }
+        };
         mQueryTextView.setOnEditorActionListener(mOnEditorActionListener);
 
         mQueryTextView.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -172,7 +172,7 @@ public class IzzySearchView extends LinearLayout {
 
     private int getPreferredWidth() {
         return getContext().getResources()
-                .getDimensionPixelSize(R.dimen.abc_search_view_preferred_width);
+                .getDimensionPixelSize(R.dimen.search_view_preferred_width);
     }
 
     public void setOnQueryTextListener(OnQueryTextListener listener) {
@@ -181,10 +181,6 @@ public class IzzySearchView extends LinearLayout {
 
     public void setOnCloseListener(OnCloseListener listener) {
         mOnCloseListener = listener;
-    }
-
-    public void setOnQueryTextFocusChangeListener(OnFocusChangeListener listener) {
-        mOnQueryTextFocusChangeListener = listener;
     }
 
     private void onCloseClicked() {
@@ -250,9 +246,6 @@ public class IzzySearchView extends LinearLayout {
     }
 
     private void onTextChanged(CharSequence newText) {
-        CharSequence text = mQueryTextView.getText();
-        CharSequence mUserQuery = text;
-        boolean hasText = !TextUtils.isEmpty(text);
         updateCloseButton();
         if (mOnQueryChangeListener != null && !TextUtils.equals(newText, mOldQueryText)) {
             mOnQueryChangeListener.onQueryTextChange(newText.toString());
@@ -297,6 +290,14 @@ public class IzzySearchView extends LinearLayout {
         mQueryTextView.dismissDropDown();
     }
 
+    public void setmOnQueryTextFocusChangeListener(OnFocusChangeListener mOnQueryTextFocusChangeListener) {
+        this.mOnQueryTextFocusChangeListener = mOnQueryTextFocusChangeListener;
+    }
+
+    public void setmMaxWidth(int mMaxWidth) {
+        this.mMaxWidth = mMaxWidth;
+    }
+
     public interface OnCloseListener {
         boolean onClose();
     }
@@ -337,10 +338,6 @@ public class IzzySearchView extends LinearLayout {
             mThreshold = threshold;
         }
 
-        private boolean isEmpty() {
-            return TextUtils.getTrimmedLength(getText()) == 0;
-        }
-
         @Override
         protected void replaceText(CharSequence text) {
         }
@@ -357,8 +354,6 @@ public class IzzySearchView extends LinearLayout {
                 InputMethodManager inputManager = (InputMethodManager) getContext()
                         .getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputManager.showSoftInput(this, 0);
-                // If in landscape mode, then make sure that
-                // the ime is in front of the dropdown.
                 if (isLandscapeMode(getContext())) {
                     HIDDEN_METHOD_INVOKER.ensureImeVisible(this, true);
                 }
@@ -377,7 +372,7 @@ public class IzzySearchView extends LinearLayout {
         }
 
         @Override
-        public boolean onKeyPreIme(int keyCode, KeyEvent event) {
+        public boolean onKeyPreIme(int keyCode, @SuppressWarnings("NullableProblems") KeyEvent event) {
             if (keyCode == KeyEvent.KEYCODE_BACK) {
                 if (event.getAction() == KeyEvent.ACTION_DOWN && event.getRepeatCount() == 0) {
                     KeyEvent.DispatcherState state = getKeyDispatcherState();

@@ -35,7 +35,7 @@ __Disclaimer - 声明__
 `echo aXp6eWxpYW5nQGdtYWlsLmNvbQo= | base64 -d`
 
 ### License - 许可证
-    Copyright [2014] [Izzy Leung]
+    Copyright 2013 Izzy Leung
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

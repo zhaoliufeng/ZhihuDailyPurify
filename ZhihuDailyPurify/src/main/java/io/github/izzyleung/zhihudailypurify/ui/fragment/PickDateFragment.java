@@ -58,9 +58,9 @@ public class PickDateFragment extends Fragment {
 
     @Override
     public void onDetach() {
-        super.onDetach();
-
         mOnDateSelectedListener = null;
+
+        super.onDetach();
     }
 
     public interface PickDateListener {

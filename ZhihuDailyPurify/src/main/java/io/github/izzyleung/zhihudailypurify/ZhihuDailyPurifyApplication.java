@@ -3,7 +3,6 @@ package io.github.izzyleung.zhihudailypurify;
 import android.app.Application;
 import android.content.Context;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
@@ -14,20 +13,11 @@ public final class ZhihuDailyPurifyApplication extends Application {
     private DailyNewsDataSource dataSource;
 
     public static void initImageLoader(Context context) {
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.noimage)
-                .showImageOnFail(R.drawable.noimage)
-                .showImageForEmptyUri(R.drawable.lks_for_blank_url)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .build();
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
                 .denyCacheImageMultipleSizesInMemory()
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .diskCacheFileNameGenerator(new Md5FileNameGenerator())
                 .tasksProcessingOrder(QueueProcessingType.LIFO)
-                .defaultDisplayImageOptions(options)
                 .build();
         ImageLoader.getInstance().init(config);
     }

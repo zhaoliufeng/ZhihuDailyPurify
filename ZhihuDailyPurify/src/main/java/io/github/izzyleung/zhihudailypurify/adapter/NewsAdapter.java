@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -31,6 +32,14 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
     private List<String> dateResultList;
 
     private ImageLoader imageLoader = ImageLoader.getInstance();
+    private DisplayImageOptions options = new DisplayImageOptions.Builder()
+            .showImageOnLoading(R.drawable.noimage)
+            .showImageOnFail(R.drawable.noimage)
+            .showImageForEmptyUri(R.drawable.lks_for_blank_url)
+            .cacheInMemory(true)
+            .cacheOnDisk(true)
+            .considerExifParams(true)
+            .build();
     private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
 
     private JChineseConvertor convertor;
@@ -107,7 +116,7 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
 
         DailyNews dailyNews = new DailyNews(newsList.get(position));
 
-        imageLoader.displayImage(dailyNews.getThumbnailUrl(), holder.newsImage, animateFirstListener);
+        imageLoader.displayImage(dailyNews.getThumbnailUrl(), holder.newsImage, options, animateFirstListener);
 
         if (shouldConvert && canConvert) {
             if (dailyNews.isMulti()) {

@@ -83,5 +83,6 @@ public class SearchNewsFragment extends BaseNewsFragment {
         this.dateResultList = dateResultList;
 
         listAdapter.updateContents(newsList, dateResultList);
+        stickyListHeadersListView.setSelection(0);
     }
 }

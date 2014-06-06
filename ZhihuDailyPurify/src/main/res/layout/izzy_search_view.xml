@@ -4,8 +4,7 @@
         android:orientation="horizontal"
         android:id="@+id/search_bar"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        >
+        android:layout_height="fill_parent">
 
     <LinearLayout
             android:id="@+id/search_edit_frame"
@@ -46,19 +45,17 @@
                     android:dropDownHeight="wrap_content"
                     android:dropDownHorizontalOffset="0.0dip"
                     android:dropDownVerticalOffset="0.0dip"
-                    class="io.github.izzyleung.zhihudailypurify.ui.widget.IzzySearchView$SearchAutoComplete"
-                    style="@android:style/Widget.Holo.AutoCompleteTextView"/>
+                    class="io.github.izzyleung.zhihudailypurify.ui.widget.IzzySearchView$SearchAutoComplete"/>
 
             <ImageView
                     android:layout_gravity="center_vertical"
                     android:id="@+id/search_close_btn"
-                    android:background="?android:attr/selectableItemBackground"
                     android:paddingLeft="8.0dip"
                     android:paddingRight="8.0dip"
                     android:focusable="true"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
-                    android:src="?attr/searchViewCloseIcon"/>
+                    android:src="@drawable/ic_clear"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

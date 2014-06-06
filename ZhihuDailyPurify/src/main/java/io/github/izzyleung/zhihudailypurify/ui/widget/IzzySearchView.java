@@ -148,7 +148,6 @@ public class IzzySearchView extends LinearLayout {
 
         switch (widthMode) {
             case MeasureSpec.AT_MOST:
-                // If there is an upper limit, don't exceed maximum width (explicit or implicit)
                 if (mMaxWidth > 0) {
                     width = Math.min(mMaxWidth, width);
                 } else {
@@ -156,13 +155,11 @@ public class IzzySearchView extends LinearLayout {
                 }
                 break;
             case MeasureSpec.EXACTLY:
-                // If an exact width is specified, still don't exceed any specified maximum width
                 if (mMaxWidth > 0) {
                     width = Math.min(mMaxWidth, width);
                 }
                 break;
             case MeasureSpec.UNSPECIFIED:
-                // Use maximum width, if specified, else preferred width
                 width = mMaxWidth > 0 ? mMaxWidth : getPreferredWidth();
                 break;
         }
@@ -171,8 +168,7 @@ public class IzzySearchView extends LinearLayout {
     }
 
     private int getPreferredWidth() {
-        return getContext().getResources()
-                .getDimensionPixelSize(R.dimen.search_view_preferred_width);
+        return (int) (320 * getContext().getResources().getDisplayMetrics().density + 0.5f);
     }
 
     public void setOnQueryTextListener(OnQueryTextListener listener) {

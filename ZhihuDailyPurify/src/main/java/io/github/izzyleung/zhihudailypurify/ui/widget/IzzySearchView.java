@@ -20,18 +20,20 @@ import io.github.izzyleung.zhihudailypurify.R;
 
 import java.lang.reflect.Method;
 
+/**
+ * Simplified version of SearchView, only EditText and a clear text button is supported
+ * Thanks to code of SearchView in AppCompat
+ */
+
 public class IzzySearchView extends LinearLayout {
     static final AutoCompleteTextViewReflector HIDDEN_METHOD_INVOKER = new AutoCompleteTextViewReflector();
 
-    private int mMaxWidth;
     private boolean mClearingFocus;
 
     private SearchAutoComplete mQueryTextView;
     private View mSearchPlate;
     private ImageView mCloseButton;
-    private OnCloseListener mOnCloseListener;
     private OnQueryTextListener mOnQueryChangeListener;
-    private OnFocusChangeListener mOnQueryTextFocusChangeListener;
     private CharSequence mOldQueryText;
     private CharSequence mQueryHint;
     private Runnable mShowImeRunnable = new Runnable() {
@@ -44,6 +46,7 @@ public class IzzySearchView extends LinearLayout {
             }
         }
     };
+
     private Runnable mUpdateDrawableStateRunnable = new Runnable() {
         public void run() {
             updateFocusedState();
@@ -67,20 +70,14 @@ public class IzzySearchView extends LinearLayout {
         mSearchPlate = findViewById(R.id.search_plate);
         mCloseButton = (ImageView) findViewById(R.id.search_close_btn);
 
-        OnClickListener mOnClickListener = new OnClickListener() {
+        mCloseButton.setOnClickListener(new OnClickListener() {
 
             public void onClick(View v) {
-                if (v == mCloseButton) {
-                    onCloseClicked();
-                } else if (v == mQueryTextView) {
-                    forceSuggestionQuery();
-                }
+                onCloseClicked();
             }
-        };
-        mCloseButton.setOnClickListener(mOnClickListener);
-        mQueryTextView.setOnClickListener(mOnClickListener);
+        });
 
-        TextWatcher mTextWatcher = new TextWatcher() {
+        mQueryTextView.addTextChangedListener(new TextWatcher() {
 
             public void beforeTextChanged(CharSequence s, int start, int before, int after) {
             }
@@ -92,22 +89,12 @@ public class IzzySearchView extends LinearLayout {
 
             public void afterTextChanged(Editable s) {
             }
-        };
-        mQueryTextView.addTextChangedListener(mTextWatcher);
-        TextView.OnEditorActionListener mOnEditorActionListener = new TextView.OnEditorActionListener() {
+        });
+
+        mQueryTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 onSubmitQuery();
                 return true;
-            }
-        };
-        mQueryTextView.setOnEditorActionListener(mOnEditorActionListener);
-
-        mQueryTextView.setOnFocusChangeListener(new OnFocusChangeListener() {
-
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (mOnQueryTextFocusChangeListener != null) {
-                    mOnQueryTextFocusChangeListener.onFocusChange(IzzySearchView.this, hasFocus);
-                }
             }
         });
 
@@ -129,6 +116,7 @@ public class IzzySearchView extends LinearLayout {
         if (result) {
             updateViewsVisibility();
         }
+
         return result;
     }
 
@@ -148,19 +136,12 @@ public class IzzySearchView extends LinearLayout {
 
         switch (widthMode) {
             case MeasureSpec.AT_MOST:
-                if (mMaxWidth > 0) {
-                    width = Math.min(mMaxWidth, width);
-                } else {
-                    width = Math.min(getPreferredWidth(), width);
-                }
+                width = Math.min(getPreferredWidth(), width);
                 break;
             case MeasureSpec.EXACTLY:
-                if (mMaxWidth > 0) {
-                    width = Math.min(mMaxWidth, width);
-                }
                 break;
             case MeasureSpec.UNSPECIFIED:
-                width = mMaxWidth > 0 ? mMaxWidth : getPreferredWidth();
+                width = getPreferredWidth();
                 break;
         }
         widthMode = MeasureSpec.EXACTLY;
@@ -175,23 +156,12 @@ public class IzzySearchView extends LinearLayout {
         mOnQueryChangeListener = listener;
     }
 
-    public void setOnCloseListener(OnCloseListener listener) {
-        mOnCloseListener = listener;
-    }
-
     private void onCloseClicked() {
-        CharSequence text = mQueryTextView.getText();
-        if (TextUtils.isEmpty(text)) {
-            if (mOnCloseListener == null || !mOnCloseListener.onClose()) {
-                clearFocus();
-                updateViewsVisibility();
-            }
-        } else {
+        if (!TextUtils.isEmpty(mQueryTextView.getText())) {
             mQueryTextView.setText("");
             mQueryTextView.requestFocus();
             setImeVisibility(true);
         }
-
     }
 
     private void forceSuggestionQuery() {
@@ -255,7 +225,7 @@ public class IzzySearchView extends LinearLayout {
     }
 
     private CharSequence getDecoratedHint(CharSequence hintText) {
-        SpannableStringBuilder ssb = new SpannableStringBuilder("   "); // for the icon
+        SpannableStringBuilder ssb = new SpannableStringBuilder("   ");
         ssb.append(hintText);
         Drawable searchIcon = getContext().getResources().getDrawable(R.drawable.search_view_ic_search);
         int textSize = (int) (mQueryTextView.getTextSize() * 1.25);
@@ -275,27 +245,10 @@ public class IzzySearchView extends LinearLayout {
     private void onSubmitQuery() {
         CharSequence query = mQueryTextView.getText();
         if (query != null && TextUtils.getTrimmedLength(query) > 0) {
-            if (mOnQueryChangeListener == null
-                    || !mOnQueryChangeListener.onQueryTextSubmit(query.toString())) {
-                dismissSuggestions();
+            if (mOnQueryChangeListener != null) {
+                mOnQueryChangeListener.onQueryTextSubmit(query.toString());
             }
         }
-    }
-
-    private void dismissSuggestions() {
-        mQueryTextView.dismissDropDown();
-    }
-
-    public void setmOnQueryTextFocusChangeListener(OnFocusChangeListener mOnQueryTextFocusChangeListener) {
-        this.mOnQueryTextFocusChangeListener = mOnQueryTextFocusChangeListener;
-    }
-
-    public void setmMaxWidth(int mMaxWidth) {
-        this.mMaxWidth = mMaxWidth;
-    }
-
-    public interface OnCloseListener {
-        boolean onClose();
     }
 
     public interface OnQueryTextListener {
@@ -305,22 +258,11 @@ public class IzzySearchView extends LinearLayout {
     }
 
     public static class SearchAutoComplete extends AutoCompleteTextView {
-
         private int mThreshold;
         private IzzySearchView mSearchView;
 
-        public SearchAutoComplete(Context context) {
-            super(context);
-            mThreshold = getThreshold();
-        }
-
         public SearchAutoComplete(Context context, AttributeSet attrs) {
             super(context, attrs);
-            mThreshold = getThreshold();
-        }
-
-        public SearchAutoComplete(Context context, AttributeSet attrs, int defStyle) {
-            super(context, attrs, defStyle);
             mThreshold = getThreshold();
         }
 
@@ -402,29 +344,29 @@ public class IzzySearchView extends LinearLayout {
                 doBeforeTextChanged = AutoCompleteTextView.class
                         .getDeclaredMethod("doBeforeTextChanged");
                 doBeforeTextChanged.setAccessible(true);
-            } catch (NoSuchMethodException e) {
-                // Ah well.
+            } catch (NoSuchMethodException ignored) {
+
             }
             try {
                 doAfterTextChanged = AutoCompleteTextView.class
                         .getDeclaredMethod("doAfterTextChanged");
                 doAfterTextChanged.setAccessible(true);
-            } catch (NoSuchMethodException e) {
-                // Ah well.
+            } catch (NoSuchMethodException ignored) {
+
             }
             try {
                 ensureImeVisible = AutoCompleteTextView.class
                         .getMethod("ensureImeVisible", boolean.class);
                 ensureImeVisible.setAccessible(true);
-            } catch (NoSuchMethodException e) {
-                // Ah well.
+            } catch (NoSuchMethodException ignored) {
+
             }
             try {
                 showSoftInputUnchecked = InputMethodManager.class.getMethod(
                         "showSoftInputUnchecked", int.class, ResultReceiver.class);
                 showSoftInputUnchecked.setAccessible(true);
-            } catch (NoSuchMethodException e) {
-                // Ah well.
+            } catch (NoSuchMethodException ignored) {
+
             }
         }
 
@@ -433,6 +375,7 @@ public class IzzySearchView extends LinearLayout {
                 try {
                     doBeforeTextChanged.invoke(view);
                 } catch (Exception ignored) {
+
                 }
             }
         }
@@ -442,6 +385,7 @@ public class IzzySearchView extends LinearLayout {
                 try {
                     doAfterTextChanged.invoke(view);
                 } catch (Exception ignored) {
+
                 }
             }
         }
@@ -451,6 +395,7 @@ public class IzzySearchView extends LinearLayout {
                 try {
                     ensureImeVisible.invoke(view, visible);
                 } catch (Exception ignored) {
+
                 }
             }
         }
@@ -461,6 +406,7 @@ public class IzzySearchView extends LinearLayout {
                     showSoftInputUnchecked.invoke(imm, flags, null);
                     return;
                 } catch (Exception ignored) {
+
                 }
             }
 

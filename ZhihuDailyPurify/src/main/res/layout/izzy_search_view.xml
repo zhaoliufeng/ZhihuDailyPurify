@@ -10,7 +10,7 @@
             android:id="@+id/search_edit_frame"
             android:layout_gravity="center_vertical"
             android:orientation="horizontal"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8.0dip"
             android:layout_marginTop="4.0dip"
@@ -23,7 +23,7 @@
                 android:orientation="horizontal"
                 android:id="@+id/search_plate"
                 android:background="@drawable/searchview_textfield"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.0">
 
@@ -40,11 +40,7 @@
                     android:singleLine="true"
                     android:layout_weight="1.0"
                     android:inputType="textAutoComplete|textNoSuggestions"
-                    android:dropDownAnchor="@id/search_edit_frame"
                     android:imeOptions="actionSearch"
-                    android:dropDownHeight="wrap_content"
-                    android:dropDownHorizontalOffset="0.0dip"
-                    android:dropDownVerticalOffset="0.0dip"
                     class="io.github.izzyleung.zhihudailypurify.ui.widget.IzzySearchView$SearchAutoComplete"/>
 
             <ImageView

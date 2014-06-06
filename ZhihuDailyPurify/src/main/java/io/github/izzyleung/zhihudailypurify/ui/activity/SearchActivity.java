@@ -76,11 +76,6 @@ public class SearchActivity extends FragmentActivity {
         getActionBar().setDisplayShowCustomEnabled(true);
 
         searchView = new IzzySearchView(this);
-        searchView.setOnCloseListener(new IzzySearchView.OnCloseListener() {
-            public boolean onClose() {
-                return true;
-            }
-        });
         searchView.setQueryHint(getResources().getString(R.string.search_hint));
 
         searchView.setOnQueryTextListener(new IzzySearchView.OnQueryTextListener() {

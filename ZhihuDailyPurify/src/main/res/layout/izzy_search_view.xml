@@ -22,7 +22,7 @@
                 android:layout_gravity="center_vertical"
                 android:orientation="horizontal"
                 android:id="@+id/search_plate"
-                android:background="@drawable/textfield_searchview"
+                android:background="@drawable/searchview_textfield"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.0">

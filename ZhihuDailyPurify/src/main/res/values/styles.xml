@@ -27,7 +27,7 @@
     </style>
 
     <style name="Theme.ZhihuDailyPurify.SpinnerDropDownStyle" parent="@android:style/Widget.Holo.Light.Spinner">
-        <item name="android:background">@drawable/actionbar_dropdown_navigation_item_background_light</item>
+        <item name="android:background">@drawable/spinner_dropdown_navigation_item_background_light</item>
         <item name="android:gravity">center_vertical|left</item>
         <item name="android:spinnerMode">dropdown</item>
         <item name="android:dropDownWidth">270dp</item>

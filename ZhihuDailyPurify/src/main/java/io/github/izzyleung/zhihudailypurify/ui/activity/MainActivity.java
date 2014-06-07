@@ -11,7 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.astuetz.PagerSlidingTabStrip;
 import io.github.izzyleung.zhihudailypurify.R;
-import io.github.izzyleung.zhihudailypurify.support.util.DateUtils;
+import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.NewsListFragment;
 
 import java.text.SimpleDateFormat;
@@ -77,7 +77,7 @@ public class MainActivity extends FragmentActivity {
 
             Calendar dateToGetUrl = Calendar.getInstance();
             dateToGetUrl.add(Calendar.DAY_OF_YEAR, 1 - i);
-            String date = DateUtils.simpleDateFormat.format(dateToGetUrl.getTime());
+            String date = Constants.simpleDateFormat.format(dateToGetUrl.getTime());
 
             bundle.putBoolean("first_page?", i == 0);
             bundle.putBoolean("single?", false);

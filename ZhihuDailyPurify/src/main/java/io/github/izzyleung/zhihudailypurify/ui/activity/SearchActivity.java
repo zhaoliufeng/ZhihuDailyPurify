@@ -15,8 +15,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.support.util.DateUtils;
-import io.github.izzyleung.zhihudailypurify.support.util.URLUtils;
+import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.task.BaseDownloadTask;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.SearchNewsFragment;
 import io.github.izzyleung.zhihudailypurify.ui.widget.IzzySearchView;
@@ -135,7 +134,7 @@ public class SearchActivity extends FragmentActivity {
             String result;
             try {
                 result = Html.fromHtml(Html.fromHtml(downloadStringFromUrl(
-                        URLUtils.SEARCH_URL + params[0])).toString()).toString();
+                        Constants.SEARCH_URL + params[0])).toString()).toString();
                 if (!TextUtils.isEmpty(result) && !isCancelled()) {
                     JSONArray resultArray = new JSONArray(result);
 
@@ -147,7 +146,7 @@ public class SearchActivity extends FragmentActivity {
                             JSONObject newsObject = resultArray.getJSONObject(i);
                             String date = newsObject.getString("date");
                             Calendar calendar = Calendar.getInstance();
-                            calendar.setTime(DateUtils.simpleDateFormat.parse(date));
+                            calendar.setTime(Constants.simpleDateFormat.parse(date));
                             calendar.add(Calendar.DAY_OF_YEAR, -1);
                             dateResultList.add(simpleDateFormat.format(calendar.getTime()));
                             DailyNews news = gson.fromJson(newsObject.getString("content"), newsType);

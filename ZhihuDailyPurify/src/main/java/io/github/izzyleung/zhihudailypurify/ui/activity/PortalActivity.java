@@ -12,7 +12,7 @@ import android.view.MenuItem;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import io.github.izzyleung.zhihudailypurify.R;
-import io.github.izzyleung.zhihudailypurify.support.util.DateUtils;
+import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.NewsListFragment;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.PickDateFragment;
 
@@ -80,7 +80,7 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
                 onBackPressed();
                 return true;
             case R.id.forward:
-                if (DateUtils.isSameDay(Calendar.getInstance(), calendar)) {
+                if (isSameDay(Calendar.getInstance(), calendar)) {
                     showCrouton(R.string.this_is_today, Style.INFO);
                     return true;
                 }
@@ -88,7 +88,7 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
                 updateView();
                 return true;
             case R.id.back:
-                if (DateUtils.isSameDay(DateUtils.birthDay, calendar)) {
+                if (isSameDay(Constants.birthday, calendar.getTime())) {
                     showCrouton(R.string.this_is_birthday, Style.INFO);
                     return true;
                 }
@@ -125,7 +125,7 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
 
     private void showPickDateFragment() {
         Bundle bundle = new Bundle();
-        bundle.putString("date", DateUtils.simpleDateFormat.format(calendar.getTime()));
+        bundle.putString("date", Constants.simpleDateFormat.format(calendar.getTime()));
 
         Fragment displayFragment = new PickDateFragment();
         displayFragment.setArguments(bundle);
@@ -141,10 +141,10 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
     private void updateFields(ACTION action) {
         if (action == ACTION.ACTION_NEXT_DAY) {
             calendar.add(Calendar.DAY_OF_YEAR, 2);
-            dateForFragment = DateUtils.simpleDateFormat.format(calendar.getTime());
+            dateForFragment = Constants.simpleDateFormat.format(calendar.getTime());
             calendar.add(Calendar.DAY_OF_YEAR, -1);
         } else {
-            dateForFragment = DateUtils.simpleDateFormat.format(calendar.getTime());
+            dateForFragment = Constants.simpleDateFormat.format(calendar.getTime());
             calendar.add(Calendar.DAY_OF_YEAR, -1);
         }
     }
@@ -155,7 +155,7 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
         bundle.putBoolean("single?", true);
         bundle.putString("date", dateForFragment);
 
-        if (DateUtils.isSameDay(calendar, Calendar.getInstance())) {
+        if (isSameDay(calendar, Calendar.getInstance())) {
             bundle.putBoolean("first_page?", true);
         } else {
             bundle.putBoolean("first_page?", false);
@@ -176,11 +176,21 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
         getActionBar().setTitle(displayDate);
     }
 
+    private boolean isSameDay(Calendar first, Calendar second) {
+        return (first.get(Calendar.YEAR) == second.get(Calendar.YEAR)) &&
+                (first.get(Calendar.MONTH) == second.get(Calendar.MONTH)) &&
+                (first.get(Calendar.DAY_OF_MONTH) == second.get(Calendar.DAY_OF_MONTH));
+    }
+
+    private boolean isSameDay(Date first, Date second) {
+        return first.equals(second);
+    }
+
     @Override
     public void onValidDateSelected(Date date) {
         calendar.setTime(date);
         calendar.add(Calendar.DAY_OF_YEAR, 1);
-        dateForFragment = DateUtils.simpleDateFormat.format(calendar.getTime());
+        dateForFragment = Constants.simpleDateFormat.format(calendar.getTime());
         calendar.add(Calendar.DAY_OF_YEAR, -1);
 
         prev.setVisible(true);

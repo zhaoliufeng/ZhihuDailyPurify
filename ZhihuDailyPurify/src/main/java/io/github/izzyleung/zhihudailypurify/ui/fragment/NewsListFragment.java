@@ -23,7 +23,7 @@ import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
-import io.github.izzyleung.zhihudailypurify.support.util.URLUtils;
+import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.task.BaseDownloadTask;
 import io.github.izzyleung.zhihudailypurify.task.SaveNewsListTask;
 import io.github.izzyleung.zhihudailypurify.task.Server;
@@ -253,7 +253,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                JSONObject contents = new JSONObject(downloadStringFromUrl(URLUtils.ZHIHU_DAILY_BEFORE_URL + date));
+                JSONObject contents = new JSONObject(downloadStringFromUrl(Constants.ZHIHU_DAILY_BEFORE_URL + date));
 
                 JSONArray newsArray = contents.getJSONArray("stories");
                 for (int i = 0; i < newsArray.length(); i++) {
@@ -264,7 +264,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                             ? (String) singleNews.getJSONArray("images").get(0)
                             : null);
                     dailyNews.setDailyTitle(singleNews.getString("title"));
-                    String newsInfoJson = downloadStringFromUrl(URLUtils.ZHIHU_DAILY_OFFLINE_NEWS_URL
+                    String newsInfoJson = downloadStringFromUrl(Constants.ZHIHU_DAILY_OFFLINE_NEWS_URL
                             + singleNews.getString("id"));
                     JSONObject newsDetail = new JSONObject(newsInfoJson);
                     if (newsDetail.has("body")) {
@@ -353,10 +353,10 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
             String jsonFromWeb;
             try {
                 if (server == Server.SAE) {
-                    jsonFromWeb = downloadStringFromUrl(URLUtils.
+                    jsonFromWeb = downloadStringFromUrl(Constants.
                             ZHIHU_DAILY_PURIFY_SAE_BEFORE_URL + date);
                 } else {
-                    jsonFromWeb = downloadStringFromUrl(URLUtils.
+                    jsonFromWeb = downloadStringFromUrl(Constants.
                             ZHIHU_DAILY_PURIFY_HEROKU_BEFORE_URL + date);
                 }
             } catch (IOException e) {

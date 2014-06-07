@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.squareup.timessquare.CalendarPickerView;
 import io.github.izzyleung.zhihudailypurify.R;
-import io.github.izzyleung.zhihudailypurify.support.util.DateUtils;
+import io.github.izzyleung.zhihudailypurify.support.Constants;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -23,7 +23,7 @@ public class PickDateFragment extends Fragment {
         CalendarPickerView calendarPickerView = (CalendarPickerView) view.findViewById(R.id.calendar_view);
         Calendar nextDay = Calendar.getInstance();
         nextDay.add(Calendar.DAY_OF_YEAR, 1);
-        calendarPickerView.init(DateUtils.birthDay.getTime(), nextDay.getTime())
+        calendarPickerView.init(Constants.birthday, nextDay.getTime())
                 .withSelectedDate(mOnDateSelectedListener.getDate());
         calendarPickerView.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
             @Override

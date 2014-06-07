@@ -37,3 +37,14 @@ dependencies {
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
+
+task deployApkFile(type: Copy) {
+    description = 'Deploy apk file for user to download directly.'
+
+    from 'build/apk'
+    include 'ZhihuDailyPurify-debug.apk'
+    rename 'ZhihuDailyPurify-debug.apk', 'ZhihuDailyPurify.apk'
+    into '../apk'
+}
+
+assembleDebug.finalizedBy deployApkFile

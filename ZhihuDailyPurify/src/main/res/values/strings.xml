@@ -51,7 +51,6 @@ limitations under the License.</string>
     <string name="search_hint">Search Zhihu Daily</string>
     <string name="no_result_found">No result found</string>
     <string name="searching">Searching for result…</string>
-    <string name="nothing_found">Nothing found</string>
     <string name="display_format">EEE, MMM d, yyyy</string>
     <string name="which_accelerate_server_title">Which accelerate server?</string>
     <string name="accelerate_server_dialog_title">Please select one accelerate server</string>

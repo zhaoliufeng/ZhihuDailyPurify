@@ -17,7 +17,10 @@ __Disclaimer - 声明__
   - Do not request useless permission - 不需要多余的权限
   - No ads - 没有广告
   - No push services, or any background activity - 没有推送消息，甚至没有任何的后台进程
-  - No tracking modules, do not collect any of private data - 没有追踪模块，不收集您的任何隐私信息
+  - No tracking modules, do not collect any private data - 没有追踪模块，不收集您的任何隐私信息
+  
+### Download - 下载
+[ZhihuDailyPurify.apk](https://github.com/izzyleung/ZhihuDailyPurify/raw/master/apk/ZhihuDailyPurify.apk)
 
 ### Dependency - 依赖
   - Java Development Kit (JDK) 7 +

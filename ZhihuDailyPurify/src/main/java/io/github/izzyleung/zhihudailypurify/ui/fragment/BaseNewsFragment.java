@@ -138,11 +138,9 @@ public abstract class BaseNewsFragment extends Fragment {
         clearListChoice();
 
         DailyNews dailyNews = newsList.get(position);
-
         if (dailyNews.isMulti()) {
-            String[] questionTitles = dailyNews.
-                    getQuestionTitleList().
-                    toArray(new String[dailyNews.getQuestionTitleList().size()]);
+            String[] questionTitles = dailyNews.getQuestionTitleList()
+                    .toArray(new String[dailyNews.getQuestionTitleList().size()]);
 
             if (Locale.getDefault().equals(Locale.TRADITIONAL_CHINESE)) {
                 JChineseConvertor convertor = null;

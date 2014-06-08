@@ -52,10 +52,10 @@ public class SearchActivity extends FragmentActivity {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
-
         Crouton.cancelAllCroutons();
         searchNewsFragment = null;
+
+        super.onDestroy();
     }
 
     @Override

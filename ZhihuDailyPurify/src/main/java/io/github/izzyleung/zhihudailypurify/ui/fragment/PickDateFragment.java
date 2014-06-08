@@ -17,6 +17,17 @@ public class PickDateFragment extends Fragment {
     private PickDateListener mOnDateSelectedListener;
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try {
+            mOnDateSelectedListener = (PickDateListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnDateSelectedListener");
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pick_date, container, false);
         assert view != null;
@@ -43,17 +54,6 @@ public class PickDateFragment extends Fragment {
             }
         });
         return view;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        try {
-            mOnDateSelectedListener = (PickDateListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnDateSelectedListener");
-        }
     }
 
     @Override

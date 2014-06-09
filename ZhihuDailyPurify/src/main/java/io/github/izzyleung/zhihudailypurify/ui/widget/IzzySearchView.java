@@ -32,9 +32,8 @@ public class IzzySearchView extends LinearLayout {
 
     private SearchAutoComplete mQueryTextView;
     private View mSearchPlate;
-    private ImageView mCloseButton;
+    private ImageView mClearTextButton;
     private OnQueryTextListener mOnQueryChangeListener;
-    private CharSequence mOldQueryText;
     private CharSequence mQueryHint;
     private Runnable mShowImeRunnable = new Runnable() {
         public void run() {
@@ -68,12 +67,16 @@ public class IzzySearchView extends LinearLayout {
         mQueryTextView.setSearchView(this);
 
         mSearchPlate = findViewById(R.id.search_plate);
-        mCloseButton = (ImageView) findViewById(R.id.search_close_btn);
+        mClearTextButton = (ImageView) findViewById(R.id.search_close_btn);
 
-        mCloseButton.setOnClickListener(new OnClickListener() {
+        mClearTextButton.setOnClickListener(new OnClickListener() {
 
             public void onClick(View v) {
-                onCloseClicked();
+                if (!TextUtils.isEmpty(mQueryTextView.getText())) {
+                    mQueryTextView.setText("");
+                    mQueryTextView.requestFocus();
+                    setImeVisibility(true);
+                }
             }
         });
 
@@ -84,7 +87,6 @@ public class IzzySearchView extends LinearLayout {
 
             public void onTextChanged(CharSequence s, int start,
                                       int before, int after) {
-                IzzySearchView.this.onTextChanged(s);
             }
 
             public void afterTextChanged(Editable s) {
@@ -156,14 +158,6 @@ public class IzzySearchView extends LinearLayout {
         mOnQueryChangeListener = listener;
     }
 
-    private void onCloseClicked() {
-        if (!TextUtils.isEmpty(mQueryTextView.getText())) {
-            mQueryTextView.setText("");
-            mQueryTextView.requestFocus();
-            setImeVisibility(true);
-        }
-    }
-
     private void forceSuggestionQuery() {
         HIDDEN_METHOD_INVOKER.doBeforeTextChanged(mQueryTextView);
         HIDDEN_METHOD_INVOKER.doAfterTextChanged(mQueryTextView);
@@ -183,8 +177,8 @@ public class IzzySearchView extends LinearLayout {
 
     private void updateCloseButton() {
         final boolean hasText = !TextUtils.isEmpty(mQueryTextView.getText());
-        mCloseButton.setVisibility(hasText ? VISIBLE : GONE);
-        mCloseButton.getDrawable().setState(hasText ? ENABLED_STATE_SET : EMPTY_STATE_SET);
+        mClearTextButton.setVisibility(hasText ? VISIBLE : GONE);
+        mClearTextButton.getDrawable().setState(hasText ? ENABLED_STATE_SET : EMPTY_STATE_SET);
     }
 
     private void postUpdateFocusedState() {
@@ -211,14 +205,6 @@ public class IzzySearchView extends LinearLayout {
         }
     }
 
-    private void onTextChanged(CharSequence newText) {
-        updateCloseButton();
-        if (mOnQueryChangeListener != null && !TextUtils.equals(newText, mOldQueryText)) {
-            mOnQueryChangeListener.onQueryTextChange(newText.toString());
-        }
-        mOldQueryText = newText.toString();
-    }
-
     public void setQueryHint(CharSequence hint) {
         mQueryHint = hint;
         updateQueryHint();
@@ -227,7 +213,7 @@ public class IzzySearchView extends LinearLayout {
     private CharSequence getDecoratedHint(CharSequence hintText) {
         SpannableStringBuilder ssb = new SpannableStringBuilder("   ");
         ssb.append(hintText);
-        Drawable searchIcon = getContext().getResources().getDrawable(R.drawable.search_view_ic_search);
+        Drawable searchIcon = getContext().getResources().getDrawable(R.drawable.ic_action_search);
         int textSize = (int) (mQueryTextView.getTextSize() * 1.25);
         searchIcon.setBounds(0, 0, textSize, textSize);
         ssb.setSpan(new ImageSpan(searchIcon), 1, 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -253,8 +239,6 @@ public class IzzySearchView extends LinearLayout {
 
     public interface OnQueryTextListener {
         boolean onQueryTextSubmit(String query);
-
-        boolean onQueryTextChange(String newText);
     }
 
     public static class SearchAutoComplete extends AutoCompleteTextView {

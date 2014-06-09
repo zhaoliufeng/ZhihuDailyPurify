@@ -86,11 +86,6 @@ public class SearchActivity extends FragmentActivity {
                 searchView.clearFocus();
                 return true;
             }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
         });
 
         RelativeLayout relative = new RelativeLayout(this);

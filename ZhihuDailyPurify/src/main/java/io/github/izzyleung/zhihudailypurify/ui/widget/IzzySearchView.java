@@ -90,6 +90,7 @@ public class IzzySearchView extends LinearLayout {
             }
 
             public void afterTextChanged(Editable s) {
+                updateCloseButton();
             }
         });
 
@@ -132,6 +133,12 @@ public class IzzySearchView extends LinearLayout {
     }
 
     @Override
+    public void onWindowFocusChanged(boolean hasWindowFocus) {
+        super.onWindowFocusChanged(hasWindowFocus);
+        postUpdateFocusedState();
+    }
+
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int width = MeasureSpec.getSize(widthMeasureSpec);
@@ -148,6 +155,12 @@ public class IzzySearchView extends LinearLayout {
         }
         widthMode = MeasureSpec.EXACTLY;
         super.onMeasure(MeasureSpec.makeMeasureSpec(width, widthMode), heightMeasureSpec);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        removeCallbacks(mUpdateDrawableStateRunnable);
+        super.onDetachedFromWindow();
     }
 
     private int getPreferredWidth() {

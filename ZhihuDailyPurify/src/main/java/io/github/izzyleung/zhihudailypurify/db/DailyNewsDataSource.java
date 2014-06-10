@@ -52,10 +52,6 @@ public final class DailyNewsDataSource {
         database.update(DBHelper.TABLE_NAME, values, DBHelper.COLUMN_DATE + "=" + date, null);
     }
 
-    public void deleteDailyNewsList(String date) {
-        database.delete(DBHelper.TABLE_NAME, DBHelper.COLUMN_DATE + " = " + date, null);
-    }
-
     public void insertOrUpdateNewsList(String date, String content) {
         if (newsListAtDate(date) != null) {
             updateNewsList(date, content);

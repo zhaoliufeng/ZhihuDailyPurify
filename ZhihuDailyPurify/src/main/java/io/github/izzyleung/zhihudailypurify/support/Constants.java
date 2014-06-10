@@ -11,5 +11,5 @@ public interface Constants {
     String SEARCH_URL = "http://zhihudailypurify.sinaapp.com/search/";
 
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-    Date birthday = new Date(113, 4, 19);
+    Date birthday = new Date(113, 4, 19); // May 19th, 2013
 }

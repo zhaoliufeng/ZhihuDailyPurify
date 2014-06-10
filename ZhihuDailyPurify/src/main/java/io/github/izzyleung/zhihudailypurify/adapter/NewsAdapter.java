@@ -102,12 +102,9 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
             convertView = mInflater.inflate(R.layout.news_list_item, null);
 
             assert convertView != null;
-            holder.newsImage = (ImageView)
-                    convertView.findViewById(R.id.thumbnail_image);
-            holder.dailyTitle = (TextView)
-                    convertView.findViewById(R.id.daily_title);
-            holder.questionTitle = (TextView)
-                    convertView.findViewById(R.id.question_title);
+            holder.newsImage = (ImageView) convertView.findViewById(R.id.thumbnail_image);
+            holder.dailyTitle = (TextView) convertView.findViewById(R.id.daily_title);
+            holder.questionTitle = (TextView) convertView.findViewById(R.id.question_title);
 
             convertView.setTag(holder);
         } else {

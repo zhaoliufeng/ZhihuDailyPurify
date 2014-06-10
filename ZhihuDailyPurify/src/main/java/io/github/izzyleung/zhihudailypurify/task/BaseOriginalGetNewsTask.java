@@ -32,8 +32,8 @@ public class BaseOriginalGetNewsTask extends BaseDownloadTask<String, Void, List
                         ? (String) singleNews.getJSONArray("images").get(0)
                         : null);
                 dailyNews.setDailyTitle(singleNews.getString("title"));
-                String newsInfoJson = downloadStringFromUrl(Constants.ZHIHU_DAILY_OFFLINE_NEWS_URL
-                        + singleNews.getString("id"));
+                String newsInfoJson =
+                        downloadStringFromUrl(Constants.ZHIHU_DAILY_OFFLINE_NEWS_URL + singleNews.getString("id"));
                 JSONObject newsDetail = new JSONObject(newsInfoJson);
                 if (newsDetail.has("body")) {
                     Document doc = Jsoup.parse(newsDetail.getString("body"));
@@ -52,16 +52,12 @@ public class BaseOriginalGetNewsTask extends BaseDownloadTask<String, Void, List
         return resultNewsList;
     }
 
-    private boolean updateDailyNews(
-            Document doc,
-            String dailyTitle,
-            DailyNews dailyNews) throws JSONException {
+    private boolean updateDailyNews(Document doc, String dailyTitle, DailyNews dailyNews) throws JSONException {
         Elements viewMoreElements = doc.getElementsByClass("view-more");
 
         if (viewMoreElements.size() > 1) {
             dailyNews.setMulti(true);
-            Elements questionTitleElements =
-                    doc.getElementsByClass("question-title");
+            Elements questionTitleElements = doc.getElementsByClass("question-title");
 
             for (int j = 0; j < viewMoreElements.size(); j++) {
                 if (questionTitleElements.get(j).text().length() == 0) {
@@ -73,6 +69,7 @@ public class BaseOriginalGetNewsTask extends BaseDownloadTask<String, Void, List
                 Elements viewQuestionElement = viewMoreElements.get(j).
                         select("a");
 
+                // Unless the url is a link to zhihu, do not add it to the result NewsList
                 if (viewQuestionElement.text().equals("查看知乎讨论")) {
                     dailyNews.addQuestionUrl(viewQuestionElement.attr("href"));
                 } else {
@@ -89,12 +86,11 @@ public class BaseOriginalGetNewsTask extends BaseDownloadTask<String, Void, List
                 return false;
             }
 
-            //Question title is the same with daily title
+            // Question title is the same with daily title
             if (doc.getElementsByClass("question-title").text().length() == 0) {
                 dailyNews.setQuestionTitle(dailyTitle);
             } else {
-                dailyNews.setQuestionTitle(doc.
-                        getElementsByClass("question-title").text());
+                dailyNews.setQuestionTitle(doc.getElementsByClass("question-title").text());
             }
         } else {
             return false;

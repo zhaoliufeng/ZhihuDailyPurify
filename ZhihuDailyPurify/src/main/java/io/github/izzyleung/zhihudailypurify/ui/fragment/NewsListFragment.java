@@ -58,6 +58,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
+
         assert view != null;
         listView = (ListView) view.findViewById(R.id.news_list);
         listView.setAdapter(listAdapter);
@@ -93,14 +94,11 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
         super.onResume();
         clearActionMode();
 
-        SharedPreferences pref = PreferenceManager.
-                getDefaultSharedPreferences(getActivity());
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         isAutoRefresh = pref.getBoolean("auto_refresh?", true);
 
-        if (isSingle) {
-            if (isAutoRefresh && !isRefreshed) {
-                refresh();
-            }
+        if (isSingle && isAutoRefresh && !isRefreshed) {
+            refresh();
         }
     }
 
@@ -108,26 +106,23 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
-        if (isVisibleToUser) {
-            if (isAutoRefresh && !isRefreshed) {
-                refresh();
-            }
+        if (isVisibleToUser && isAutoRefresh && !isRefreshed) {
+            refresh();
         }
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
-
         Crouton.cancelAllCroutons();
+
+        super.onDestroy();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        mPullToRefreshLayout.getHeaderTransformer().
-                onConfigurationChanged(getActivity(), newConfig);
+        mPullToRefreshLayout.getHeaderTransformer().onConfigurationChanged(getActivity(), newConfig);
     }
 
     @Override
@@ -157,8 +152,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
             new OriginalGetNewsTask().execute(date);
         } else {
             if (getActivity() != null) {
-                SharedPreferences sharedPreferences =
-                        PreferenceManager.getDefaultSharedPreferences(getActivity());
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
                 if (sharedPreferences.getBoolean("using_accelerate_server?", false)) {
                     Server server;
@@ -176,7 +170,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
         }
     }
 
-    protected void warning() {
+    private void warning() {
         Crouton.makeText(getActivity(), getActivity().getString(R.string.network_error), Style.ALERT).show();
     }
 

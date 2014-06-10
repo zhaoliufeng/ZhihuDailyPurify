@@ -27,7 +27,7 @@
 
         <activity
                 android:name=".ui.activity.PrefsActivity"
-                android:label="@string/activity_settings">
+                android:label="@string/action_settings">
         </activity>
 
         <activity

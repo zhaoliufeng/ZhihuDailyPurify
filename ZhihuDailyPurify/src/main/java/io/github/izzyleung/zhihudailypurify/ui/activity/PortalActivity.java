@@ -55,7 +55,7 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
                 getSupportFragmentManager().popBackStack();
             }
 
-            getActionBar().setTitle(R.string.activity_pick_date);
+            getActionBar().setTitle(R.string.action_pick_date);
             prev.setVisible(false);
             next.setVisible(false);
         }
@@ -135,7 +135,7 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
                 .replace(R.id.container, displayFragment)
                 .commit();
 
-        getActionBar().setTitle(R.string.activity_pick_date);
+        getActionBar().setTitle(R.string.action_pick_date);
     }
 
     private void updateFields(ACTION action) {

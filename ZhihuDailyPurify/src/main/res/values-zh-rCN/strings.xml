@@ -9,8 +9,6 @@
     <string name="settings_settings">综合设置</string>
     <string name="settings_others">其他</string>
     <string name="settings_others_about">关于</string>
-    <string name="activity_settings">偏好设置</string>
-    <string name="close">关闭</string>
     <string name="licences_header">"知乎日报·净化 基于下列开源项目构建：
 
 "
@@ -31,14 +29,11 @@
 详见根据许可证许可下，特定语言的管辖权限和限制。
     </string>
     <string name="action_pick_date">选择日期</string>
-    <string name="activity_pick_date">选择日期</string>
     <string name="using_client">使用官方客户端打开知乎讨论</string>
-    <string name="settings_others_help">帮助</string>
     <string name="network_error">网络错误！</string>
     <string name="no_browser"><![CDATA[您没有安装浏览器呢~ >_<]]></string>
     <string name="not_coming"><![CDATA[这一天还没有来临呢！>_<]]></string>
     <string name="not_born"><![CDATA[这一天知乎日报还没有诞生呢！>_<]]></string>
-    <string name="title_help">帮助</string>
     <string name="open_using_client">使用客户端打开讨论</string>
     <string name="zhihu_daily_today">今日之『知乎日报』|</string>
     <string name="action_forward">前一日</string>

@@ -9,8 +9,6 @@
     <string name="settings_settings">綜合設定</string>
     <string name="settings_others">其他</string>
     <string name="settings_others_about">關於</string>
-    <string name="activity_settings">偏好設定</string>
-    <string name="close">關閉</string>
     <string name="licences_header">"知乎日報·淨化 基於下列開源項目構建：
 
 "
@@ -32,14 +30,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
     </string>
     <string name="action_pick_date">選擇日期</string>
-    <string name="activity_pick_date">選擇日期</string>
     <string name="using_client">使用官方客戶端打開知乎討論</string>
-    <string name="settings_others_help">幫助</string>
     <string name="network_error">網絡錯誤！</string>
     <string name="no_browser"><![CDATA[瀏覽器未安裝！>_<]]></string>
     <string name="not_coming"><![CDATA[此日仍未到來！>_<]]></string>
     <string name="not_born"><![CDATA[此日知乎日報未誕生！>_<]]></string>
-    <string name="title_help">帮助</string>
     <string name="open_using_client">使用客戶端打開討論</string>
     <string name="zhihu_daily_today">今日之『知乎日報』|</string>
     <string name="action_forward">前一日</string>

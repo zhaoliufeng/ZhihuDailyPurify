@@ -174,18 +174,17 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
         Crouton.makeText(getActivity(), getActivity().getString(R.string.network_error), Style.ALERT).show();
     }
 
-    protected void commonOnPostExecute(List<DailyNews> result, boolean isRefreshSuccess) {
-        boolean isTheSameContent = true;
+    private void commonOnPostExecute(List<DailyNews> result, boolean isRefreshSuccess) {
+        boolean isContentChange = false;
 
         if (isRefreshSuccess && !newsList.equals(result)) {
-            isTheSameContent = false;
+            isContentChange = true;
             newsList = result;
-            if (getActivity() != null && isAdded()) {
-                listAdapter.updateNewsList(newsList);
-            }
+
+            listAdapter.updateNewsList(newsList);
         }
 
-        if (isRefreshSuccess && !isTheSameContent) {
+        if (isRefreshSuccess && isContentChange) {
             new SaveNewsListTask(date, newsList).execute();
         }
 

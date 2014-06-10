@@ -9,25 +9,10 @@
     <string name="settings_settings">综合设置</string>
     <string name="settings_others">其他</string>
     <string name="settings_others_about">关于</string>
-    <string name="licences_header">"知乎日报·净化 基于下列开源项目构建：
+    <string name="licences_header">知乎日报·净化 基于下列开源项目构建：
 
-"
     </string>
-    <string name="licenses_subheader">"所有上述开源项目均遵守阿帕奇许可证 2.0 版本。
-
-版权所有 2014 Izzy Leung
-
-根据2.0版本Apache许可证("许可证")授权；
-根据本许可证，用户可以不使用此文件。
-用户可从下列网址获得许可证副本：
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-除非因适用法律需要或书面同意，
-根据许可证分发的软件是基于"按原样"基础提供，
-无任何明示的或暗示的保证或条件。
-详见根据许可证许可下，特定语言的管辖权限和限制。
-    </string>
+    <string name="licenses_subheader">所有上述开源项目均遵守阿帕奇许可证 2.0 版本，如下所示：</string>
     <string name="action_pick_date">选择日期</string>
     <string name="using_client">使用官方客户端打开知乎讨论</string>
     <string name="network_error">网络错误！</string>

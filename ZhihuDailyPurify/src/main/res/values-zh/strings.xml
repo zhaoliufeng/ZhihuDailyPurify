@@ -9,26 +9,10 @@
     <string name="settings_settings">綜合設定</string>
     <string name="settings_others">其他</string>
     <string name="settings_others_about">關於</string>
-    <string name="licences_header">"知乎日報·淨化 基於下列開源項目構建：
+    <string name="licences_header">知乎日報·淨化 基於下列開源項目構建：
 
-"
     </string>
-    <string name="licenses_subheader">"所有上述開源項目均遵守 Apache 許可證 2.0 版本。
-
-Copyright 2013 Izzy Leung
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-    </string>
+    <string name="licenses_subheader">所有上述開源項目均遵守 Apache 許可證 2.0 版本，如下所示：</string>
     <string name="action_pick_date">選擇日期</string>
     <string name="using_client">使用官方客戶端打開知乎討論</string>
     <string name="network_error">網絡錯誤！</string>

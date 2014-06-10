@@ -50,7 +50,7 @@ public class PrefsFragment extends PreferenceFragment implements Preference.OnPr
         TextView textView = (TextView) apacheLicenseDialog.findViewById(R.id.dialog_text);
 
         StringBuilder sb = new StringBuilder();
-        sb.append(getString(R.string.licences_header));
+        sb.append(getString(R.string.licences_header)).append("\n");
 
         String[] basedOnProjects = getResources().getStringArray(R.array.apache_licensed_projects);
 
@@ -59,6 +59,7 @@ public class PrefsFragment extends PreferenceFragment implements Preference.OnPr
         }
 
         sb.append("\n").append(getString(R.string.licenses_subheader));
+        sb.append("\n\n").append(getString(R.string.apache_license));
         textView.setText(sb.toString());
 
         apacheLicenseDialog.findViewById(R.id.close_dialog_button)

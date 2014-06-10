@@ -4,33 +4,14 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.text.Html;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import io.github.izzyleung.zhihudailypurify.R;
-import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.support.Constants;
-import io.github.izzyleung.zhihudailypurify.task.BaseDownloadTask;
+import io.github.izzyleung.zhihudailypurify.task.BaseSearchTask;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.SearchNewsFragment;
 import io.github.izzyleung.zhihudailypurify.ui.widget.IzzySearchView;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 public class SearchActivity extends FragmentActivity {
     private IzzySearchView searchView;
@@ -81,8 +62,7 @@ public class SearchActivity extends FragmentActivity {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                //noinspection deprecation
-                new SearchTask().execute(URLEncoder.encode(query.trim()).replace("+", "%20"));
+                new SearchTask(getString(R.string.display_format)).execute(query);
                 searchView.clearFocus();
                 return true;
             }
@@ -93,22 +73,12 @@ public class SearchActivity extends FragmentActivity {
         getActionBar().setCustomView(relative);
     }
 
-    class SearchTask extends BaseDownloadTask<String, Void, Void> {
-        private boolean isSearchSuccess = true;
-        private boolean isResultNull = false;
-
-        private List<String> dateResultList = new ArrayList<String>();
-        private List<DailyNews> newsList = new ArrayList<DailyNews>();
-
+    class SearchTask extends BaseSearchTask {
         private ProgressDialog dialog;
 
-        private Type newsType = new TypeToken<DailyNews>() {
-
-        }.getType();
-
-        private Gson gson = new GsonBuilder().create();
-
-        private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.display_format));
+        public SearchTask(String dateFormat) {
+            super(dateFormat);
+        }
 
         @Override
         protected void onPreExecute() {
@@ -122,44 +92,6 @@ public class SearchActivity extends FragmentActivity {
                 }
             });
             dialog.show();
-        }
-
-        @Override
-        protected Void doInBackground(String... params) {
-            String result;
-            try {
-                result = Html.fromHtml(Html.fromHtml(downloadStringFromUrl(
-                        Constants.SEARCH_URL + params[0])).toString()).toString();
-                if (!TextUtils.isEmpty(result) && !isCancelled()) {
-                    JSONArray resultArray = new JSONArray(result);
-
-                    if (resultArray.length() == 0) {
-                        isResultNull = true;
-                        return null;
-                    } else {
-                        for (int i = 0; i < resultArray.length(); i++) {
-                            JSONObject newsObject = resultArray.getJSONObject(i);
-                            String date = newsObject.getString("date");
-                            Calendar calendar = Calendar.getInstance();
-                            calendar.setTime(Constants.simpleDateFormat.parse(date));
-                            calendar.add(Calendar.DAY_OF_YEAR, -1);
-                            dateResultList.add(simpleDateFormat.format(calendar.getTime()));
-                            DailyNews news = gson.fromJson(newsObject.getString("content"), newsType);
-                            newsList.add(news);
-                        }
-                    }
-                } else {
-                    isSearchSuccess = false;
-                }
-            } catch (IOException e) {
-                isSearchSuccess = false;
-            } catch (JSONException e) {
-                isSearchSuccess = false;
-            } catch (ParseException ignored) {
-                isSearchSuccess = false;
-            }
-
-            return null;
         }
 
         @Override

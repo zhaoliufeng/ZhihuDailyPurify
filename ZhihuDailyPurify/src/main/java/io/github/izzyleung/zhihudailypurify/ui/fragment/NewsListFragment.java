@@ -4,17 +4,12 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.Html;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -23,23 +18,14 @@ import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
-import io.github.izzyleung.zhihudailypurify.support.Constants;
-import io.github.izzyleung.zhihudailypurify.task.BaseDownloadTask;
+import io.github.izzyleung.zhihudailypurify.task.BaseAccelerateGetNewsTask;
+import io.github.izzyleung.zhihudailypurify.task.BaseOriginalGetNewsTask;
 import io.github.izzyleung.zhihudailypurify.task.SaveNewsListTask;
 import io.github.izzyleung.zhihudailypurify.task.Server;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 public class NewsListFragment extends BaseNewsFragment implements OnRefreshListener {
@@ -168,7 +154,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
 
     public void refresh() {
         if (isToday) {
-            new OriginalGetNewsTask().execute();
+            new OriginalGetNewsTask().execute(date);
         } else {
             if (getActivity() != null) {
                 SharedPreferences sharedPreferences =
@@ -182,11 +168,38 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                         server = Server.HEROKU;
                     }
 
-                    new AccelerateGetNewsTask(server).execute();
+                    new AccelerateGetNewsTask(server).execute(date);
                 } else {
-                    new OriginalGetNewsTask().execute();
+                    new OriginalGetNewsTask().execute(date);
                 }
             }
+        }
+    }
+
+    protected void warning() {
+        Crouton.makeText(getActivity(), getActivity().getString(R.string.network_error), Style.ALERT).show();
+    }
+
+    protected void commonOnPostExecute(List<DailyNews> result, boolean isRefreshSuccess) {
+        boolean isTheSameContent = true;
+
+        if (isRefreshSuccess && !newsList.equals(result)) {
+            isTheSameContent = false;
+            newsList = result;
+            if (getActivity() != null && isAdded()) {
+                listAdapter.updateNewsList(newsList);
+            }
+        }
+
+        if (isRefreshSuccess && !isTheSameContent) {
+            new SaveNewsListTask(date, newsList).execute();
+        }
+
+        mPullToRefreshLayout.setRefreshComplete();
+        isRefreshed = true;
+
+        if (!isRefreshSuccess && isAdded()) {
+            warning();
         }
     }
 
@@ -204,17 +217,13 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                 listAdapter.updateNewsList(newsListRecovered);
             }
 
-            if (isToday) {
+            if (isToday && isAutoRefresh) {
                 refresh();
             }
         }
     }
 
-    private abstract class BaseGetNewsTask extends BaseDownloadTask<Void, Void, Void> {
-        protected boolean isRefreshSuccess = true;
-        protected boolean isTheSameContent = false;
-
-        protected List<DailyNews> resultNewsList = new ArrayList<DailyNews>();
+    private class OriginalGetNewsTask extends BaseOriginalGetNewsTask {
 
         @Override
         protected void onPreExecute() {
@@ -222,163 +231,24 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
         }
 
         @Override
-        protected void onPostExecute(Void result) {
-            if (isRefreshSuccess && !newsList.equals(resultNewsList)) {
-                isTheSameContent = false;
-                newsList = resultNewsList;
-                if (getActivity() != null && isAdded()) {
-                    listAdapter.updateNewsList(newsList);
-                }
-            }
-
-            if (isRefreshSuccess && !isTheSameContent) {
-                new SaveNewsListTask(date, newsList).execute();
-            }
-
-            mPullToRefreshLayout.setRefreshComplete();
-            isRefreshed = true;
-
-            if (!isRefreshSuccess && isAdded()) {
-                warning();
-            }
-        }
-
-        protected void warning() {
-            Crouton.makeText(getActivity(), getActivity().getString(R.string.network_error), Style.ALERT).show();
+        protected void onPostExecute(List<DailyNews> result) {
+            commonOnPostExecute(result, isRefreshSuccess);
         }
     }
 
-    private class OriginalGetNewsTask extends BaseGetNewsTask {
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            try {
-                JSONObject contents = new JSONObject(downloadStringFromUrl(Constants.ZHIHU_DAILY_BEFORE_URL + date));
-
-                JSONArray newsArray = contents.getJSONArray("stories");
-                for (int i = 0; i < newsArray.length(); i++) {
-                    JSONObject singleNews = newsArray.getJSONObject(i);
-
-                    DailyNews dailyNews = new DailyNews();
-                    dailyNews.setThumbnailUrl(singleNews.has("images")
-                            ? (String) singleNews.getJSONArray("images").get(0)
-                            : null);
-                    dailyNews.setDailyTitle(singleNews.getString("title"));
-                    String newsInfoJson = downloadStringFromUrl(Constants.ZHIHU_DAILY_OFFLINE_NEWS_URL
-                            + singleNews.getString("id"));
-                    JSONObject newsDetail = new JSONObject(newsInfoJson);
-                    if (newsDetail.has("body")) {
-                        Document doc = Jsoup.parse(newsDetail.getString("body"));
-                        if (updateDailyNews(doc, singleNews.getString("title"), dailyNews)) {
-                            isTheSameContent = false;
-                            resultNewsList.add(dailyNews);
-                        }
-                    }
-
-                }
-            } catch (JSONException e) {
-                isRefreshSuccess = false;
-            } catch (IOException e) {
-                isRefreshSuccess = false;
-            }
-
-            return null;
-        }
-
-        private boolean updateDailyNews(
-                Document doc,
-                String dailyTitle,
-                DailyNews dailyNews) throws JSONException {
-            Elements viewMoreElements = doc.getElementsByClass("view-more");
-
-            if (viewMoreElements.size() > 1) {
-                dailyNews.setMulti(true);
-                Elements questionTitleElements =
-                        doc.getElementsByClass("question-title");
-
-                for (int j = 0; j < viewMoreElements.size(); j++) {
-                    if (questionTitleElements.get(j).text().length() == 0) {
-                        dailyNews.addQuestionTitle(dailyTitle);
-                    } else {
-                        dailyNews.addQuestionTitle(questionTitleElements.get(j).text());
-                    }
-
-                    Elements viewQuestionElement = viewMoreElements.get(j).
-                            select("a");
-
-                    if (viewQuestionElement.text().equals("查看知乎讨论")) {
-                        dailyNews.addQuestionUrl(viewQuestionElement.attr("href"));
-                    } else {
-                        return false;
-                    }
-                }
-            } else if (viewMoreElements.size() == 1) {
-                dailyNews.setMulti(false);
-
-                Elements viewQuestionElement = viewMoreElements.select("a");
-                if (viewQuestionElement.text().equals("查看知乎讨论")) {
-                    dailyNews.setQuestionUrl(viewQuestionElement.attr("href"));
-                } else {
-                    return false;
-                }
-
-                //Question title is the same with daily title
-                if (doc.getElementsByClass("question-title").text().length() == 0) {
-                    dailyNews.setQuestionTitle(dailyTitle);
-                } else {
-                    dailyNews.setQuestionTitle(doc.
-                            getElementsByClass("question-title").text());
-                }
-            } else {
-                return false;
-            }
-
-            return true;
-        }
-    }
-
-    private class AccelerateGetNewsTask extends BaseGetNewsTask {
-        private Server server;
-
+    private class AccelerateGetNewsTask extends BaseAccelerateGetNewsTask {
         public AccelerateGetNewsTask(Server server) {
-            this.server = server;
+            super(server);
         }
 
         @Override
-        protected Void doInBackground(Void... aVoid) {
-            Type listType = new TypeToken<List<DailyNews>>() {
+        protected void onPreExecute() {
+            mPullToRefreshLayout.setRefreshing(true);
+        }
 
-            }.getType();
-
-            String jsonFromWeb;
-            try {
-                if (server == Server.SAE) {
-                    jsonFromWeb = downloadStringFromUrl(Constants.
-                            ZHIHU_DAILY_PURIFY_SAE_BEFORE_URL + date);
-                } else {
-                    jsonFromWeb = downloadStringFromUrl(Constants.
-                            ZHIHU_DAILY_PURIFY_HEROKU_BEFORE_URL + date);
-                }
-            } catch (IOException e) {
-                isRefreshSuccess = false;
-                return null;
-            }
-
-            String newsListJSON = Html.fromHtml(
-                    Html.fromHtml(jsonFromWeb).toString()).toString();
-
-            if (!TextUtils.isEmpty(newsListJSON)) {
-                try {
-                    resultNewsList = new GsonBuilder().create().
-                            fromJson(newsListJSON, listType);
-                } catch (JsonSyntaxException e) {
-                    isRefreshSuccess = false;
-                }
-            } else {
-                isRefreshSuccess = false;
-            }
-
-            return null;
+        @Override
+        protected void onPostExecute(List<DailyNews> result) {
+            commonOnPostExecute(result, isRefreshSuccess);
         }
     }
 }

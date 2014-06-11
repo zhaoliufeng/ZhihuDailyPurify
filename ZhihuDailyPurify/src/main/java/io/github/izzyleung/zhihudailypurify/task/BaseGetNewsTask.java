@@ -25,6 +25,7 @@ public abstract class BaseGetNewsTask extends BaseDownloadTask<Void, Void, List<
     @Override
     protected void onPostExecute(List<DailyNews> resultNewsList) {
         mCallback.afterTaskFinished(resultNewsList, isRefreshSuccess, isContentSame);
+        mCallback = null;
     }
 
     protected boolean checkIsNewsListEquals(List<DailyNews> newsListFromWeb) {

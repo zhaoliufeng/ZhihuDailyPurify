@@ -53,14 +53,15 @@ public final class DailyNewsDataSource {
     }
 
     public void insertOrUpdateNewsList(String date, String content) {
-        if (newsListAtDate(date) != null) {
+        if (newsOfTheDay(date) != null) {
             updateNewsList(date, content);
         } else {
             insertDailyNewsList(date, content);
         }
     }
 
-    public List<DailyNews> newsListAtDate(String date) {
+    // That remind you of Queen, huh? ;-)
+    public List<DailyNews> newsOfTheDay(String date) {
         Cursor cursor = database.query(DBHelper.TABLE_NAME,
                 allColumns, DBHelper.COLUMN_DATE + " = " + date, null,
                 null, null, null);

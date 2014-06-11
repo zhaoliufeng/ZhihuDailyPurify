@@ -13,7 +13,7 @@
 
 </string>
     <string name="licenses_subheader">Every project is licensed under the Apache License, Version 2.0, which follows:</string>
-    <string name="apache_license" tools:ignore="TypographyOther">"Apache License
+    <string name="apache_license" tools:ignore="TypographyOther,MissingTranslation">"Apache License
 Version 2.0, January 2004
 http://www.apache.org/licenses/
 

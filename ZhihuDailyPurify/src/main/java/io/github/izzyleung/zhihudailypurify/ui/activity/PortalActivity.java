@@ -31,7 +31,6 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_common);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -135,7 +134,7 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container, displayFragment)
+                .replace(android.R.id.content, displayFragment)
                 .commit();
 
         getActionBar().setTitle(R.string.action_pick_date);
@@ -169,7 +168,7 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container, displayFragment)
+                .replace(android.R.id.content, displayFragment)
                 .addToBackStack(null)
                 .commit();
 

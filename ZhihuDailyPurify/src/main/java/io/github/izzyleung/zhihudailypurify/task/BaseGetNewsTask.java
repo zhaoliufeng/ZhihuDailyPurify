@@ -28,7 +28,7 @@ public abstract class BaseGetNewsTask extends BaseDownloadTask<Void, Void, List<
     }
 
     protected boolean checkIsNewsListEquals(List<DailyNews> newsListFromWeb) {
-        return newsListFromWeb.equals(ZhihuDailyPurifyApplication.getInstance().getDataSource().newsListAtDate(date));
+        return newsListFromWeb.equals(ZhihuDailyPurifyApplication.getInstance().getDataSource().newsOfTheDay(date));
     }
 
     public interface OnTaskFinishedCallback {

@@ -46,22 +46,20 @@ public class MainActivity extends FragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                Intent intent = new Intent();
-                intent.setClass(MainActivity.this, PrefsActivity.class);
-                startActivity(intent);
-                return true;
+                return prepareIntent(PrefsActivity.class);
             case R.id.action_pick_date:
-                intent = new Intent();
-                intent.setClass(MainActivity.this, PortalActivity.class);
-                startActivity(intent);
-                return true;
+                return prepareIntent(PortalActivity.class);
             case R.id.action_go_to_search:
-                intent = new Intent();
-                intent.setClass(MainActivity.this, SearchActivity.class);
-                startActivity(intent);
-                return true;
+                return prepareIntent(SearchActivity.class);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean prepareIntent(Class clazz) {
+        Intent intent = new Intent();
+        intent.setClass(MainActivity.this, clazz);
+        startActivity(intent);
+        return true;
     }
 
     final class MainPagerAdapter extends FragmentStatePagerAdapter {

@@ -20,14 +20,13 @@ public class SearchActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_common);
 
         initView();
 
         searchNewsFragment = new SearchNewsFragment();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.container, searchNewsFragment)
+                .add(android.R.id.content, searchNewsFragment)
                 .commit();
     }
 

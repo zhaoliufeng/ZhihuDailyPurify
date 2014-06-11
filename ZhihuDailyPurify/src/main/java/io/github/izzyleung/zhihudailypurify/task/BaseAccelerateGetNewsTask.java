@@ -1,6 +1,5 @@
 package io.github.izzyleung.zhihudailypurify.task;
 
-import android.text.Html;
 import android.text.TextUtils;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -30,27 +29,26 @@ public class BaseAccelerateGetNewsTask extends BaseDownloadTask<String, Void, Li
         }.getType();
 
         String baseUrl, jsonFromWeb;
+        if (server == Server.SAE) {
+            baseUrl = Constants.ZHIHU_DAILY_PURIFY_SAE_BEFORE_URL;
+        } else {
+            baseUrl = Constants.ZHIHU_DAILY_PURIFY_HEROKU_BEFORE_URL;
+        }
+
         try {
-            if (server == Server.SAE) {
-                baseUrl = Constants.ZHIHU_DAILY_PURIFY_SAE_BEFORE_URL;
-            } else {
-                baseUrl = Constants.ZHIHU_DAILY_PURIFY_HEROKU_BEFORE_URL;
-            }
             jsonFromWeb = downloadStringFromUrl(baseUrl + params[0]);
         } catch (IOException e) {
             isRefreshSuccess = false;
             return null;
         }
 
-        String newsListJSON = Html.fromHtml(
-                Html.fromHtml(jsonFromWeb).toString()).toString();
+        String newsListJSON = convert(jsonFromWeb);
 
         if (!TextUtils.isEmpty(newsListJSON)) {
             try {
-                resultNewsList = new GsonBuilder().create().
-                        fromJson(newsListJSON, listType);
-            } catch (JsonSyntaxException e) {
-                isRefreshSuccess = false;
+                resultNewsList = new GsonBuilder().create().fromJson(newsListJSON, listType);
+            } catch (JsonSyntaxException ignored) {
+
             }
         } else {
             isRefreshSuccess = false;

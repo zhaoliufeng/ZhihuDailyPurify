@@ -1,5 +1,6 @@
 package io.github.izzyleung.zhihudailypurify.task;
 
+import android.text.Html;
 import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -34,5 +35,9 @@ public abstract class BaseDownloadTask<Params, Progress, Result> extends MyAsync
         }
 
         return str.toString();
+    }
+
+    protected String convert(String in) {
+        return Html.fromHtml(Html.fromHtml(in).toString()).toString();
     }
 }

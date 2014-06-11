@@ -1,6 +1,5 @@
 package io.github.izzyleung.zhihudailypurify.task;
 
-import android.text.Html;
 import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,17 +20,10 @@ import java.util.Calendar;
 import java.util.List;
 
 public class BaseSearchTask extends BaseDownloadTask<String, Void, Void> {
-    protected boolean isSearchSuccess = true;
-    protected boolean isResultNull = false;
+    protected boolean isSearchSuccess = false;
 
     protected List<String> dateResultList = new ArrayList<String>();
     protected List<DailyNews> newsList = new ArrayList<DailyNews>();
-
-    private Type newsType = new TypeToken<DailyNews>() {
-
-    }.getType();
-
-    private Gson gson = new GsonBuilder().create();
 
     private SimpleDateFormat simpleDateFormat;
 
@@ -41,7 +33,14 @@ public class BaseSearchTask extends BaseDownloadTask<String, Void, Void> {
 
     @Override
     protected Void doInBackground(String... params) {
+        Gson gson = new GsonBuilder().create();
+
+        Type newsType = new TypeToken<DailyNews>() {
+
+        }.getType();
+
         String result;
+
         try {
             //noinspection deprecation
             result = convert(downloadStringFromUrl(Constants.SEARCH_URL
@@ -50,7 +49,6 @@ public class BaseSearchTask extends BaseDownloadTask<String, Void, Void> {
                 JSONArray resultArray = new JSONArray(result);
 
                 if (resultArray.length() == 0) {
-                    isResultNull = true;
                     return null;
                 } else {
                     for (int i = 0; i < resultArray.length(); i++) {
@@ -63,22 +61,18 @@ public class BaseSearchTask extends BaseDownloadTask<String, Void, Void> {
                         DailyNews news = gson.fromJson(newsObject.getString("content"), newsType);
                         newsList.add(news);
                     }
+
+                    isSearchSuccess = true;
                 }
-            } else {
-                isSearchSuccess = false;
             }
-        } catch (IOException e) {
-            isSearchSuccess = false;
-        } catch (JSONException e) {
-            isSearchSuccess = false;
+        } catch (IOException ignored) {
+
+        } catch (JSONException ignored) {
+
         } catch (ParseException ignored) {
-            isSearchSuccess = false;
+
         }
 
         return null;
-    }
-
-    private String convert(String in) {
-        return Html.fromHtml(Html.fromHtml(in).toString()).toString();
     }
 }

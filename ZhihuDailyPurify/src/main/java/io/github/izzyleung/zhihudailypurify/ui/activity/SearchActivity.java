@@ -101,21 +101,15 @@ public class SearchActivity extends FragmentActivity {
                 dialog = null;
             }
 
-            if (isSearchSuccess && !isCancelled()) {
-                searchNewsFragment.updateContent(newsList, dateResultList);
-            } else {
-                Crouton.makeText(SearchActivity.this,
-                        getString(R.string.network_error),
-                        Style.ALERT).show();
+            if (!isCancelled()) {
+                if (isSearchSuccess) {
+                    searchNewsFragment.updateContent(newsList, dateResultList);
+                } else {
+                    Crouton.makeText(SearchActivity.this,
+                            getString(R.string.no_result_found),
+                            Style.ALERT).show();
+                }
             }
-
-            if (isResultNull && !isCancelled()) {
-                Crouton.makeText(SearchActivity.this,
-                        getString(R.string.no_result_found),
-                        Style.ALERT).show();
-            }
-
-            searchView.clearFocus();
         }
     }
 }

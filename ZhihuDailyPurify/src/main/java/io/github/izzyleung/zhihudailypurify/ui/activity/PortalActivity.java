@@ -21,7 +21,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class PortalActivity extends FragmentActivity implements PickDateFragment.PickDateListener {
+    private int ACTION_PREVIOUS_DAY = 0, ACTION_NEXT_DAY = 1;
+
     private String dateForFragment;
+
     private Calendar calendar = Calendar.getInstance();
     private MenuItem prev, next;
 
@@ -41,9 +44,9 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-
         Crouton.cancelAllCroutons();
+
+        super.onDestroy();
     }
 
     @Override
@@ -84,7 +87,7 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
                     showCrouton(R.string.this_is_today, Style.INFO);
                     return true;
                 }
-                updateFields(ACTION.ACTION_NEXT_DAY);
+                updateFields(ACTION_NEXT_DAY);
                 updateView();
                 return true;
             case R.id.back:
@@ -92,7 +95,7 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
                     showCrouton(R.string.this_is_birthday, Style.INFO);
                     return true;
                 }
-                updateFields(ACTION.ACTION_PREVIOUS_DAY);
+                updateFields(ACTION_PREVIOUS_DAY);
                 updateView();
                 return true;
             default:
@@ -138,12 +141,12 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
         getActionBar().setTitle(R.string.action_pick_date);
     }
 
-    private void updateFields(ACTION action) {
-        if (action == ACTION.ACTION_NEXT_DAY) {
+    private void updateFields(int action) {
+        if (action == ACTION_NEXT_DAY) {
             calendar.add(Calendar.DAY_OF_YEAR, 2);
             dateForFragment = Constants.simpleDateFormat.format(calendar.getTime());
             calendar.add(Calendar.DAY_OF_YEAR, -1);
-        } else {
+        } else if (action == ACTION_PREVIOUS_DAY) {
             dateForFragment = Constants.simpleDateFormat.format(calendar.getTime());
             calendar.add(Calendar.DAY_OF_YEAR, -1);
         }
@@ -216,6 +219,4 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
     private void showCrouton(int resId, Style style) {
         Crouton.makeText(PortalActivity.this, getString(resId), style).show();
     }
-
-    private enum ACTION {ACTION_PREVIOUS_DAY, ACTION_NEXT_DAY}
 }

@@ -12,16 +12,16 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BaseAccelerateGetNewsTask extends BaseDownloadTask<String, Void, List<DailyNews>> {
-    protected boolean isRefreshSuccess = true;
+public class AccelerateGetNewsTask extends BaseGetNewsTask {
     private Server server;
 
-    public BaseAccelerateGetNewsTask(Server server) {
+    public AccelerateGetNewsTask(Server server, String date, OnTaskFinishedCallback callback) {
+        super(date, callback);
         this.server = server;
     }
 
     @Override
-    protected List<DailyNews> doInBackground(String... params) {
+    protected List<DailyNews> doInBackground(Void... params) {
         List<DailyNews> resultNewsList = new ArrayList<DailyNews>();
 
         Type listType = new TypeToken<List<DailyNews>>() {
@@ -36,7 +36,7 @@ public class BaseAccelerateGetNewsTask extends BaseDownloadTask<String, Void, Li
         }
 
         try {
-            jsonFromWeb = downloadStringFromUrl(baseUrl + params[0]);
+            jsonFromWeb = downloadStringFromUrl(baseUrl + date);
         } catch (IOException e) {
             isRefreshSuccess = false;
             return null;
@@ -54,6 +54,7 @@ public class BaseAccelerateGetNewsTask extends BaseDownloadTask<String, Void, Li
             isRefreshSuccess = false;
         }
 
+        isContentSame = checkIsNewsListEquals(resultNewsList);
         return resultNewsList;
     }
 }

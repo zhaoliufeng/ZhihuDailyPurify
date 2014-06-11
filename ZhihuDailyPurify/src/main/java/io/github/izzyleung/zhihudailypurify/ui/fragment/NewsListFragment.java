@@ -18,10 +18,7 @@ import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
-import io.github.izzyleung.zhihudailypurify.task.BaseAccelerateGetNewsTask;
-import io.github.izzyleung.zhihudailypurify.task.BaseOriginalGetNewsTask;
-import io.github.izzyleung.zhihudailypurify.task.SaveNewsListTask;
-import io.github.izzyleung.zhihudailypurify.task.Server;
+import io.github.izzyleung.zhihudailypurify.task.*;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
@@ -37,7 +34,28 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
     // Fragment is single in PortalActivity
     private boolean isSingle;
     private boolean isRefreshed = false;
+    private BaseGetNewsTask.OnTaskFinishedCallback mCallback = new BaseGetNewsTask.OnTaskFinishedCallback() {
+        @Override
+        public void beforeTaskStart() {
+            mPullToRefreshLayout.setRefreshing(true);
+        }
 
+        @Override
+        public void afterTaskFinished(List<DailyNews> resultList, boolean isRefreshSuccess, boolean isContentSame) {
+            if (isRefreshSuccess && !isContentSame) {
+                newsList = resultList;
+                listAdapter.updateNewsList(newsList);
+                new SaveNewsListTask(date, newsList).execute();
+            }
+
+            mPullToRefreshLayout.setRefreshComplete();
+            isRefreshed = true;
+
+            if (!isRefreshSuccess && isAdded()) {
+                Crouton.makeText(getActivity(), getActivity().getString(R.string.network_error), Style.ALERT).show();
+            }
+        }
+    };
     private ListView listView;
     private PullToRefreshLayout mPullToRefreshLayout;
 
@@ -97,18 +115,14 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         isAutoRefresh = pref.getBoolean("auto_refresh?", true);
 
-        if (isSingle && isAutoRefresh && !isRefreshed) {
-            refresh();
-        }
+        refresh(isSingle);
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
-        if (isVisibleToUser && isAutoRefresh && !isRefreshed) {
-            refresh();
-        }
+        refresh(isVisibleToUser);
     }
 
     @Override
@@ -127,7 +141,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
 
     @Override
     public void onRefreshStarted(View view) {
-        refresh();
+        refresh(true);
     }
 
     @Override
@@ -147,52 +161,28 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
         listView.setItemChecked(position, true);
     }
 
-    public void refresh() {
-        if (isToday) {
-            new OriginalGetNewsTask().execute(date);
-        } else {
-            if (getActivity() != null) {
+    public void refresh(boolean prerequisite) {
+        if (prerequisite && isAutoRefresh && !isRefreshed) {
+            if (isToday) {
+                new OriginalGetNewsTask(date, mCallback).execute();
+            } else {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
                 if (sharedPreferences.getBoolean("using_accelerate_server?", false)) {
                     Server server;
-                    if (Integer.parseInt(sharedPreferences.getString("which_accelerate_server", "1")) == 1) {
+
+                    // 1 for SAE
+                    if (sharedPreferences.getString("which_accelerate_server", "1").equals("1")) {
                         server = Server.SAE;
                     } else {
                         server = Server.HEROKU;
                     }
 
-                    new AccelerateGetNewsTask(server).execute(date);
+                    new AccelerateGetNewsTask(server, date, mCallback).execute();
                 } else {
-                    new OriginalGetNewsTask().execute(date);
+                    new OriginalGetNewsTask(date, mCallback).execute();
                 }
             }
-        }
-    }
-
-    private void warning() {
-        Crouton.makeText(getActivity(), getActivity().getString(R.string.network_error), Style.ALERT).show();
-    }
-
-    private void commonOnPostExecute(List<DailyNews> result, boolean isRefreshSuccess) {
-        boolean isContentChange = false;
-
-        if (isRefreshSuccess && !newsList.equals(result)) {
-            isContentChange = true;
-            newsList = result;
-
-            listAdapter.updateNewsList(newsList);
-        }
-
-        if (isRefreshSuccess && isContentChange) {
-            new SaveNewsListTask(date, newsList).execute();
-        }
-
-        mPullToRefreshLayout.setRefreshComplete();
-        isRefreshed = true;
-
-        if (!isRefreshSuccess && isAdded()) {
-            warning();
         }
     }
 
@@ -210,38 +200,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                 listAdapter.updateNewsList(newsListRecovered);
             }
 
-            if (isToday && isAutoRefresh) {
-                refresh();
-            }
-        }
-    }
-
-    private class OriginalGetNewsTask extends BaseOriginalGetNewsTask {
-
-        @Override
-        protected void onPreExecute() {
-            mPullToRefreshLayout.setRefreshing(true);
-        }
-
-        @Override
-        protected void onPostExecute(List<DailyNews> result) {
-            commonOnPostExecute(result, isRefreshSuccess);
-        }
-    }
-
-    private class AccelerateGetNewsTask extends BaseAccelerateGetNewsTask {
-        public AccelerateGetNewsTask(Server server) {
-            super(server);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            mPullToRefreshLayout.setRefreshing(true);
-        }
-
-        @Override
-        protected void onPostExecute(List<DailyNews> result) {
-            commonOnPostExecute(result, isRefreshSuccess);
+            refresh(isToday);
         }
     }
 }

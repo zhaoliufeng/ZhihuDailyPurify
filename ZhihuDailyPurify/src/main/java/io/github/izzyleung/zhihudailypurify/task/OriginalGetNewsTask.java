@@ -13,15 +13,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BaseOriginalGetNewsTask extends BaseDownloadTask<String, Void, List<DailyNews>> {
-    protected boolean isRefreshSuccess = true;
+public class OriginalGetNewsTask extends BaseGetNewsTask {
+
+    public OriginalGetNewsTask(String date, OnTaskFinishedCallback callback) {
+        super(date, callback);
+    }
 
     @Override
-    protected List<DailyNews> doInBackground(String... params) {
+    protected List<DailyNews> doInBackground(Void... params) {
         List<DailyNews> resultNewsList = new ArrayList<DailyNews>();
 
         try {
-            JSONObject contents = new JSONObject(downloadStringFromUrl(Constants.ZHIHU_DAILY_BEFORE_URL + params[0]));
+            JSONObject contents = new JSONObject(downloadStringFromUrl(Constants.ZHIHU_DAILY_BEFORE_URL + date));
 
             JSONArray newsArray = contents.getJSONArray("stories");
             for (int i = 0; i < newsArray.length(); i++) {
@@ -41,7 +44,6 @@ public class BaseOriginalGetNewsTask extends BaseDownloadTask<String, Void, List
                         resultNewsList.add(dailyNews);
                     }
                 }
-
             }
         } catch (JSONException e) {
             isRefreshSuccess = false;
@@ -49,6 +51,7 @@ public class BaseOriginalGetNewsTask extends BaseDownloadTask<String, Void, List
             isRefreshSuccess = false;
         }
 
+        isContentSame = checkIsNewsListEquals(resultNewsList);
         return resultNewsList;
     }
 

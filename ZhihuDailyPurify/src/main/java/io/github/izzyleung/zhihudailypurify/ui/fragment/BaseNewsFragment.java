@@ -54,7 +54,7 @@ public abstract class BaseNewsFragment extends Fragment {
                     share.putExtra(Intent.EXTRA_SUBJECT, "This is extra subject");
 
                     String url;
-                    if (actionMode.getCustomView() != null) {
+                    if (newsList.get(longClickItemIndex).isMulti()) {
                         url = newsList.get(longClickItemIndex).getQuestionUrlList().get(spinnerSelectedItemIndex);
                     } else {
                         url = newsList.get(longClickItemIndex).getQuestionUrl();

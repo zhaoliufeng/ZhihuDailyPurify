@@ -15,7 +15,7 @@ import java.util.List;
 
 public class OriginalGetNewsTask extends BaseGetNewsTask {
 
-    public OriginalGetNewsTask(String date, OnTaskFinishedCallback callback) {
+    public OriginalGetNewsTask(String date, GetNewsUpdateUIListener callback) {
         super(date, callback);
     }
 

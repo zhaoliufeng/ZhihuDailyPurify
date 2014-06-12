@@ -10,9 +10,9 @@ public abstract class BaseGetNewsTask extends BaseDownloadTask<Void, Void, List<
     protected boolean isContentSame = false;
     protected String date;
 
-    private OnTaskFinishedCallback mCallback;
+    private GetNewsUpdateUIListener mCallback;
 
-    public BaseGetNewsTask(String date, OnTaskFinishedCallback callback) {
+    public BaseGetNewsTask(String date, GetNewsUpdateUIListener callback) {
         this.date = date;
         this.mCallback = callback;
     }
@@ -32,7 +32,7 @@ public abstract class BaseGetNewsTask extends BaseDownloadTask<Void, Void, List<
         return newsListFromWeb.equals(ZhihuDailyPurifyApplication.getInstance().getDataSource().newsOfTheDay(date));
     }
 
-    public interface OnTaskFinishedCallback {
+    public static interface GetNewsUpdateUIListener {
         public void beforeTaskStart();
 
         public void afterTaskFinished(List<DailyNews> resultList, boolean isRefreshSuccess, boolean isContentSame);

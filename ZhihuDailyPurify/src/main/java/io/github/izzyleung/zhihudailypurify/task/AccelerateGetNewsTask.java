@@ -15,7 +15,7 @@ import java.util.List;
 public class AccelerateGetNewsTask extends BaseGetNewsTask {
     private Server server;
 
-    public AccelerateGetNewsTask(Server server, String date, OnTaskFinishedCallback callback) {
+    public AccelerateGetNewsTask(Server server, String date, GetNewsUpdateUIListener callback) {
         super(date, callback);
         this.server = server;
     }

@@ -165,13 +165,13 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
     }
 
     private final static class CardViewHolder {
-        public ImageView newsImage;
-        public TextView questionTitle;
-        public TextView dailyTitle;
+        ImageView newsImage;
+        TextView questionTitle;
+        TextView dailyTitle;
     }
 
     private final static class HeaderViewHolder {
-        public TextView headerTitle;
+        TextView headerTitle;
     }
 
     private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {

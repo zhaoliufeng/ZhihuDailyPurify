@@ -30,6 +30,7 @@ public class PickDateFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pick_date, container, false);
+
         assert view != null;
         CalendarPickerView calendarPickerView = (CalendarPickerView) view.findViewById(R.id.calendar_view);
         Calendar nextDay = Calendar.getInstance();
@@ -53,6 +54,7 @@ public class PickDateFragment extends Fragment {
                 mOnDateSelectedListener.onInvalidDateSelected(date);
             }
         });
+
         return view;
     }
 

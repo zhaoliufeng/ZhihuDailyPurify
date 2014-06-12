@@ -34,7 +34,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
     // Fragment is single in PortalActivity
     private boolean isSingle;
     private boolean isRefreshed = false;
-    private BaseGetNewsTask.OnTaskFinishedCallback mCallback = new BaseGetNewsTask.OnTaskFinishedCallback() {
+    private BaseGetNewsTask.GetNewsUpdateUIListener mCallback = new BaseGetNewsTask.GetNewsUpdateUIListener() {
         @Override
         public void beforeTaskStart() {
             mPullToRefreshLayout.setRefreshing(true);

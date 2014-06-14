@@ -1,7 +1,6 @@
 package io.github.izzyleung.zhihudailypurify.ui.fragment;
 
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -19,13 +18,11 @@ import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
 import io.github.izzyleung.zhihudailypurify.task.*;
-import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
-import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
+import io.github.izzyleung.zhihudailypurify.ui.widget.SwipeRefreshLayout;
 
 import java.util.List;
 
-public class NewsListFragment extends BaseNewsFragment implements OnRefreshListener {
+public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLayout.OnRefreshListener {
     private String date;
 
     private boolean isAutoRefresh;
@@ -37,7 +34,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
     private BaseGetNewsTask.GetNewsUpdateUIListener mCallback = new BaseGetNewsTask.GetNewsUpdateUIListener() {
         @Override
         public void beforeTaskStart() {
-            mPullToRefreshLayout.setRefreshing(true);
+            mSwipeRefreshLayout.setRefreshing(true);
         }
 
         @Override
@@ -48,7 +45,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                 new SaveNewsListTask(date, newsList).execute();
             }
 
-            mPullToRefreshLayout.setRefreshComplete();
+            mSwipeRefreshLayout.setRefreshing(false);
             isRefreshed = true;
 
             if (!isRefreshSuccess && isAdded()) {
@@ -57,7 +54,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
         }
     };
     private ListView listView;
-    private PullToRefreshLayout mPullToRefreshLayout;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,11 +93,12 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
             }
         });
 
-        mPullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.ptr_layout);
-        ActionBarPullToRefresh.from(getActivity())
-                .allChildrenArePullable()
-                .listener(this)
-                .setup(mPullToRefreshLayout);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.ptr_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorScheme(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         new RecoverNewsListTask().executeOnExecutor(MyAsyncTask.THREAD_POOL_EXECUTOR);
 
@@ -130,18 +128,6 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
         Crouton.cancelAllCroutons();
 
         super.onDestroy();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        mPullToRefreshLayout.getHeaderTransformer().onConfigurationChanged(getActivity(), newConfig);
-    }
-
-    @Override
-    public void onRefreshStarted(View view) {
-        refresh(true);
     }
 
     @Override
@@ -184,6 +170,11 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                 }
             }
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        refresh(true);
     }
 
     private class RecoverNewsListTask extends MyAsyncTask<Void, Void, List<DailyNews>> {

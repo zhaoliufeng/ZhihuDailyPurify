@@ -28,7 +28,7 @@ __Disclaimer - 声明__
     - Android SDK Build-tools 19.1 +
     - Android Support Repository 5 +
     
-  Set `ANDROID_HOME` environment variable properly - 将 `ANDROID_HOME` 指向你的 Android SDK 目录
+Set `ANDROID_HOME` environment variable properly - 将 `ANDROID_HOME` 指向你的 Android SDK 目录
 
 ### Build - 构建
 `./gradlew assemble`  

@@ -21,7 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class PortalActivity extends FragmentActivity implements PickDateFragment.PickDateListener {
-    private int ACTION_PREVIOUS_DAY = 0, ACTION_NEXT_DAY = 1;
+    private static final int ACTION_PREVIOUS_DAY = 0, ACTION_NEXT_DAY = 1;
 
     private String dateForFragment;
 

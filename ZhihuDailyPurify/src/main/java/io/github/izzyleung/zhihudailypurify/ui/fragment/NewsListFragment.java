@@ -115,7 +115,7 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         isAutoRefresh = pref.getBoolean("auto_refresh?", true);
 
-        refresh(isSingle);
+        refresh(isToday || isSingle);
     }
 
     @Override
@@ -199,8 +199,6 @@ public class NewsListFragment extends BaseNewsFragment implements OnRefreshListe
                 newsList = newsListRecovered;
                 listAdapter.updateNewsList(newsListRecovered);
             }
-
-            refresh(isToday);
         }
     }
 }

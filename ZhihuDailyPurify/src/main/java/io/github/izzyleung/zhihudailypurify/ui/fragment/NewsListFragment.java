@@ -93,7 +93,7 @@ public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLa
             }
         });
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.ptr_layout);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorScheme(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -113,14 +113,14 @@ public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLa
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         isAutoRefresh = pref.getBoolean("auto_refresh?", true);
 
-        refresh(isToday || isSingle);
+        refresh((isToday || isSingle) && isAutoRefresh && !isRefreshed);
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
-        refresh(isVisibleToUser);
+        refresh(isVisibleToUser && isAutoRefresh && !isRefreshed);
     }
 
     @Override
@@ -147,27 +147,31 @@ public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLa
         listView.setItemChecked(position, true);
     }
 
-    public void refresh(boolean prerequisite) {
-        if (prerequisite && isAutoRefresh && !isRefreshed) {
-            if (isToday) {
-                new OriginalGetNewsTask(date, mCallback).execute();
-            } else {
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+    private void refresh(boolean prerequisite) {
+        if (prerequisite) {
+            doRefresh();
+        }
+    }
 
-                if (sharedPreferences.getBoolean("using_accelerate_server?", false)) {
-                    Server server;
+    private void doRefresh() {
+        if (isToday) {
+            new OriginalGetNewsTask(date, mCallback).execute();
+        } else {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-                    // 1 for SAE
-                    if (sharedPreferences.getString("which_accelerate_server", "1").equals("1")) {
-                        server = Server.SAE;
-                    } else {
-                        server = Server.HEROKU;
-                    }
+            if (sharedPreferences.getBoolean("using_accelerate_server?", false)) {
+                Server server;
 
-                    new AccelerateGetNewsTask(server, date, mCallback).execute();
+                // 1 for SAE
+                if (sharedPreferences.getString("which_accelerate_server", "1").equals("1")) {
+                    server = Server.SAE;
                 } else {
-                    new OriginalGetNewsTask(date, mCallback).execute();
+                    server = Server.HEROKU;
                 }
+
+                new AccelerateGetNewsTask(server, date, mCallback).execute();
+            } else {
+                new OriginalGetNewsTask(date, mCallback).execute();
             }
         }
     }

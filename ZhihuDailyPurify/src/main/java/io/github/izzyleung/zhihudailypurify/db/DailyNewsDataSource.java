@@ -60,7 +60,7 @@ public final class DailyNewsDataSource {
         }
     }
 
-    // That remind you of Queen, huh? ;-)
+    // That reminds you of Queen, huh? ;-)
     public List<DailyNews> newsOfTheDay(String date) {
         Cursor cursor = database.query(DBHelper.TABLE_NAME,
                 allColumns, DBHelper.COLUMN_DATE + " = " + date, null,

@@ -19,7 +19,7 @@ import java.util.List;
 public class SearchNewsFragment extends BaseNewsFragment {
     private List<String> dateResultList = new ArrayList<String>();
 
-    private StickyListHeadersListView stickyListHeadersListView;
+    private StickyListHeadersListView mStickyListHeadersListView;
 
     @Override
     public void onAttach(Activity activity) {
@@ -30,31 +30,31 @@ public class SearchNewsFragment extends BaseNewsFragment {
 
     @Override
     protected boolean isCleanListChoice() {
-        int position = stickyListHeadersListView.getCheckedItemPosition();
-        return stickyListHeadersListView.getFirstVisiblePosition() > position
-                || stickyListHeadersListView.getLastVisiblePosition() < position;
+        int position = mStickyListHeadersListView.getCheckedItemPosition();
+        return mStickyListHeadersListView.getFirstVisiblePosition() > position
+                || mStickyListHeadersListView.getLastVisiblePosition() < position;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         assert view != null;
-        stickyListHeadersListView = (StickyListHeadersListView)
+        mStickyListHeadersListView = (StickyListHeadersListView)
                 view.findViewById(R.id.result_list);
-        stickyListHeadersListView.setAdapter(listAdapter);
-        stickyListHeadersListView.setOnScrollListener(
+        mStickyListHeadersListView.setAdapter(listAdapter);
+        mStickyListHeadersListView.setOnScrollListener(
                 new PauseOnScrollListener(ImageLoader.getInstance(),
                         false,
                         true,
                         onScrollListener));
-        stickyListHeadersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mStickyListHeadersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 listItemOnClick(position);
             }
         });
-        stickyListHeadersListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-        stickyListHeadersListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        mStickyListHeadersListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        mStickyListHeadersListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 return listItemOnLongClick(position);
@@ -67,7 +67,7 @@ public class SearchNewsFragment extends BaseNewsFragment {
     @Override
     protected void clearListChoice() {
         for (int i = 0; i < newsList.size(); i++) {
-            stickyListHeadersListView.setItemChecked(i, false);
+            mStickyListHeadersListView.setItemChecked(i, false);
         }
 
         listAdapter.notifyDataSetChanged();
@@ -75,7 +75,7 @@ public class SearchNewsFragment extends BaseNewsFragment {
 
     @Override
     protected void checkItemAtPosition(int position) {
-        stickyListHeadersListView.setItemChecked(position, true);
+        mStickyListHeadersListView.setItemChecked(position, true);
     }
 
     public void updateContent(List<DailyNews> newsList, List<String> dateResultList) {
@@ -83,6 +83,6 @@ public class SearchNewsFragment extends BaseNewsFragment {
         this.dateResultList = dateResultList;
 
         listAdapter.updateContents(newsList, dateResultList);
-        stickyListHeadersListView.setSelection(0);
+        mStickyListHeadersListView.setSelection(0);
     }
 }

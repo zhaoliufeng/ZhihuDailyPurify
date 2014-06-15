@@ -92,7 +92,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
     <string name="action_back">The Day Before</string>
     <string name="this_is_today">This is today, no content for tomorrow!</string>
     <string name="this_is_birthday">This is birthday, no content before it!</string>
-    <string name="using_accelerate_server">Using accelerate server?</string>
+    <string name="using_accelerate_server">Using accelerate serverCode?</string>
     <string name="using_accelerate_server_summary">Check this to browse old news faster</string>
     <string name="settings_network_settings">Network Settings</string>
     <string name="action_search">Search</string>
@@ -100,10 +100,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
     <string name="no_result_found">No result found</string>
     <string name="searching">Searching for result…</string>
     <string name="display_format">EEE, MMM d, yyyy</string>
-    <string name="which_accelerate_server_title">Which accelerate server?</string>
-    <string name="accelerate_server_dialog_title">Please select one accelerate server</string>
-    <string name="accelerate_server_hint_dialog_title">Do you want to use the accelerate server?</string>
-    <string name="accelerate_server_hint_dialog_message">The server will save your data budget and bring you faster speed when browsing old days\' news.</string>
+    <string name="which_accelerate_server_title">Which accelerate serverCode?</string>
+    <string name="accelerate_server_dialog_title">Please select one accelerate serverCode</string>
+    <string name="accelerate_server_hint_dialog_title">Do you want to use the accelerate serverCode?</string>
+    <string name="accelerate_server_hint_dialog_message">The serverCode will save your data budget and bring you faster speed when browsing old days\' news.</string>
     <string name="action_share_url">Share</string>
     <string name="share_to">Share to…</string>
 </resources>

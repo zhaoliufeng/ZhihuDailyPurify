@@ -22,18 +22,17 @@ public abstract class BaseDownloadTask<Params, Progress, Result> extends MyAsync
         HttpConnectionParams.setSoTimeout(params, 5 * 1000);
 
         HttpGet request = new HttpGet(url);
-        String result = "";
 
         try {
             HttpResponse httpResponse = client.execute(request);
             if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                result = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+                return EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
             }
         } finally {
             client.getConnectionManager().shutdown();
         }
 
-        return result;
+        return null;
     }
 
     protected String convert(String in) {

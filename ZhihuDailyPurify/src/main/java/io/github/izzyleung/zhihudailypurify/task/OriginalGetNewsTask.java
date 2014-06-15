@@ -15,7 +15,7 @@ import java.util.List;
 
 public class OriginalGetNewsTask extends BaseGetNewsTask {
 
-    public OriginalGetNewsTask(String date, GetNewsUpdateUIListener callback) {
+    public OriginalGetNewsTask(String date, UpdateUIListener callback) {
         super(date, callback);
     }
 
@@ -51,7 +51,7 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
             isRefreshSuccess = false;
         }
 
-        isContentSame = checkIsNewsListEquals(resultNewsList);
+        isContentSame = checkIsContentSame(resultNewsList);
         return resultNewsList;
     }
 

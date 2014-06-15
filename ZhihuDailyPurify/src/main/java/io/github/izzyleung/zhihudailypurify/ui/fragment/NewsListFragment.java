@@ -31,7 +31,8 @@ public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLa
     // Fragment is single in PortalActivity
     private boolean isSingle;
     private boolean isRefreshed = false;
-    private BaseGetNewsTask.GetNewsUpdateUIListener mCallback = new BaseGetNewsTask.GetNewsUpdateUIListener() {
+    private BaseGetNewsTask.UpdateUIListener mCallback = new BaseGetNewsTask.UpdateUIListener() {
+
         @Override
         public void beforeTaskStart() {
             mSwipeRefreshLayout.setRefreshing(true);
@@ -53,7 +54,8 @@ public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLa
             }
         }
     };
-    private ListView listView;
+
+    private ListView mListView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
@@ -75,18 +77,18 @@ public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLa
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
 
         assert view != null;
-        listView = (ListView) view.findViewById(R.id.news_list);
-        listView.setAdapter(listAdapter);
-        listView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true, onScrollListener));
+        mListView = (ListView) view.findViewById(R.id.news_list);
+        mListView.setAdapter(listAdapter);
+        mListView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true, onScrollListener));
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 listItemOnClick(position);
             }
         });
-        listView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        mListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 return listItemOnLongClick(position);
@@ -132,19 +134,19 @@ public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLa
 
     @Override
     protected boolean isCleanListChoice() {
-        int position = listView.getCheckedItemPosition();
-        return listView.getFirstVisiblePosition() > position || listView.getLastVisiblePosition() < position;
+        int position = mListView.getCheckedItemPosition();
+        return mListView.getFirstVisiblePosition() > position || mListView.getLastVisiblePosition() < position;
     }
 
     @Override
     protected void clearListChoice() {
-        listView.clearChoices();
+        mListView.clearChoices();
         listAdapter.notifyDataSetChanged();
     }
 
     @Override
     protected void checkItemAtPosition(int position) {
-        listView.setItemChecked(position, true);
+        mListView.setItemChecked(position, true);
     }
 
     private void refresh(boolean prerequisite) {
@@ -158,17 +160,13 @@ public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLa
             new OriginalGetNewsTask(date, mCallback).execute();
         } else {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
             if (sharedPreferences.getBoolean("using_accelerate_server?", false)) {
-                Server server;
-
-                // 1 for SAE
-                if (sharedPreferences.getString("which_accelerate_server", "1").equals("1")) {
-                    server = Server.SAE;
+                String server;
+                if (sharedPreferences.getString("which_accelerate_server", ServerCode.SAE).equals(ServerCode.SAE)) {
+                    server = ServerCode.SAE;
                 } else {
-                    server = Server.HEROKU;
+                    server = ServerCode.HEROKU;
                 }
-
                 new AccelerateGetNewsTask(server, date, mCallback).execute();
             } else {
                 new OriginalGetNewsTask(date, mCallback).execute();
@@ -178,7 +176,7 @@ public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLa
 
     @Override
     public void onRefresh() {
-        refresh(true);
+        doRefresh();
     }
 
     private class RecoverNewsListTask extends MyAsyncTask<Void, Void, List<DailyNews>> {

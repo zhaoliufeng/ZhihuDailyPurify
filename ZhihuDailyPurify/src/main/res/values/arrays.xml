@@ -4,7 +4,6 @@
         xmlns:tools="http://schemas.android.com/tools">
     <string-array name="apache_licensed_projects"
                   tools:ignore="MissingTranslation">
-        <item>ActionBar-PullToRefresh (Chris Banes)</item>
         <item>PagerSlidingTabStrip (Andreas Stuetz)</item>
         <item>Crouton (Benjamin Weiss)</item>
         <item>Sticky List Headers (Emil Sjölander)</item>

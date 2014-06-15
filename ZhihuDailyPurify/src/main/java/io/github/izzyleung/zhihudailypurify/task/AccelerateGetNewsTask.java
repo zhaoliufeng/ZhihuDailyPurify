@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AccelerateGetNewsTask extends BaseGetNewsTask {
-    private Server server;
+    private String serverCode;
 
-    public AccelerateGetNewsTask(Server server, String date, GetNewsUpdateUIListener callback) {
+    public AccelerateGetNewsTask(String serverCode, String date, UpdateUIListener callback) {
         super(date, callback);
-        this.server = server;
+        this.serverCode = serverCode;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class AccelerateGetNewsTask extends BaseGetNewsTask {
         }.getType();
 
         String baseUrl, jsonFromWeb;
-        if (server == Server.SAE) {
+        if (serverCode.equals(ServerCode.SAE)) {
             baseUrl = Constants.ZHIHU_DAILY_PURIFY_SAE_BEFORE_URL;
         } else {
             baseUrl = Constants.ZHIHU_DAILY_PURIFY_HEROKU_BEFORE_URL;
@@ -54,7 +54,7 @@ public class AccelerateGetNewsTask extends BaseGetNewsTask {
             isRefreshSuccess = false;
         }
 
-        isContentSame = checkIsNewsListEquals(resultNewsList);
+        isContentSame = checkIsContentSame(resultNewsList);
         return resultNewsList;
     }
 }

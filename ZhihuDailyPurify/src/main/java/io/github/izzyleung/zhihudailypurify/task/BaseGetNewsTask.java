@@ -10,29 +10,29 @@ public abstract class BaseGetNewsTask extends BaseDownloadTask<Void, Void, List<
     protected boolean isContentSame = false;
     protected String date;
 
-    private GetNewsUpdateUIListener mCallback;
+    private UpdateUIListener mListener;
 
-    public BaseGetNewsTask(String date, GetNewsUpdateUIListener callback) {
+    public BaseGetNewsTask(String date, UpdateUIListener callback) {
         this.date = date;
-        this.mCallback = callback;
+        this.mListener = callback;
     }
 
     @Override
     protected void onPreExecute() {
-        mCallback.beforeTaskStart();
+        mListener.beforeTaskStart();
     }
 
     @Override
     protected void onPostExecute(List<DailyNews> resultNewsList) {
-        mCallback.afterTaskFinished(resultNewsList, isRefreshSuccess, isContentSame);
-        mCallback = null;
+        mListener.afterTaskFinished(resultNewsList, isRefreshSuccess, isContentSame);
+        mListener = null;
     }
 
-    protected boolean checkIsNewsListEquals(List<DailyNews> newsListFromWeb) {
-        return newsListFromWeb.equals(ZhihuDailyPurifyApplication.getInstance().getDataSource().newsOfTheDay(date));
+    protected boolean checkIsContentSame(List<DailyNews> externalNewsList) {
+        return externalNewsList.equals(ZhihuDailyPurifyApplication.getInstance().getDataSource().newsOfTheDay(date));
     }
 
-    public static interface GetNewsUpdateUIListener {
+    public static interface UpdateUIListener {
         public void beforeTaskStart();
 
         public void afterTaskFinished(List<DailyNews> resultList, boolean isRefreshSuccess, boolean isContentSame);

@@ -2,39 +2,38 @@ package io.github.izzyleung.zhihudailypurify.task;
 
 import android.text.Html;
 import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.util.EntityUtils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 public abstract class BaseDownloadTask<Params, Progress, Result> extends MyAsyncTask<Params, Progress, Result> {
     protected String downloadStringFromUrl(String url) throws IOException {
         HttpClient client = new DefaultHttpClient();
-        HttpGet request = new HttpGet(url);
 
-        InputStream in = null;
-        StringBuilder str = new StringBuilder();
+        HttpParams params = client.getParams();
+        HttpConnectionParams.setConnectionTimeout(params, 5 * 1000);
+        HttpConnectionParams.setSoTimeout(params, 5 * 1000);
+
+        HttpGet request = new HttpGet(url);
+        String result = "";
 
         try {
-            in = client.execute(request).getEntity().getContent();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                str.append(line);
+            HttpResponse httpResponse = client.execute(request);
+            if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                result = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
             }
         } finally {
-            if (in != null) {
-                in.close();
-            }
+            client.getConnectionManager().shutdown();
         }
 
-        return str.toString();
+        return result;
     }
 
     protected String convert(String in) {

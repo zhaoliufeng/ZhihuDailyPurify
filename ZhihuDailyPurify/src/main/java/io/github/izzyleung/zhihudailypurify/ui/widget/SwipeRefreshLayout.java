@@ -56,11 +56,18 @@ import android.widget.AbsListView;
  * refresh of the content wherever this gesture is used.</p>
  */
 public class SwipeRefreshLayout extends ViewGroup {
-    private static final long RETURN_TO_ORIGINAL_POSITION_TIMEOUT = 300;
-    private static final float ACCELERATE_INTERPOLATION_FACTOR = 1.5f;
-    private static final float DECELERATE_INTERPOLATION_FACTOR = 2f;
+    //    private static final long RETURN_TO_ORIGINAL_POSITION_TIMEOUT = 300;
+//    private static final float ACCELERATE_INTERPOLATION_FACTOR = 1.5f;
+//    private static final float DECELERATE_INTERPOLATION_FACTOR = 2f;
+    private static final long RETURN_TO_ORIGINAL_POSITION_TIMEOUT = 100;
+    private static final float ACCELERATE_INTERPOLATION_FACTOR = 1f;
+    private static final float DECELERATE_INTERPOLATION_FACTOR = 1f;
+
     private static final float PROGRESS_BAR_HEIGHT = 4;
-    private static final float MAX_SWIPE_DISTANCE_FACTOR = .6f;
+
+    //    private static final float MAX_SWIPE_DISTANCE_FACTOR = .6f;
+    private static final float MAX_SWIPE_DISTANCE_FACTOR = 1f;
+
     private static final int REFRESH_TRIGGER_DISTANCE = 120;
     private static final int[] LAYOUT_ATTRS = new int[]{
             android.R.attr.enabled

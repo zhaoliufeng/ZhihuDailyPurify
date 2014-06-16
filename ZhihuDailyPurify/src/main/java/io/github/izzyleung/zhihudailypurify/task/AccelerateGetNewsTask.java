@@ -42,7 +42,7 @@ public class AccelerateGetNewsTask extends BaseGetNewsTask {
             return null;
         }
 
-        String newsListJSON = convert(jsonFromWeb);
+        String newsListJSON = decodeHtml(jsonFromWeb);
 
         if (!TextUtils.isEmpty(newsListJSON)) {
             try {

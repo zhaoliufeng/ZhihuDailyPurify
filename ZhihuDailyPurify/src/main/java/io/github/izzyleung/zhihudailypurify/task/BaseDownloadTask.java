@@ -35,7 +35,7 @@ public abstract class BaseDownloadTask<Params, Progress, Result> extends MyAsync
         return null;
     }
 
-    protected String convert(String in) {
+    protected String decodeHtml(String in) {
         return Html.fromHtml(Html.fromHtml(in).toString()).toString();
     }
 }

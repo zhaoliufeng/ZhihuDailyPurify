@@ -97,7 +97,8 @@ public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLa
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorScheme(android.R.color.holo_blue_bright,
+        mSwipeRefreshLayout.setColorScheme(
+                android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
@@ -161,13 +162,13 @@ public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLa
         } else {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             if (sharedPreferences.getBoolean("using_accelerate_server?", false)) {
-                String server;
+                String serverCode;
                 if (sharedPreferences.getString("which_accelerate_server", ServerCode.SAE).equals(ServerCode.SAE)) {
-                    server = ServerCode.SAE;
+                    serverCode = ServerCode.SAE;
                 } else {
-                    server = ServerCode.HEROKU;
+                    serverCode = ServerCode.HEROKU;
                 }
-                new AccelerateGetNewsTask(server, date, mCallback).execute();
+                new AccelerateGetNewsTask(serverCode, date, mCallback).execute();
             } else {
                 new OriginalGetNewsTask(date, mCallback).execute();
             }

@@ -3,6 +3,5 @@ build/
 *.iml
 /.idea/
 ZhihuDailyAPI.md
-local.properties
 .gradletasknamecache
 android/

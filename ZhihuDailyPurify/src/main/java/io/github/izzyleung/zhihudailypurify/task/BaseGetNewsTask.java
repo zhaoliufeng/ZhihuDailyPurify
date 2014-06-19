@@ -2,6 +2,7 @@ package io.github.izzyleung.zhihudailypurify.task;
 
 import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
+import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
 
 import java.util.List;
 
@@ -24,6 +25,10 @@ public abstract class BaseGetNewsTask extends BaseDownloadTask<Void, Void, List<
 
     @Override
     protected void onPostExecute(List<DailyNews> resultNewsList) {
+        if (isRefreshSuccess && !isContentSame) {
+            new SaveNewsListTask(date, resultNewsList).executeOnExecutor(MyAsyncTask.THREAD_POOL_EXECUTOR);
+        }
+
         mListener.afterTaskFinished(resultNewsList, isRefreshSuccess, isContentSame);
         mListener = null;
     }

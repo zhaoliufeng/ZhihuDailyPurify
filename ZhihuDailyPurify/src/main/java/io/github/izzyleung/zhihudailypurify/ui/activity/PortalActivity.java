@@ -90,7 +90,7 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
                 updateView();
                 return true;
             case R.id.back:
-                if (isSameDay(Constants.birthday, calendar.getTime())) {
+                if (isSameDay(Constants.Date.birthday, calendar.getTime())) {
                     showCrouton(R.string.this_is_birthday, Style.INFO);
                     return true;
                 }
@@ -127,7 +127,7 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
 
     private void showPickDateFragment() {
         Bundle bundle = new Bundle();
-        bundle.putString("date", Constants.simpleDateFormat.format(calendar.getTime()));
+        bundle.putString("date", Constants.Date.simpleDateFormat.format(calendar.getTime()));
 
         Fragment displayFragment = new PickDateFragment();
         displayFragment.setArguments(bundle);
@@ -143,10 +143,10 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
     private void updateFields(int action) {
         if (action == ACTION_NEXT_DAY) {
             calendar.add(Calendar.DAY_OF_YEAR, 2);
-            dateForFragment = Constants.simpleDateFormat.format(calendar.getTime());
+            dateForFragment = Constants.Date.simpleDateFormat.format(calendar.getTime());
             calendar.add(Calendar.DAY_OF_YEAR, -1);
         } else if (action == ACTION_PREVIOUS_DAY) {
-            dateForFragment = Constants.simpleDateFormat.format(calendar.getTime());
+            dateForFragment = Constants.Date.simpleDateFormat.format(calendar.getTime());
             calendar.add(Calendar.DAY_OF_YEAR, -1);
         }
     }
@@ -192,11 +192,13 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
     public void onValidDateSelected(Date date) {
         calendar.setTime(date);
         calendar.add(Calendar.DAY_OF_YEAR, 1);
-        dateForFragment = Constants.simpleDateFormat.format(calendar.getTime());
+        dateForFragment = Constants.Date.simpleDateFormat.format(calendar.getTime());
         calendar.add(Calendar.DAY_OF_YEAR, -1);
 
         prev.setVisible(true);
         next.setVisible(true);
+
+        Crouton.cancelAllCroutons();
 
         updateView();
     }

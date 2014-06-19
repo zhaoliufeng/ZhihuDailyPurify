@@ -32,7 +32,7 @@ public abstract class BaseDownloadTask<Params, Progress, Result> extends MyAsync
             client.getConnectionManager().shutdown();
         }
 
-        return null;
+        return "";
     }
 
     protected String decodeHtml(String in) {

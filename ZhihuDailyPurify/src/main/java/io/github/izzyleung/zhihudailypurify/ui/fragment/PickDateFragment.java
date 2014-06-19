@@ -35,7 +35,7 @@ public class PickDateFragment extends Fragment {
         CalendarPickerView calendarPickerView = (CalendarPickerView) view.findViewById(R.id.calendar_view);
         Calendar nextDay = Calendar.getInstance();
         nextDay.add(Calendar.DAY_OF_YEAR, 1);
-        calendarPickerView.init(Constants.birthday, nextDay.getTime())
+        calendarPickerView.init(Constants.Date.birthday, nextDay.getTime())
                 .withSelectedDate(mOnDateSelectedListener.getDate());
         calendarPickerView.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
             @Override
@@ -65,7 +65,7 @@ public class PickDateFragment extends Fragment {
         super.onDetach();
     }
 
-    public interface PickDateListener {
+    public static interface PickDateListener {
         public void onValidDateSelected(Date date);
 
         public void onInvalidDateSelected(Date date);

@@ -24,7 +24,7 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
         List<DailyNews> resultNewsList = new ArrayList<DailyNews>();
 
         try {
-            JSONObject contents = new JSONObject(downloadStringFromUrl(Constants.ZHIHU_DAILY_BEFORE_URL + date));
+            JSONObject contents = new JSONObject(downloadStringFromUrl(Constants.Url.ZHIHU_DAILY_BEFORE + date));
 
             JSONArray newsArray = contents.getJSONArray("stories");
             for (int i = 0; i < newsArray.length(); i++) {
@@ -36,7 +36,7 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
                         : null);
                 dailyNews.setDailyTitle(singleNews.getString("title"));
                 String newsInfoJson =
-                        downloadStringFromUrl(Constants.ZHIHU_DAILY_OFFLINE_NEWS_URL + singleNews.getString("id"));
+                        downloadStringFromUrl(Constants.Url.ZHIHU_DAILY_OFFLINE_NEWS + singleNews.getString("id"));
                 JSONObject newsDetail = new JSONObject(newsInfoJson);
                 if (newsDetail.has("body")) {
                     Document doc = Jsoup.parse(newsDetail.getString("body"));

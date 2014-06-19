@@ -43,7 +43,7 @@ public class BaseSearchTask extends BaseDownloadTask<String, Void, Void> {
 
         try {
             //noinspection deprecation
-            result = decodeHtml(downloadStringFromUrl(Constants.SEARCH_URL
+            result = decodeHtml(downloadStringFromUrl(Constants.Url.SEARCH
                     + URLEncoder.encode(params[0].trim()).replace("+", "%20")));
             if (!TextUtils.isEmpty(result) && !isCancelled()) {
                 JSONArray resultArray = new JSONArray(result);
@@ -55,7 +55,7 @@ public class BaseSearchTask extends BaseDownloadTask<String, Void, Void> {
                         JSONObject newsObject = resultArray.getJSONObject(i);
                         String date = newsObject.getString("date");
                         Calendar calendar = Calendar.getInstance();
-                        calendar.setTime(Constants.simpleDateFormat.parse(date));
+                        calendar.setTime(Constants.Date.simpleDateFormat.parse(date));
                         calendar.add(Calendar.DAY_OF_YEAR, -1);
                         dateResultList.add(simpleDateFormat.format(calendar.getTime()));
                         DailyNews news = gson.fromJson(newsObject.getString("content"), newsType);

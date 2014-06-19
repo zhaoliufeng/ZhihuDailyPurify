@@ -16,8 +16,11 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
+import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
-import io.github.izzyleung.zhihudailypurify.task.*;
+import io.github.izzyleung.zhihudailypurify.task.AccelerateGetNewsTask;
+import io.github.izzyleung.zhihudailypurify.task.BaseGetNewsTask;
+import io.github.izzyleung.zhihudailypurify.task.OriginalGetNewsTask;
 import io.github.izzyleung.zhihudailypurify.ui.widget.SwipeRefreshLayout;
 
 import java.util.List;
@@ -40,16 +43,16 @@ public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLa
 
         @Override
         public void afterTaskFinished(List<DailyNews> resultList, boolean isRefreshSuccess, boolean isContentSame) {
-            if (isRefreshSuccess && !isContentSame) {
-                newsList = resultList;
-                listAdapter.updateNewsList(newsList);
-                new SaveNewsListTask(date, newsList).execute();
-            }
-
+            clearActionMode();
             mSwipeRefreshLayout.setRefreshing(false);
             isRefreshed = true;
 
-            if (!isRefreshSuccess && isAdded()) {
+            if (isRefreshSuccess) {
+                if (!isContentSame) {
+                    newsList = resultList;
+                    listAdapter.updateNewsList(newsList);
+                }
+            } else if (isAdded()) {
                 Crouton.makeText(getActivity(), getActivity().getString(R.string.network_error), Style.ALERT).show();
             }
         }
@@ -163,10 +166,11 @@ public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLa
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             if (sharedPreferences.getBoolean("using_accelerate_server?", false)) {
                 String serverCode;
-                if (sharedPreferences.getString("which_accelerate_server", ServerCode.SAE).equals(ServerCode.SAE)) {
-                    serverCode = ServerCode.SAE;
+                if (sharedPreferences.getString("which_accelerate_server", Constants.ServerCode.SAE)
+                        .equals(Constants.ServerCode.SAE)) {
+                    serverCode = Constants.ServerCode.SAE;
                 } else {
-                    serverCode = ServerCode.HEROKU;
+                    serverCode = Constants.ServerCode.HEROKU;
                 }
                 new AccelerateGetNewsTask(serverCode, date, mCallback).execute();
             } else {

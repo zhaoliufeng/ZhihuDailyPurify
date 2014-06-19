@@ -365,6 +365,10 @@ public class SwipeRefreshLayout extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (mRefreshing) {
+            return false;
+        }
+
         ensureTarget();
         boolean handled = false;
         if (mReturningToStart && ev.getAction() == MotionEvent.ACTION_DOWN) {

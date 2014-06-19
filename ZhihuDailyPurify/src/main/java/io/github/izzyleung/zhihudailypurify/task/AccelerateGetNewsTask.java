@@ -29,10 +29,10 @@ public class AccelerateGetNewsTask extends BaseGetNewsTask {
         }.getType();
 
         String baseUrl, jsonFromWeb;
-        if (serverCode.equals(ServerCode.SAE)) {
-            baseUrl = Constants.ZHIHU_DAILY_PURIFY_SAE_BEFORE_URL;
+        if (serverCode.equals(Constants.ServerCode.SAE)) {
+            baseUrl = Constants.Url.ZHIHU_DAILY_PURIFY_SAE_BEFORE;
         } else {
-            baseUrl = Constants.ZHIHU_DAILY_PURIFY_HEROKU_BEFORE_URL;
+            baseUrl = Constants.Url.ZHIHU_DAILY_PURIFY_HEROKU_BEFORE;
         }
 
         try {

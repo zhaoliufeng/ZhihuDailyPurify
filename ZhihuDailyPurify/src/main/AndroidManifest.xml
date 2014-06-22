@@ -41,7 +41,5 @@
                 android:configChanges="orientation|keyboardHidden|screenSize"
                 android:alwaysRetainTaskState="true">
         </activity>
-
     </application>
-
 </manifest>

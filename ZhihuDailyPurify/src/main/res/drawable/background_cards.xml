@@ -13,7 +13,6 @@
                     android:bottomRightRadius="2dp"/>
 
             <solid android:color="@color/corner_shadow"/>
-
         </shape>
     </item>
 

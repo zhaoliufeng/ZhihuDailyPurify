@@ -25,7 +25,8 @@ import io.github.izzyleung.zhihudailypurify.ui.widget.SwipeRefreshLayout;
 
 import java.util.List;
 
-public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class NewsListFragment extends BaseNewsFragment
+        implements SwipeRefreshLayout.OnRefreshListener, BaseGetNewsTask.UpdateUIListener {
     private String date;
 
     private boolean isAutoRefresh;
@@ -34,29 +35,6 @@ public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLa
     // Fragment is single in PortalActivity
     private boolean isSingle;
     private boolean isRefreshed = false;
-    private BaseGetNewsTask.UpdateUIListener mCallback = new BaseGetNewsTask.UpdateUIListener() {
-
-        @Override
-        public void beforeTaskStart() {
-            mSwipeRefreshLayout.setRefreshing(true);
-        }
-
-        @Override
-        public void afterTaskFinished(List<DailyNews> resultList, boolean isRefreshSuccess, boolean isContentSame) {
-            clearActionMode();
-            mSwipeRefreshLayout.setRefreshing(false);
-            isRefreshed = true;
-
-            if (isRefreshSuccess) {
-                if (!isContentSame) {
-                    newsList = resultList;
-                    listAdapter.updateNewsList(newsList);
-                }
-            } else if (isAdded()) {
-                Crouton.makeText(getActivity(), getActivity().getString(R.string.network_error), Style.ALERT).show();
-            }
-        }
-    };
 
     private ListView mListView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -82,7 +60,7 @@ public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLa
         assert view != null;
         mListView = (ListView) view.findViewById(R.id.news_list);
         mListView.setAdapter(listAdapter);
-        mListView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true, onScrollListener));
+        mListView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true, this));
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -161,7 +139,7 @@ public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLa
 
     private void doRefresh() {
         if (isToday) {
-            new OriginalGetNewsTask(date, mCallback).execute();
+            new OriginalGetNewsTask(date, this).execute();
         } else {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             if (sharedPreferences.getBoolean("using_accelerate_server?", false)) {
@@ -172,9 +150,9 @@ public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLa
                 } else {
                     serverCode = Constants.ServerCode.HEROKU;
                 }
-                new AccelerateGetNewsTask(serverCode, date, mCallback).execute();
+                new AccelerateGetNewsTask(serverCode, date, this).execute();
             } else {
-                new OriginalGetNewsTask(date, mCallback).execute();
+                new OriginalGetNewsTask(date, this).execute();
             }
         }
     }
@@ -182,6 +160,27 @@ public class NewsListFragment extends BaseNewsFragment implements SwipeRefreshLa
     @Override
     public void onRefresh() {
         doRefresh();
+    }
+
+    @Override
+    public void beforeTaskStart() {
+        mSwipeRefreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void afterTaskFinished(List<DailyNews> resultList, boolean isRefreshSuccess, boolean isContentSame) {
+        clearActionMode();
+        mSwipeRefreshLayout.setRefreshing(false);
+        isRefreshed = true;
+
+        if (isRefreshSuccess) {
+            if (!isContentSame) {
+                newsList = resultList;
+                listAdapter.updateNewsList(newsList);
+            }
+        } else if (isAdded()) {
+            Crouton.makeText(getActivity(), getActivity().getString(R.string.network_error), Style.ALERT).show();
+        }
     }
 
     private class RecoverNewsListTask extends MyAsyncTask<Void, Void, List<DailyNews>> {

@@ -23,72 +23,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public abstract class BaseNewsFragment extends Fragment {
-    protected List<DailyNews> newsList = new ArrayList<DailyNews>();
-    protected NewsAdapter listAdapter;
-
+public abstract class BaseNewsFragment extends Fragment
+        implements ActionMode.Callback, AbsListView.OnScrollListener {
     protected int longClickItemIndex = 0;
     protected int spinnerSelectedItemIndex = 0;
 
+    protected List<DailyNews> newsList = new ArrayList<DailyNews>();
+    protected NewsAdapter listAdapter;
+
     protected ActionMode mActionMode;
-    protected ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
-
-        @Override
-        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-            actionMode.getMenuInflater().inflate(R.menu.contextual_news_list, menu);
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-            return false;
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.action_share_url:
-                    Intent share = new Intent(android.content.Intent.ACTION_SEND);
-                    share.setType("text/plain");
-                    share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                    share.putExtra(Intent.EXTRA_SUBJECT, "This is extra subject");
-
-                    String url;
-                    if (newsList.get(longClickItemIndex).isMulti()) {
-                        url = newsList.get(longClickItemIndex).getQuestionUrlList().get(spinnerSelectedItemIndex);
-                    } else {
-                        url = newsList.get(longClickItemIndex).getQuestionUrl();
-                    }
-
-                    share.putExtra(Intent.EXTRA_TEXT, url);
-                    startActivity(Intent.createChooser(share, getString(R.string.share_to)));
-                    actionMode.finish();
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode actionMode) {
-            mActionMode = null;
-            clearListChoice();
-        }
-    };
-
-    AbsListView.OnScrollListener onScrollListener = new AbsListView.OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-        }
-
-        @Override
-        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            if (mActionMode != null && isCleanListChoice()) {
-                clearActionMode();
-            }
-        }
-    };
 
     @Override
     public void onAttach(Activity activity) {
@@ -142,6 +85,7 @@ public abstract class BaseNewsFragment extends Fragment {
             String[] questionTitles = dailyNews.getQuestionTitleList()
                     .toArray(new String[dailyNews.getQuestionTitleList().size()]);
 
+            // Convert title to Traditional Chinese to meet the displaying language
             if (Locale.getDefault().equals(Locale.TRADITIONAL_CHINESE)) {
                 JChineseConvertor convertor = null;
                 boolean canConvert = true;
@@ -168,7 +112,6 @@ public abstract class BaseNewsFragment extends Fragment {
                         }
                     }).show();
         } else {
-            //Or, just go to Zhihu
             goToZhihu(dailyNews.getQuestionUrl());
         }
     }
@@ -210,7 +153,7 @@ public abstract class BaseNewsFragment extends Fragment {
         checkItemAtPosition(position);
 
         longClickItemIndex = position;
-        mActionMode = getActivity().startActionMode(mActionModeCallback);
+        mActionMode = getActivity().startActionMode(this);
         if (newsList.get(position).isMulti()) {
             Spinner spinner = new Spinner(getActivity());
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(
@@ -236,5 +179,59 @@ public abstract class BaseNewsFragment extends Fragment {
         }
 
         return true;
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        if (mActionMode != null && isCleanListChoice()) {
+            clearActionMode();
+        }
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+        actionMode.getMenuInflater().inflate(R.menu.contextual_news_list, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.action_share_url:
+                Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                share.setType("text/plain");
+                share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                share.putExtra(Intent.EXTRA_SUBJECT, "This is extra subject");
+
+                String url;
+                if (newsList.get(longClickItemIndex).isMulti()) {
+                    url = newsList.get(longClickItemIndex).getQuestionUrlList().get(spinnerSelectedItemIndex);
+                } else {
+                    url = newsList.get(longClickItemIndex).getQuestionUrl();
+                }
+
+                share.putExtra(Intent.EXTRA_TEXT, url);
+                startActivity(Intent.createChooser(share, getString(R.string.share_to)));
+                actionMode.finish();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode actionMode) {
+        mActionMode = null;
+        clearListChoice();
     }
 }

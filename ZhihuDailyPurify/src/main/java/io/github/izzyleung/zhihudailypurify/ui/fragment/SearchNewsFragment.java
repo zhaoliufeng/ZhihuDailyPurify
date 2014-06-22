@@ -46,7 +46,7 @@ public class SearchNewsFragment extends BaseNewsFragment {
                 new PauseOnScrollListener(ImageLoader.getInstance(),
                         false,
                         true,
-                        onScrollListener));
+                        this));
         mStickyListHeadersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {

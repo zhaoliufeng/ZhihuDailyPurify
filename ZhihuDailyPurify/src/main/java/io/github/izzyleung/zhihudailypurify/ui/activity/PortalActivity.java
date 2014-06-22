@@ -20,7 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class PortalActivity extends FragmentActivity implements PickDateFragment.PickDateListener {
+public class PortalActivity extends FragmentActivity
+        implements PickDateFragment.PickDateListener {
     private static final int ACTION_PREVIOUS_DAY = 0, ACTION_NEXT_DAY = 1;
 
     private String dateForFragment;
@@ -114,7 +115,6 @@ public class PortalActivity extends FragmentActivity implements PickDateFragment
                 showPickDateFragment();
             }
         });
-
         dialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

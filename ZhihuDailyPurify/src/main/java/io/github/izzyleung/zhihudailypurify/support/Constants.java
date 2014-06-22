@@ -13,29 +13,17 @@ public final class Constants {
         public static final String ZHIHU_DAILY_PURIFY_HEROKU_BEFORE = "http://zhihu-daily-purify.herokuapp.com/raw/";
         public static final String ZHIHU_DAILY_PURIFY_SAE_BEFORE = "http://zhihudailypurify.sinaapp.com/raw/";
         public static final String SEARCH = "http://zhihudailypurify.sinaapp.com/search/";
-
-        private Url() {
-
-        }
     }
 
     public static final class Date {
         public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
         @SuppressWarnings("deprecation")
         public static final java.util.Date birthday = new java.util.Date(113, 4, 19); // May 19th, 2013
-
-        private Date() {
-
-        }
     }
 
 
     public static final class ServerCode {
         public static final String SAE = "1";
         public static final String HEROKU = "2";
-
-        private ServerCode() {
-
-        }
     }
 }

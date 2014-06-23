@@ -211,7 +211,6 @@ public abstract class BaseNewsFragment extends Fragment
                 Intent share = new Intent(android.content.Intent.ACTION_SEND);
                 share.setType("text/plain");
                 share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                share.putExtra(Intent.EXTRA_SUBJECT, "This is extra subject");
 
                 String url;
                 if (newsList.get(longClickItemIndex).isMulti()) {

@@ -208,19 +208,7 @@ public abstract class BaseNewsFragment extends Fragment
     public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.action_share_url:
-                Intent share = new Intent(android.content.Intent.ACTION_SEND);
-                share.setType("text/plain");
-                share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-
-                String url;
-                if (newsList.get(longClickItemIndex).isMulti()) {
-                    url = newsList.get(longClickItemIndex).getQuestionUrlList().get(spinnerSelectedItemIndex);
-                } else {
-                    url = newsList.get(longClickItemIndex).getQuestionUrl();
-                }
-
-                share.putExtra(Intent.EXTRA_TEXT, url);
-                startActivity(Intent.createChooser(share, getString(R.string.share_to)));
+                startActivity(Intent.createChooser(prepareIntent(), getString(R.string.share_to)));
                 actionMode.finish();
                 return true;
             default:
@@ -232,5 +220,25 @@ public abstract class BaseNewsFragment extends Fragment
     public void onDestroyActionMode(ActionMode actionMode) {
         mActionMode = null;
         clearListChoice();
+    }
+
+    private Intent prepareIntent() {
+        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+        share.setType("text/plain");
+        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+
+        StringBuilder shareText = new StringBuilder();
+        if (newsList.get(longClickItemIndex).isMulti()) {
+            shareText.append(newsList.get(longClickItemIndex).getQuestionTitleList().get(spinnerSelectedItemIndex));
+            shareText.append(" ")
+                    .append(newsList.get(longClickItemIndex).getQuestionUrlList().get(spinnerSelectedItemIndex));
+        } else {
+            shareText.append(newsList.get(longClickItemIndex).getQuestionTitle());
+            shareText.append(" ").append(newsList.get(longClickItemIndex).getQuestionUrl());
+        }
+        shareText.append(" 分享自知乎网");
+
+        share.putExtra(Intent.EXTRA_TEXT, shareText.toString());
+        return share;
     }
 }

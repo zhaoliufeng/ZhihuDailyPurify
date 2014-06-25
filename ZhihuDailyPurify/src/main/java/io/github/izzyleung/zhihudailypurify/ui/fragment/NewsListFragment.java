@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
@@ -62,19 +61,9 @@ public class NewsListFragment extends BaseNewsFragment
         mListView.setAdapter(listAdapter);
         mListView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true, this));
 
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                listItemOnClick(position);
-            }
-        });
+        mListView.setOnItemClickListener(this);
         mListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                return listItemOnLongClick(position);
-            }
-        });
+        mListView.setOnItemLongClickListener(this);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);

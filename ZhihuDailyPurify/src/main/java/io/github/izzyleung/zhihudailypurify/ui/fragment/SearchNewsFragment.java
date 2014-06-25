@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 import io.github.izzyleung.zhihudailypurify.R;
@@ -47,19 +46,9 @@ public class SearchNewsFragment extends BaseNewsFragment {
                         false,
                         true,
                         this));
-        mStickyListHeadersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                listItemOnClick(position);
-            }
-        });
+        mStickyListHeadersListView.setOnItemClickListener(this);
         mStickyListHeadersListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-        mStickyListHeadersListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                return listItemOnLongClick(position);
-            }
-        });
+        mStickyListHeadersListView.setOnItemLongClickListener(this);
 
         return view;
     }

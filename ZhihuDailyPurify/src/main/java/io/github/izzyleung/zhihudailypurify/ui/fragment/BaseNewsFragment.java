@@ -24,7 +24,8 @@ import java.util.List;
 import java.util.Locale;
 
 public abstract class BaseNewsFragment extends Fragment
-        implements ActionMode.Callback, AbsListView.OnScrollListener {
+        implements ActionMode.Callback, AbsListView.OnScrollListener,
+        AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
     protected int longClickItemIndex = 0;
     protected int spinnerSelectedItemIndex = 0;
 
@@ -47,6 +48,57 @@ public abstract class BaseNewsFragment extends Fragment
         if (!isVisibleToUser && isAdded()) {
             clearActionMode();
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        listItemOnClick(position);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        return listItemOnLongClick(position);
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        if (mActionMode != null && isCleanListChoice()) {
+            clearActionMode();
+        }
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+        actionMode.getMenuInflater().inflate(R.menu.contextual_news_list, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.action_share_url:
+                startActivity(Intent.createChooser(prepareIntent(), getString(R.string.share_to)));
+                actionMode.finish();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode actionMode) {
+        mActionMode = null;
+        clearListChoice();
     }
 
     protected boolean resetActionMode() {
@@ -73,7 +125,7 @@ public abstract class BaseNewsFragment extends Fragment
 
     protected abstract void checkItemAtPosition(int position);
 
-    protected void listItemOnClick(final int position) {
+    private void listItemOnClick(final int position) {
         if (resetActionMode()) {
             return;
         }
@@ -144,7 +196,7 @@ public abstract class BaseNewsFragment extends Fragment
         }
     }
 
-    protected boolean listItemOnLongClick(int position) {
+    private boolean listItemOnLongClick(int position) {
         if (mActionMode != null) {
             mActionMode.finish();
             mActionMode = null;
@@ -179,47 +231,6 @@ public abstract class BaseNewsFragment extends Fragment
         }
 
         return true;
-    }
-
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-    }
-
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if (mActionMode != null && isCleanListChoice()) {
-            clearActionMode();
-        }
-    }
-
-    @Override
-    public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-        actionMode.getMenuInflater().inflate(R.menu.contextual_news_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-        return false;
-    }
-
-    @Override
-    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case R.id.action_share_url:
-                startActivity(Intent.createChooser(prepareIntent(), getString(R.string.share_to)));
-                actionMode.finish();
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    @Override
-    public void onDestroyActionMode(ActionMode actionMode) {
-        mActionMode = null;
-        clearListChoice();
     }
 
     private Intent prepareIntent() {

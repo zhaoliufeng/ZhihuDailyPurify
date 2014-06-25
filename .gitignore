@@ -4,3 +4,4 @@ build/
 /.idea/
 ZhihuDailyAPI.md
 android/
+.gradletasknamecache

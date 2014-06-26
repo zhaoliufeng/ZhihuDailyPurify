@@ -25,7 +25,7 @@ import java.util.Locale;
 
 public abstract class BaseNewsFragment extends Fragment
         implements ActionMode.Callback, AbsListView.OnScrollListener,
-        AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+        AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, AdapterView.OnItemSelectedListener {
     protected int longClickItemIndex = 0;
     protected int spinnerSelectedItemIndex = 0;
 
@@ -99,6 +99,16 @@ public abstract class BaseNewsFragment extends Fragment
     public void onDestroyActionMode(ActionMode actionMode) {
         mActionMode = null;
         clearListChoice();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        spinnerSelectedItemIndex = position;
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        spinnerSelectedItemIndex = 0;
     }
 
     protected boolean resetActionMode() {
@@ -214,17 +224,7 @@ public abstract class BaseNewsFragment extends Fragment
                     newsList.get(position).getQuestionTitleList());
             adapter.setDropDownViewResource(R.layout.spinner_dropdpwn_item);
             spinner.setAdapter(adapter);
-            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    spinnerSelectedItemIndex = position;
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                    spinnerSelectedItemIndex = 0;
-                }
-            });
+            spinner.setOnItemSelectedListener(this);
             mActionMode.setCustomView(spinner);
         } else {
             mActionMode.setTitle(newsList.get(position).getQuestionTitle());

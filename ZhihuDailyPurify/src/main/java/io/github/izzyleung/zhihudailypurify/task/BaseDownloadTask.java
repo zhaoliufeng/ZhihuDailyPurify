@@ -21,10 +21,8 @@ public abstract class BaseDownloadTask<Params, Progress, Result> extends MyAsync
         HttpConnectionParams.setConnectionTimeout(params, 5 * 1000);
         HttpConnectionParams.setSoTimeout(params, 5 * 1000);
 
-        HttpGet request = new HttpGet(url);
-
         try {
-            HttpResponse httpResponse = client.execute(request);
+            HttpResponse httpResponse = client.execute(new HttpGet(url));
             if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 return EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
             }

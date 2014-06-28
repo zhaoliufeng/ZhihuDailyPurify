@@ -86,14 +86,14 @@ public class NewsListFragment extends BaseNewsFragment
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         isAutoRefresh = pref.getBoolean("auto_refresh?", true);
 
-        refresh((isToday || isSingle) && isAutoRefresh && !isRefreshed);
+        refreshIf((isToday || isSingle) && isAutoRefresh && !isRefreshed);
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
-        refresh(isVisibleToUser && isAutoRefresh && !isRefreshed);
+        refreshIf(isVisibleToUser && isAutoRefresh && !isRefreshed);
     }
 
     @Override
@@ -120,7 +120,7 @@ public class NewsListFragment extends BaseNewsFragment
         mListView.setItemChecked(position, true);
     }
 
-    private void refresh(boolean prerequisite) {
+    private void refreshIf(boolean prerequisite) {
         if (prerequisite) {
             doRefresh();
         }

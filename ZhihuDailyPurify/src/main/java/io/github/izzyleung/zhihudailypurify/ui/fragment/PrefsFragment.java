@@ -12,7 +12,8 @@ import android.widget.TextView;
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
 
-public class PrefsFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
+public class PrefsFragment extends PreferenceFragment
+        implements Preference.OnPreferenceClickListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

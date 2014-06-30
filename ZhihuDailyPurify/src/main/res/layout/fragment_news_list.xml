@@ -6,9 +6,7 @@
         android:layout_height="match_parent">
 
     <ListView
+            style="@style/commonListViewStyle"
             android:id="@+id/news_list"
-            android:divider="@null"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:drawSelectorOnTop="false"/>
+            android:divider="@null"/>
 </io.github.izzyleung.zhihudailypurify.ui.widget.SwipeRefreshLayout>

@@ -2,51 +2,25 @@
 
 <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        xmlns:tools="http://schemas.android.com/tools"
+        style="@style/baseLayoutParam"
         android:background="?android:attr/activatedBackgroundIndicator">
 
     <RelativeLayout
-            android:id="@+id/news_list_ll"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="7dp"
-            android:layout_marginRight="7dp"
-            android:layout_marginTop="4dp"
-            android:background="@drawable/background_cards">
+            style="@style/cardRelativeLayoutStyle"
+            tools:ignore="UselessParent">
 
         <ImageView
-                android:src="@drawable/lks_for_blank_url"
-                android:layout_alignParentLeft="true"
-                android:padding="10dp"
+                style="@style/cardImageViewStyle"
                 android:id="@+id/thumbnail_image"
-                android:layout_height="95dip"
-                android:layout_width="95dip"
                 android:contentDescription="@string/news_preview_image"/>
 
         <TextView
                 android:id="@+id/question_title"
-                android:layout_toRightOf="@+id/thumbnail_image"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:paddingLeft="8.0dip"
-                android:paddingTop="7.0dip"
-                android:paddingRight="15.0dip"
-                android:textSize="17.0sp"
-                android:textStyle="bold"
-                android:textIsSelectable="false"/>
+                style="@style/cardQuestionTitleStyle"/>
 
         <TextView
                 android:id="@+id/daily_title"
-                android:layout_toRightOf="@+id/thumbnail_image"
-                android:layout_below="@+id/question_title"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:paddingLeft="8.0dip"
-                android:paddingTop="4.0dip"
-                android:paddingRight="15.0dip"
-                android:textSize="14.0sp"
-                android:textIsSelectable="false"/>
+                style="@style/baseCardTextStyle"/>
     </RelativeLayout>
 </FrameLayout>

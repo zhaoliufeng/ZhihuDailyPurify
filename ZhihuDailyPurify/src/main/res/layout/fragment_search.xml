@@ -2,9 +2,7 @@
 
 <se.emilsjolander.stickylistheaders.StickyListHeadersListView
         xmlns:android="http://schemas.android.com/apk/res/android"
+        style="@style/commonListViewStyle"
         android:id="@+id/result_list"
         android:dividerHeight="0dp"
-        android:fastScrollEnabled="true"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:drawSelectorOnTop="false"/>
+        android:fastScrollEnabled="true"/>

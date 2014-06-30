@@ -4,9 +4,7 @@
         <item name="android:actionBarStyle">@style/Theme.ZhihuDailyPurify.ActionBarStyle</item>
         <item name="android:actionModeStyle">@style/Theme.ZhihuDailyPurify.Widget.ActionMode</item>
         <item name="android:actionModeCloseDrawable">@drawable/ic_cab_done_holo_dark</item>
-
         <item name="android:actionModeCloseButtonStyle">@android:style/Widget.Holo.ActionButton.CloseMode</item>
-
         <item name="android:dropDownSpinnerStyle">@style/Theme.ZhihuDailyPurify.SpinnerDropDownStyle</item>
         <item name="android:spinnerItemStyle">@style/Theme.ZhihuDailyPurify.SpinnerItemStyle</item>
         <item name="android:fastScrollTrackDrawable">@null</item>

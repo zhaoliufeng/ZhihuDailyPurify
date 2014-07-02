@@ -28,7 +28,6 @@
     </style>
 
     <style name="cardImageViewStyle">
-        <item name="android:src">@drawable/lks_for_blank_url</item>
         <item name="android:layout_alignParentLeft">true</item>
         <item name="android:padding">10dp</item>
         <item name="android:layout_height">95dp</item>

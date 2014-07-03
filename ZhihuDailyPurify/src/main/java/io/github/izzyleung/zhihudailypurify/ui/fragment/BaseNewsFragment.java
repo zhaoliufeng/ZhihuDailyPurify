@@ -32,7 +32,8 @@ public abstract class BaseNewsFragment extends Fragment
     protected List<DailyNews> newsList = new ArrayList<DailyNews>();
     protected NewsAdapter listAdapter;
 
-    protected ActionMode mActionMode;
+    private ActionMode mActionMode;
+    private ShareActionProvider mShareActionProvider;
 
     @Override
     public void onAttach(Activity activity) {
@@ -75,6 +76,8 @@ public abstract class BaseNewsFragment extends Fragment
     @Override
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
         actionMode.getMenuInflater().inflate(R.menu.contextual_news_list, menu);
+        mShareActionProvider = (ShareActionProvider) menu.findItem(R.id.action_share_url).getActionProvider();
+        mShareActionProvider.setShareIntent(prepareIntent());
         return true;
     }
 
@@ -87,7 +90,6 @@ public abstract class BaseNewsFragment extends Fragment
     public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.action_share_url:
-                startActivity(Intent.createChooser(prepareIntent(), getString(R.string.share_to)));
                 actionMode.finish();
                 return true;
             default:
@@ -104,6 +106,7 @@ public abstract class BaseNewsFragment extends Fragment
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         spinnerSelectedItemIndex = position;
+        mShareActionProvider.setShareIntent(prepareIntent());
     }
 
     @Override
@@ -127,6 +130,7 @@ public abstract class BaseNewsFragment extends Fragment
         }
 
         clearListChoice();
+        spinnerSelectedItemIndex = 0;
     }
 
     protected abstract boolean isCleanListChoice();

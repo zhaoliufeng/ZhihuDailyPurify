@@ -2,6 +2,7 @@
 <resources>
     <style name="Theme.ZhihuDailyPurify.Light" parent="@android:style/Theme.Holo.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/Theme.ZhihuDailyPurify.ActionBarStyle</item>
+        <item name="android:actionBarWidgetTheme">@style/Theme.ZhihuDailyPurify.ActionBarWidgetStyle</item>
         <item name="android:dropDownSpinnerStyle">@style/Theme.ZhihuDailyPurify.SpinnerDropDownStyle</item>
         <item name="android:spinnerItemStyle">@style/Theme.ZhihuDailyPurify.SpinnerItemStyle</item>
         <item name="android:fastScrollTrackDrawable">@null</item>
@@ -13,6 +14,10 @@
 
     <style name="Theme.ZhihuDailyPurify.ActionBarStyle.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">@color/title_gray</item>
+    </style>
+
+    <style name="Theme.ZhihuDailyPurify.ActionBarWidgetStyle" parent="@android:style/Theme.Holo.Light">
+
     </style>
 
     <style name="Theme.ZhihuDailyPurify.SpinnerDropDownStyle" parent="@android:style/Widget.Holo.Light.Spinner">

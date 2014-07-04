@@ -35,7 +35,7 @@ task deployApk(type: Copy) {
     description = 'Deploy apk file for user to download directly.'
 
     from 'build/apk'
-    include 'ZhihuDailyPurify-debug.apk'
-    rename 'ZhihuDailyPurify-debug.apk', 'ZhihuDailyPurify.apk'
+    include 'ZhihuDailyPurify-debug-unaligned.apk'
+    rename 'ZhihuDailyPurify-debug-unaligned.apk', 'ZhihuDailyPurify.apk'
     into '../apk'
 }

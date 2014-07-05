@@ -21,7 +21,7 @@ public class PrefsFragment extends PreferenceFragment
         addPreferencesFromResource(R.xml.prefs);
         findPreference("about").setOnPreferenceClickListener(this);
 
-        if (HelperMethods.isZhihuClientInstalled()) {
+        if (!HelperMethods.isZhihuClientInstalled()) {
             ((PreferenceCategory) findPreference("settings_settings")).removePreference(findPreference("using_client?"));
         }
     }

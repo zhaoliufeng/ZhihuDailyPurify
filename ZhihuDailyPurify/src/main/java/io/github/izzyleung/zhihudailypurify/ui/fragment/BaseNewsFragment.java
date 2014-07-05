@@ -2,7 +2,6 @@ package io.github.izzyleung.zhihudailypurify.ui.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -16,6 +15,7 @@ import android.widget.*;
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.adapter.NewsAdapter;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
+import io.github.izzyleung.zhihudailypurify.support.HelperMethods;
 import taobe.tec.jcc.JChineseConvertor;
 
 import java.io.IOException;
@@ -186,22 +186,23 @@ public abstract class BaseNewsFragment extends Fragment
         if (!isUsingClient) {
             openUsingBrowser(url);
         } else {
-            //Open using Zhihu's official client
-            try {
+            if (HelperMethods.isZhihuClientInstalled()) {
+                //Open using Zhihu's official client
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 browserIntent.setPackage("com.zhihu.android");
                 getActivity().startActivity(browserIntent);
-            } catch (ActivityNotFoundException e) {
+            } else {
                 openUsingBrowser(url);
             }
         }
     }
 
     private void openUsingBrowser(String url) {
-        try {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+
+        if (HelperMethods.isIntentSafe(browserIntent)) {
             getActivity().startActivity(browserIntent);
-        } catch (ActivityNotFoundException ane) {
+        } else {
             Toast.makeText(getActivity(), getString(R.string.no_browser), Toast.LENGTH_SHORT).show();
         }
     }

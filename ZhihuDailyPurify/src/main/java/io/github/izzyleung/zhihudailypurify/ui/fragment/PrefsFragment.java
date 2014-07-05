@@ -1,7 +1,6 @@
 package io.github.izzyleung.zhihudailypurify.ui.fragment;
 
 import android.app.Dialog;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
@@ -10,7 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 import io.github.izzyleung.zhihudailypurify.R;
-import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
+import io.github.izzyleung.zhihudailypurify.support.HelperMethods;
 
 public class PrefsFragment extends PreferenceFragment
         implements Preference.OnPreferenceClickListener {
@@ -22,13 +21,7 @@ public class PrefsFragment extends PreferenceFragment
         addPreferencesFromResource(R.xml.prefs);
         findPreference("about").setOnPreferenceClickListener(this);
 
-        PackageManager pm = ZhihuDailyPurifyApplication.getInstance().getPackageManager();
-
-        try {
-            if (pm != null) {
-                pm.getPackageInfo("com.zhihu.android", PackageManager.GET_ACTIVITIES);
-            }
-        } catch (PackageManager.NameNotFoundException e) {
+        if (HelperMethods.isZhihuClientInstalled()) {
             ((PreferenceCategory) findPreference("settings_settings")).removePreference(findPreference("using_client?"));
         }
     }

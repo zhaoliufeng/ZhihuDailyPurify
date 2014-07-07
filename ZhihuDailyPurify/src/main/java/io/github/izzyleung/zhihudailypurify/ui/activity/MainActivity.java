@@ -61,7 +61,7 @@ public class MainActivity extends FragmentActivity {
         return true;
     }
 
-    final class MainPagerAdapter extends FragmentStatePagerAdapter {
+    private class MainPagerAdapter extends FragmentStatePagerAdapter {
         public MainPagerAdapter(FragmentManager fm) {
             super(fm);
         }

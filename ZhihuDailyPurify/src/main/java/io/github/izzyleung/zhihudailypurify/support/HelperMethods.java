@@ -10,23 +10,18 @@ public final class HelperMethods {
     }
 
     public static boolean isZhihuClientInstalled() {
-        PackageManager pm = ZhihuDailyPurifyApplication.getInstance().getPackageManager();
-        boolean isZhihuClientInstalled = false;
-
         try {
-            if (pm != null) {
-                pm.getPackageInfo("com.zhihu.android", PackageManager.GET_ACTIVITIES);
-                isZhihuClientInstalled = true;
-            }
+            return preparePackageManager().getPackageInfo("com.zhihu.android", PackageManager.GET_ACTIVITIES) != null;
         } catch (PackageManager.NameNotFoundException ignored) {
-
+            return false;
         }
-
-        return isZhihuClientInstalled;
     }
 
     public static boolean isIntentSafe(Intent intent) {
-        PackageManager packageManager = ZhihuDailyPurifyApplication.getInstance().getPackageManager();
-        return packageManager.queryIntentActivities(intent, 0).size() > 0;
+        return preparePackageManager().queryIntentActivities(intent, 0).size() > 0;
+    }
+
+    private static PackageManager preparePackageManager() {
+        return ZhihuDailyPurifyApplication.getInstance().getPackageManager();
     }
 }

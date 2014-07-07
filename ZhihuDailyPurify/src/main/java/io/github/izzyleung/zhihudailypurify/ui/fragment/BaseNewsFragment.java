@@ -179,21 +179,15 @@ public abstract class BaseNewsFragment extends Fragment
     }
 
     private void goToZhihu(String url) {
-        boolean isUsingClient = PreferenceManager
-                .getDefaultSharedPreferences(getActivity())
-                .getBoolean("using_client?", false);
-
-        if (!isUsingClient) {
+        if (!PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("using_client?", false)) {
             openUsingBrowser(url);
+        } else if (HelperMethods.isZhihuClientInstalled()) {
+            //Open using Zhihu's official client
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            browserIntent.setPackage("com.zhihu.android");
+            getActivity().startActivity(browserIntent);
         } else {
-            if (HelperMethods.isZhihuClientInstalled()) {
-                //Open using Zhihu's official client
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                browserIntent.setPackage("com.zhihu.android");
-                getActivity().startActivity(browserIntent);
-            } else {
-                openUsingBrowser(url);
-            }
+            openUsingBrowser(url);
         }
     }
 

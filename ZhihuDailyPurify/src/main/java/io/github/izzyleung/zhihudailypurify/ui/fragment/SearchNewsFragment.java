@@ -24,11 +24,11 @@ public class SearchNewsFragment extends BaseNewsFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        listAdapter.updateDateResultList(dateResultList);
+        listAdapter.setDateResultList(dateResultList);
     }
 
     @Override
-    protected boolean isCleanListChoice() {
+    protected boolean shouldCleanListChoice() {
         int position = mStickyListHeadersListView.getCheckedItemPosition();
         return mStickyListHeadersListView.getFirstVisiblePosition() > position
                 || mStickyListHeadersListView.getLastVisiblePosition() < position;
@@ -63,7 +63,7 @@ public class SearchNewsFragment extends BaseNewsFragment {
     }
 
     @Override
-    protected void checkItemAtPosition(int position) {
+    protected void markItemCheckedAtPosition(int position) {
         mStickyListHeadersListView.setItemChecked(position, true);
     }
 

@@ -104,7 +104,7 @@ public class NewsListFragment extends BaseNewsFragment
     }
 
     @Override
-    protected boolean isCleanListChoice() {
+    protected boolean shouldCleanListChoice() {
         int position = mListView.getCheckedItemPosition();
         return mListView.getFirstVisiblePosition() > position || mListView.getLastVisiblePosition() < position;
     }
@@ -116,7 +116,7 @@ public class NewsListFragment extends BaseNewsFragment
     }
 
     @Override
-    protected void checkItemAtPosition(int position) {
+    protected void markItemCheckedAtPosition(int position) {
         mListView.setItemChecked(position, true);
     }
 

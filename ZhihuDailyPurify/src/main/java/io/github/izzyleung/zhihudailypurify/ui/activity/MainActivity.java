@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class MainActivity extends FragmentActivity {
+    private static final int PAGE_COUNT = 7;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +32,7 @@ public class MainActivity extends FragmentActivity {
         MainPagerAdapter adapter = new MainPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         tabs.setViewPager(viewPager);
-        tabs.setIndicatorColor(getResources().getColor(R.color.holo_blue));
+        tabs.setIndicatorColor(getResources().getColor(android.R.color.holo_blue_light));
     }
 
     @Override
@@ -84,7 +85,7 @@ public class MainActivity extends FragmentActivity {
 
         @Override
         public int getCount() {
-            return 7;
+            return PAGE_COUNT;
         }
 
         @Override
@@ -92,14 +93,8 @@ public class MainActivity extends FragmentActivity {
             Calendar displayDate = Calendar.getInstance();
             displayDate.add(Calendar.DAY_OF_YEAR, -position);
 
-            String date = new SimpleDateFormat(getString(R.string.display_format)).
-                    format(displayDate.getTime());
-
-            if (position == 0) {
-                return getString(R.string.zhihu_daily_today) + " " + date;
-            } else {
-                return date;
-            }
+            return position == 0 ? getString(R.string.zhihu_daily_today) + " " : ""
+                    + new SimpleDateFormat(getString(R.string.display_format)).format(displayDate.getTime());
         }
     }
 }

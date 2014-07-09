@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 import io.github.izzyleung.zhihudailypurify.R;
-import io.github.izzyleung.zhihudailypurify.support.HelperMethods;
+import io.github.izzyleung.zhihudailypurify.support.Check;
 
 public class PrefsFragment extends PreferenceFragment
         implements Preference.OnPreferenceClickListener {
@@ -21,7 +21,7 @@ public class PrefsFragment extends PreferenceFragment
         addPreferencesFromResource(R.xml.prefs);
         findPreference("about").setOnPreferenceClickListener(this);
 
-        if (!HelperMethods.isZhihuClientInstalled()) {
+        if (!Check.isZhihuClientInstalled()) {
             ((PreferenceCategory) findPreference("settings_settings")).removePreference(findPreference("using_client?"));
         }
     }

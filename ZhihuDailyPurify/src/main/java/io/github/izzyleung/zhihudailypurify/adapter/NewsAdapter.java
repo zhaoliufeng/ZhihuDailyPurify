@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Locale;
 
 public final class NewsAdapter extends BaseAdapter implements StickyListHeadersAdapter {
+    private String traditionalMultiQuestion = "這裏包含多個知乎討論，請點擊後選擇";
+    private String simplifiedMultiQuestion = "这里包含多个知乎讨论，请点击后选择";
+
     private LayoutInflater mInflater;
 
     private List<DailyNews> newsList;
@@ -46,15 +49,8 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
     private boolean canConvert = true;
     private boolean shouldConvert = Locale.getDefault().equals(Locale.TRADITIONAL_CHINESE);
 
-    public NewsAdapter(Context context, List<DailyNews> newsList) {
-        this(context, newsList, null);
-    }
-
-    public NewsAdapter(Context context, List<DailyNews> newsList,
-                       List<String> dateResultList) {
+    public NewsAdapter(Context context) {
         this.mInflater = LayoutInflater.from(context);
-        this.newsList = newsList;
-        this.dateResultList = dateResultList;
 
         try {
             convertor = JChineseConvertor.getInstance();
@@ -63,13 +59,21 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
         }
     }
 
-    public void updateNewsList(List<DailyNews> newsList) {
+    public void setNewsList(List<DailyNews> newsList) {
         this.newsList = newsList;
+    }
+
+    public void setDateResultList(List<String> dateResultList) {
+        this.dateResultList = dateResultList;
+    }
+
+    public void updateNewsList(List<DailyNews> newsList) {
+        setNewsList(newsList);
         notifyDataSetChanged();
     }
 
     public void updateDateResultList(List<String> dateResultList) {
-        this.dateResultList = dateResultList;
+        setDateResultList(dateResultList);
         notifyDataSetChanged();
     }
 
@@ -118,7 +122,6 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
         if (shouldConvert && canConvert) {
             if (dailyNews.isMulti()) {
                 holder.questionTitle.setText(convertor.s2t(dailyNews.getDailyTitle()));
-                String traditionalMultiQuestion = "這裏包含多個知乎討論，請點擊後選擇";
                 holder.dailyTitle.setText(traditionalMultiQuestion);
             } else {
                 holder.questionTitle.setText(convertor.s2t(dailyNews.getQuestionTitle()));
@@ -127,7 +130,6 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
         } else {
             if (dailyNews.isMulti()) {
                 holder.questionTitle.setText(dailyNews.getDailyTitle());
-                String simplifiedMultiQuestion = "这里包含多个知乎讨论，请点击后选择";
                 holder.dailyTitle.setText(simplifiedMultiQuestion);
             } else {
                 holder.questionTitle.setText(dailyNews.getQuestionTitle());

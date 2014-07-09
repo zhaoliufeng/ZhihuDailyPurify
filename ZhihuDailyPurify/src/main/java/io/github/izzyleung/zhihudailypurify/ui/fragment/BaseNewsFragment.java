@@ -15,7 +15,7 @@ import android.widget.*;
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.adapter.NewsAdapter;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.support.HelperMethods;
+import io.github.izzyleung.zhihudailypurify.support.Check;
 import taobe.tec.jcc.JChineseConvertor;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ import java.util.Locale;
 public abstract class BaseNewsFragment extends Fragment
         implements ActionMode.Callback, AbsListView.OnScrollListener,
         AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, AdapterView.OnItemSelectedListener {
-    protected int longClickItemIndex = 0;
+    protected int longClickedItemIndex = 0;
     protected int spinnerSelectedItemIndex = 0;
 
     protected List<DailyNews> newsList = new ArrayList<DailyNews>();
@@ -38,7 +38,8 @@ public abstract class BaseNewsFragment extends Fragment
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        listAdapter = new NewsAdapter(activity, newsList);
+        listAdapter = new NewsAdapter(activity);
+        listAdapter.setNewsList(newsList);
     }
 
     @Override
@@ -67,7 +68,7 @@ public abstract class BaseNewsFragment extends Fragment
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if (mActionMode != null && isCleanListChoice()) {
+        if (mActionMode != null && shouldCleanListChoice()) {
             clearActionMode();
         }
     }
@@ -129,11 +130,11 @@ public abstract class BaseNewsFragment extends Fragment
         clearListChoice();
     }
 
-    protected abstract boolean isCleanListChoice();
+    protected abstract boolean shouldCleanListChoice();
 
     protected abstract void clearListChoice();
 
-    protected abstract void checkItemAtPosition(int position);
+    protected abstract void markItemCheckedAtPosition(int position);
 
     private void listItemOnClick(final int position) {
         if (resetActionMode()) {
@@ -181,7 +182,7 @@ public abstract class BaseNewsFragment extends Fragment
     private void goToZhihu(String url) {
         if (!PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("using_client?", false)) {
             openUsingBrowser(url);
-        } else if (HelperMethods.isZhihuClientInstalled()) {
+        } else if (Check.isZhihuClientInstalled()) {
             //Open using Zhihu's official client
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             browserIntent.setPackage("com.zhihu.android");
@@ -194,7 +195,7 @@ public abstract class BaseNewsFragment extends Fragment
     private void openUsingBrowser(String url) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 
-        if (HelperMethods.isIntentSafe(browserIntent)) {
+        if (Check.isIntentSafe(browserIntent)) {
             getActivity().startActivity(browserIntent);
         } else {
             Toast.makeText(getActivity(), getString(R.string.no_browser), Toast.LENGTH_SHORT).show();
@@ -207,9 +208,9 @@ public abstract class BaseNewsFragment extends Fragment
             mActionMode = null;
         }
 
-        checkItemAtPosition(position);
+        markItemCheckedAtPosition(position);
 
-        longClickItemIndex = position;
+        longClickedItemIndex = position;
         mActionMode = getActivity().startActionMode(this);
         if (newsList.get(position).isMulti()) {
             Spinner spinner = new Spinner(getActivity());
@@ -234,13 +235,13 @@ public abstract class BaseNewsFragment extends Fragment
         share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 
         StringBuilder shareText = new StringBuilder();
-        if (newsList.get(longClickItemIndex).isMulti()) {
-            shareText.append(newsList.get(longClickItemIndex).getQuestionTitleList().get(spinnerSelectedItemIndex));
+        if (newsList.get(longClickedItemIndex).isMulti()) {
+            shareText.append(newsList.get(longClickedItemIndex).getQuestionTitleList().get(spinnerSelectedItemIndex));
             shareText.append(" ")
-                    .append(newsList.get(longClickItemIndex).getQuestionUrlList().get(spinnerSelectedItemIndex));
+                    .append(newsList.get(longClickedItemIndex).getQuestionUrlList().get(spinnerSelectedItemIndex));
         } else {
-            shareText.append(newsList.get(longClickItemIndex).getQuestionTitle());
-            shareText.append(" ").append(newsList.get(longClickItemIndex).getQuestionUrl());
+            shareText.append(newsList.get(longClickedItemIndex).getQuestionTitle());
+            shareText.append(" ").append(newsList.get(longClickedItemIndex).getQuestionUrl());
         }
         shareText.append(" 分享自知乎网");
 

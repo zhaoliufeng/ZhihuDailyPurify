@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
 
-public final class HelperMethods {
-    private HelperMethods() {
+public final class Check {
+    private Check() {
 
     }
 

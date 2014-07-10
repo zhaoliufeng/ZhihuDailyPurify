@@ -93,7 +93,7 @@ public class MainActivity extends FragmentActivity {
             Calendar displayDate = Calendar.getInstance();
             displayDate.add(Calendar.DAY_OF_YEAR, -position);
 
-            return position == 0 ? getString(R.string.zhihu_daily_today) + " " : ""
+            return (position == 0 ? getString(R.string.zhihu_daily_today) + " " : "")
                     + new SimpleDateFormat(getString(R.string.display_format)).format(displayDate.getTime());
         }
     }

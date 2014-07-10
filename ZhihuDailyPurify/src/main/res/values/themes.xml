@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.ZhihuDailyPurify.Light" parent="@android:style/Theme.Holo.Light.DarkActionBar">
+
+    <style name="Theme.ZhihuDailyPurify.Light" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionBarStyle">@style/Theme.ZhihuDailyPurify.ActionBarStyle</item>
-        <item name="android:actionBarWidgetTheme">@android:style/Theme.Holo.Light</item>
+        <item name="android:actionModeStyle">@style/Theme.ZhihuDailyPurify.Widget.ActionMode</item>
+        <item name="android:actionModeCloseDrawable">@drawable/ic_cab_done_holo_dark</item>
+        <item name="android:actionModeCloseButtonStyle">@android:style/Widget.Holo.ActionButton.CloseMode</item>
         <item name="android:dropDownSpinnerStyle">@style/Theme.ZhihuDailyPurify.SpinnerDropDownStyle</item>
         <item name="android:spinnerItemStyle">@style/Theme.ZhihuDailyPurify.SpinnerItemStyle</item>
         <item name="android:fastScrollTrackDrawable">@null</item>
@@ -14,6 +17,15 @@
 
     <style name="Theme.ZhihuDailyPurify.ActionBarStyle.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">@color/title_gray</item>
+    </style>
+
+    <style name="Theme.ZhihuDailyPurify.Widget.ActionMode" parent="@android:style/Widget.Holo.ActionMode">
+        <item name="android:background">@drawable/cab_background_top_holo_dark</item>
+        <item name="android:titleTextStyle">@style/Theme.ZhihuDailyPurify.ActionBarStyle.ActionMode.TitleTextStyle
+        </item>
+        <item name="android:subtitleTextStyle">
+            @style/Theme.ZhihuDailyPurify.ActionBarStyle.ActionMode.SubtitleTextStyle
+        </item>
     </style>
 
     <style name="Theme.ZhihuDailyPurify.SpinnerDropDownStyle" parent="@android:style/Widget.Holo.Light.Spinner">
@@ -32,5 +44,13 @@
     <style name="Theme.ZhihuDailyPurify.SpinnerItemTextStyle" parent="@android:style/Widget">
         <item name="android:textSize">17sp</item>
         <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="Theme.ZhihuDailyPurify.ActionBarStyle.ActionMode.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionMode.Title">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="Theme.ZhihuDailyPurify.ActionBarStyle.ActionMode.SubtitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionMode.Subtitle">
+    <item name="android:textColor">@android:color/white</item>
     </style>
 </resources>

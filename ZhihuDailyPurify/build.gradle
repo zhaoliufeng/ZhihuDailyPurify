@@ -30,12 +30,3 @@ dependencies {
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
-
-task deployApk(type: Copy) {
-    description = 'Deploy apk file for user to download directly.'
-
-    from 'build/apk'
-    include 'ZhihuDailyPurify-debug-unaligned.apk'
-    rename 'ZhihuDailyPurify-debug-unaligned.apk', 'ZhihuDailyPurify.apk'
-    into '../apk'
-}

@@ -5,3 +5,4 @@ build/
 ZhihuDailyAPI.md
 android/
 .gradletasknamecache
+local.properties

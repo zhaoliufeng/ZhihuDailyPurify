@@ -69,7 +69,8 @@ public class NewsListFragment extends BaseNewsFragment
         assert view != null;
         mListView = (ListView) view.findViewById(R.id.news_list);
         mListView.setAdapter(listAdapter);
-        mListView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true, this));
+        mListView.setOnScrollListener(
+                new PauseOnScrollListener(ImageLoader.getInstance(), false, true, this));
 
         mListView.setOnItemClickListener(this);
         mListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
@@ -114,7 +115,8 @@ public class NewsListFragment extends BaseNewsFragment
     @Override
     protected boolean shouldCleanListChoice() {
         int position = mListView.getCheckedItemPosition();
-        return mListView.getFirstVisiblePosition() > position || mListView.getLastVisiblePosition() < position;
+        return mListView.getFirstVisiblePosition() > position
+                || mListView.getLastVisiblePosition() < position;
     }
 
     @Override
@@ -138,7 +140,8 @@ public class NewsListFragment extends BaseNewsFragment
         if (isToday) {
             new OriginalGetNewsTask(date, this).execute();
         } else {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            SharedPreferences sharedPreferences
+                    = PreferenceManager.getDefaultSharedPreferences(getActivity());
             if (sharedPreferences.getBoolean("using_accelerate_server?", false)) {
                 String serverCode;
                 if (sharedPreferences.getString("which_accelerate_server", Constants.ServerCode.SAE)

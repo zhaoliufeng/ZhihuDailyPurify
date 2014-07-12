@@ -9,26 +9,22 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-import io.github.izzyleung.zhihudailypurify.R;
-import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
-import taobe.tec.jcc.JChineseConvertor;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
+
+import io.github.izzyleung.zhihudailypurify.R;
+import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
+import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public final class NewsAdapter extends BaseAdapter implements StickyListHeadersAdapter {
-    private String traditionalMultiQuestion = "這裏包含多個知乎討論，請點擊後選擇";
-    private String simplifiedMultiQuestion = "这里包含多个知乎讨论，请点击后选择";
-
     private LayoutInflater mInflater;
 
     private List<DailyNews> newsList;
@@ -45,18 +41,8 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
             .build();
     private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
 
-    private JChineseConvertor convertor;
-    private boolean canConvert = true;
-    private boolean shouldConvert = Locale.getDefault().equals(Locale.TRADITIONAL_CHINESE);
-
     public NewsAdapter(Context context) {
         this.mInflater = LayoutInflater.from(context);
-
-        try {
-            convertor = JChineseConvertor.getInstance();
-        } catch (IOException e) {
-            canConvert = false;
-        }
     }
 
     public void setNewsList(List<DailyNews> newsList) {
@@ -119,22 +105,13 @@ public final class NewsAdapter extends BaseAdapter implements StickyListHeadersA
 
         imageLoader.displayImage(dailyNews.getThumbnailUrl(), holder.newsImage, options, animateFirstListener);
 
-        if (shouldConvert && canConvert) {
-            if (dailyNews.isMulti()) {
-                holder.questionTitle.setText(convertor.s2t(dailyNews.getDailyTitle()));
-                holder.dailyTitle.setText(traditionalMultiQuestion);
-            } else {
-                holder.questionTitle.setText(convertor.s2t(dailyNews.getQuestionTitle()));
-                holder.dailyTitle.setText(convertor.s2t(dailyNews.getDailyTitle()));
-            }
+        if (dailyNews.isMulti()) {
+            holder.questionTitle.setText(dailyNews.getDailyTitle());
+            String simplifiedMultiQuestion = "这里包含多个知乎讨论，请点击后选择";
+            holder.dailyTitle.setText(simplifiedMultiQuestion);
         } else {
-            if (dailyNews.isMulti()) {
-                holder.questionTitle.setText(dailyNews.getDailyTitle());
-                holder.dailyTitle.setText(simplifiedMultiQuestion);
-            } else {
-                holder.questionTitle.setText(dailyNews.getQuestionTitle());
-                holder.dailyTitle.setText(dailyNews.getDailyTitle());
-            }
+            holder.questionTitle.setText(dailyNews.getQuestionTitle());
+            holder.dailyTitle.setText(dailyNews.getDailyTitle());
         }
 
         return convertView;

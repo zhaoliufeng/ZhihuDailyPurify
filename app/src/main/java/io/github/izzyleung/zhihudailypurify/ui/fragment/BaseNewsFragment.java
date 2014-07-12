@@ -17,16 +17,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.adapter.NewsAdapter;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.Check;
-import taobe.tec.jcc.JChineseConvertor;
 
 public abstract class BaseNewsFragment extends Fragment
         implements ActionMode.Callback, AbsListView.OnScrollListener,
@@ -154,24 +151,6 @@ public abstract class BaseNewsFragment extends Fragment
             String[] questionTitles = dailyNews.getQuestionTitleList()
                     .toArray(new String[dailyNews.getQuestionTitleList().size()]);
 
-            // Convert title to Traditional Chinese to meet the displaying language
-            if (Locale.getDefault().equals(Locale.TRADITIONAL_CHINESE)) {
-                JChineseConvertor convertor = null;
-                boolean canConvert = true;
-
-                try {
-                    convertor = JChineseConvertor.getInstance();
-                } catch (IOException e) {
-                    canConvert = false;
-                }
-
-                if (canConvert) {
-                    for (int i = 0; i < questionTitles.length; i++) {
-                        questionTitles[i] = convertor.s2t(questionTitles[i]);
-                    }
-                }
-            }
-
             new AlertDialog.Builder(getActivity())
                     .setTitle(dailyNews.getDailyTitle())
                     .setItems(questionTitles, new DialogInterface.OnClickListener() {
@@ -186,7 +165,8 @@ public abstract class BaseNewsFragment extends Fragment
     }
 
     private void goToZhihu(String url) {
-        if (!PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("using_client?", false)) {
+        if (!PreferenceManager.getDefaultSharedPreferences(getActivity())
+                .getBoolean("using_client?", false)) {
             openUsingBrowser(url);
         } else if (Check.isZhihuClientInstalled()) {
             //Open using Zhihu's official client
@@ -242,9 +222,10 @@ public abstract class BaseNewsFragment extends Fragment
 
         StringBuilder shareText = new StringBuilder();
         if (newsList.get(longClickedItemIndex).isMulti()) {
-            shareText.append(newsList.get(longClickedItemIndex).getQuestionTitleList().get(spinnerSelectedItemIndex));
-            shareText.append(" ")
-                    .append(newsList.get(longClickedItemIndex).getQuestionUrlList().get(spinnerSelectedItemIndex));
+            shareText.append(newsList.get(longClickedItemIndex)
+                    .getQuestionTitleList().get(spinnerSelectedItemIndex));
+            shareText.append(" ").append(newsList.get(longClickedItemIndex)
+                    .getQuestionUrlList().get(spinnerSelectedItemIndex));
         } else {
             shareText.append(newsList.get(longClickedItemIndex).getQuestionTitle());
             shareText.append(" ").append(newsList.get(longClickedItemIndex).getQuestionUrl());

@@ -11,21 +11,27 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
-import io.github.izzyleung.zhihudailypurify.R;
-import io.github.izzyleung.zhihudailypurify.adapter.NewsAdapter;
-import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.support.Check;
-import taobe.tec.jcc.JChineseConvertor;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import io.github.izzyleung.zhihudailypurify.R;
+import io.github.izzyleung.zhihudailypurify.adapter.NewsAdapter;
+import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
+import io.github.izzyleung.zhihudailypurify.support.Check;
+import taobe.tec.jcc.JChineseConvertor;
+
 public abstract class BaseNewsFragment extends Fragment
         implements ActionMode.Callback, AbsListView.OnScrollListener,
-        AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, AdapterView.OnItemSelectedListener {
+        AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener,
+        AdapterView.OnItemSelectedListener {
     protected int longClickedItemIndex = 0;
     protected int spinnerSelectedItemIndex = 0;
 

@@ -1,7 +1,5 @@
 package io.github.izzyleung.zhihudailypurify.task;
 
-import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.support.Constants;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +10,9 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
+import io.github.izzyleung.zhihudailypurify.support.Constants;
 
 public class OriginalGetNewsTask extends BaseGetNewsTask {
 
@@ -24,7 +25,8 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
         List<DailyNews> resultNewsList = new ArrayList<DailyNews>();
 
         try {
-            JSONObject contents = new JSONObject(downloadStringFromUrl(Constants.Url.ZHIHU_DAILY_BEFORE + date));
+            JSONObject contents = new JSONObject(
+                    downloadStringFromUrl(Constants.Url.ZHIHU_DAILY_BEFORE + date));
 
             JSONArray newsArray = contents.getJSONArray("stories");
             for (int i = 0; i < newsArray.length(); i++) {
@@ -35,12 +37,12 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
                         ? (String) singleNews.getJSONArray("images").get(0)
                         : null);
                 dailyNews.setDailyTitle(singleNews.getString("title"));
-                String newsInfoJson =
-                        downloadStringFromUrl(Constants.Url.ZHIHU_DAILY_OFFLINE_NEWS + singleNews.getString("id"));
+                String newsInfoJson = downloadStringFromUrl(
+                        Constants.Url.ZHIHU_DAILY_OFFLINE_NEWS + singleNews.getString("id"));
                 JSONObject newsDetail = new JSONObject(newsInfoJson);
                 if (newsDetail.has("body")) {
                     Document doc = Jsoup.parse(newsDetail.getString("body"));
-                    if (updateDailyNews(doc, singleNews.getString("title"), dailyNews)) {
+                    if (updateDailyNews(doc, dailyNews)) {
                         resultNewsList.add(dailyNews);
                     }
                 }
@@ -55,7 +57,8 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
         return resultNewsList;
     }
 
-    private boolean updateDailyNews(Document doc, String dailyTitle, DailyNews dailyNews) throws JSONException {
+    private boolean updateDailyNews(Document doc, DailyNews dailyNews)
+            throws JSONException {
         Elements viewMoreElements = doc.getElementsByClass("view-more");
 
         if (viewMoreElements.size() > 1) {
@@ -64,13 +67,12 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
 
             for (int j = 0; j < viewMoreElements.size(); j++) {
                 if (questionTitleElements.get(j).text().length() == 0) {
-                    dailyNews.addQuestionTitle(dailyTitle);
+                    dailyNews.addQuestionTitle(dailyNews.getDailyTitle());
                 } else {
                     dailyNews.addQuestionTitle(questionTitleElements.get(j).text());
                 }
 
-                Elements viewQuestionElement = viewMoreElements.get(j).
-                        select("a");
+                Elements viewQuestionElement = viewMoreElements.get(j).select("a");
 
                 // Unless the url is a link to zhihu, do not add it to the result NewsList
                 if (viewQuestionElement.text().equals("查看知乎讨论")) {
@@ -91,7 +93,7 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
 
             // Question title is the same with daily title
             if (doc.getElementsByClass("question-title").text().length() == 0) {
-                dailyNews.setQuestionTitle(dailyTitle);
+                dailyNews.setQuestionTitle(dailyNews.getDailyTitle());
             } else {
                 dailyNews.setQuestionTitle(doc.getElementsByClass("question-title").text());
             }

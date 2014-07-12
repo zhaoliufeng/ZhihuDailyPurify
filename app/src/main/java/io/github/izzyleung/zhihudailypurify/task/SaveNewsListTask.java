@@ -2,12 +2,13 @@ package io.github.izzyleung.zhihudailypurify.task;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
-import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
 
 import java.lang.reflect.Type;
 import java.util.List;
+
+import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
+import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
+import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
 
 public class SaveNewsListTask extends MyAsyncTask<Void, Void, Void> {
     private String date;
@@ -29,7 +30,7 @@ public class SaveNewsListTask extends MyAsyncTask<Void, Void, Void> {
 
         }.getType();
 
-        ZhihuDailyPurifyApplication.getInstance().getDataSource().
+        ZhihuDailyPurifyApplication.getDataSource().
                 insertOrUpdateNewsList(date, new GsonBuilder().create().toJson(newsList, listType));
     }
 }

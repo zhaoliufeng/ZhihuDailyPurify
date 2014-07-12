@@ -1,16 +1,18 @@
 package io.github.izzyleung.zhihudailypurify.task;
 
 import android.text.TextUtils;
+
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.support.Constants;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
+import io.github.izzyleung.zhihudailypurify.support.Constants;
 
 public class AccelerateGetNewsTask extends BaseGetNewsTask {
     private String serverCode;
@@ -28,13 +30,11 @@ public class AccelerateGetNewsTask extends BaseGetNewsTask {
 
         }.getType();
 
-        String baseUrl, jsonFromWeb;
-        if (serverCode.equals(Constants.ServerCode.SAE)) {
-            baseUrl = Constants.Url.ZHIHU_DAILY_PURIFY_SAE_BEFORE;
-        } else {
-            baseUrl = Constants.Url.ZHIHU_DAILY_PURIFY_HEROKU_BEFORE;
-        }
+        String baseUrl = serverCode.equals(Constants.ServerCode.SAE) ?
+                Constants.Url.ZHIHU_DAILY_PURIFY_SAE_BEFORE :
+                Constants.Url.ZHIHU_DAILY_PURIFY_HEROKU_BEFORE;
 
+        String jsonFromWeb;
         try {
             jsonFromWeb = downloadStringFromUrl(baseUrl + date);
         } catch (IOException e) {

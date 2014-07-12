@@ -1,5 +1,6 @@
 package io.github.izzyleung.zhihudailypurify.ui.fragment;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -8,8 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
+
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
+
+import java.util.List;
+
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import io.github.izzyleung.zhihudailypurify.R;
@@ -21,8 +26,6 @@ import io.github.izzyleung.zhihudailypurify.task.AccelerateGetNewsTask;
 import io.github.izzyleung.zhihudailypurify.task.BaseGetNewsTask;
 import io.github.izzyleung.zhihudailypurify.task.OriginalGetNewsTask;
 import io.github.izzyleung.zhihudailypurify.ui.widget.SwipeRefreshLayout;
-
-import java.util.List;
 
 public class NewsListFragment extends BaseNewsFragment
         implements SwipeRefreshLayout.OnRefreshListener, BaseGetNewsTask.UpdateUIListener {
@@ -37,6 +40,13 @@ public class NewsListFragment extends BaseNewsFragment
 
     private ListView mListView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        new RecoverNewsListTask().executeOnExecutor(MyAsyncTask.THREAD_POOL_EXECUTOR);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,8 +82,6 @@ public class NewsListFragment extends BaseNewsFragment
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-
-        new RecoverNewsListTask().executeOnExecutor(MyAsyncTask.THREAD_POOL_EXECUTOR);
 
         return view;
     }
@@ -176,7 +184,7 @@ public class NewsListFragment extends BaseNewsFragment
 
         @Override
         protected List<DailyNews> doInBackground(Void... params) {
-            return ZhihuDailyPurifyApplication.getInstance().getDataSource().newsOfTheDay(date);
+            return ZhihuDailyPurifyApplication.getDataSource().newsOfTheDay(date);
         }
 
         @Override

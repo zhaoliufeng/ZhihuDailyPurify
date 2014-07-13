@@ -9,13 +9,15 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import com.astuetz.PagerSlidingTabStrip;
-import io.github.izzyleung.zhihudailypurify.R;
-import io.github.izzyleung.zhihudailypurify.support.Constants;
-import io.github.izzyleung.zhihudailypurify.ui.fragment.NewsListFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
+import io.github.izzyleung.zhihudailypurify.R;
+import io.github.izzyleung.zhihudailypurify.support.Constants;
+import io.github.izzyleung.zhihudailypurify.ui.fragment.NewsListFragment;
 
 public class MainActivity extends FragmentActivity {
     private static final int PAGE_COUNT = 7;
@@ -55,9 +57,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private boolean prepareIntent(Class clazz) {
-        Intent intent = new Intent();
-        intent.setClass(MainActivity.this, clazz);
-        startActivity(intent);
+        startActivity(new Intent(MainActivity.this, clazz));
         return true;
     }
 
@@ -70,7 +70,6 @@ public class MainActivity extends FragmentActivity {
         public Fragment getItem(int i) {
             Bundle bundle = new Bundle();
             Fragment newFragment = new NewsListFragment();
-            newFragment.setArguments(bundle);
 
             Calendar dateToGetUrl = Calendar.getInstance();
             dateToGetUrl.add(Calendar.DAY_OF_YEAR, 1 - i);
@@ -80,6 +79,7 @@ public class MainActivity extends FragmentActivity {
             bundle.putBoolean("single?", false);
             bundle.putString("date", date);
 
+            newFragment.setArguments(bundle);
             return newFragment;
         }
 

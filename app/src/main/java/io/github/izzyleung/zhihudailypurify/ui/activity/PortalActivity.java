@@ -9,16 +9,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.NewsListFragment;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.PickDateFragment;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 public class PortalActivity extends FragmentActivity
         implements PickDateFragment.PickDateListener {
@@ -104,14 +105,14 @@ public class PortalActivity extends FragmentActivity
     }
 
     private void showDialogOnFirstLaunch(final SharedPreferences pref) {
-        pref.edit().putBoolean("accelerate_server_hint", false).commit();
+        pref.edit().putBoolean("accelerate_server_hint", false).apply();
         AlertDialog.Builder dialog = new AlertDialog.Builder(this).setCancelable(false);
         dialog.setTitle(getString(R.string.accelerate_server_hint_dialog_title));
         dialog.setMessage(getString(R.string.accelerate_server_hint_dialog_message));
         dialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                pref.edit().putBoolean("using_accelerate_server?", true).commit();
+                pref.edit().putBoolean("using_accelerate_server?", true).apply();
                 showPickDateFragment();
             }
         });

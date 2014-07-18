@@ -20,7 +20,7 @@ __Disclaimer - 声明__
   - No tracking modules, do not collect any private data - 没有追踪模块，不收集您的任何隐私信息
 
 ### Dependency - 依赖
-  - Java Development Kit (JDK) 7 +
+  - Java Development Kit (JDK) 6 +
   - Android SDK
     - Android SDK Build-tools 19.1 +
     - Android Support Repository 5 +

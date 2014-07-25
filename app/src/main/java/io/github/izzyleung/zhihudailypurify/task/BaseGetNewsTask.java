@@ -1,10 +1,10 @@
 package io.github.izzyleung.zhihudailypurify.task;
 
+import java.util.List;
+
 import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
-
-import java.util.List;
 
 public abstract class BaseGetNewsTask extends BaseDownloadTask<Void, Void, List<DailyNews>> {
     protected boolean isRefreshSuccess = true;
@@ -34,7 +34,7 @@ public abstract class BaseGetNewsTask extends BaseDownloadTask<Void, Void, List<
     }
 
     protected boolean checkIsContentSame(List<DailyNews> externalNewsList) {
-        return externalNewsList.equals(ZhihuDailyPurifyApplication.getInstance().getDataSource().newsOfTheDay(date));
+        return externalNewsList.equals(ZhihuDailyPurifyApplication.getDataSource().newsOfTheDay(date));
     }
 
     public static interface UpdateUIListener {

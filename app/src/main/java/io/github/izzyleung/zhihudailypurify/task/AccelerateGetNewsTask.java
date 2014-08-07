@@ -24,7 +24,7 @@ public class AccelerateGetNewsTask extends BaseGetNewsTask {
 
     @Override
     protected List<DailyNews> doInBackground(Void... params) {
-        List<DailyNews> resultNewsList = new ArrayList<DailyNews>();
+        List<DailyNews> resultNewsList = new ArrayList<>();
 
         Type listType = new TypeToken<List<DailyNews>>() {
 

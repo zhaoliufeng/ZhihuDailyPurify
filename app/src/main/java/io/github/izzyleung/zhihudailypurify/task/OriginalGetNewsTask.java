@@ -22,7 +22,7 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
 
     @Override
     protected List<DailyNews> doInBackground(Void... params) {
-        List<DailyNews> resultNewsList = new ArrayList<DailyNews>();
+        List<DailyNews> resultNewsList = new ArrayList<>();
 
         try {
             JSONObject contents = new JSONObject(
@@ -47,9 +47,7 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
                     }
                 }
             }
-        } catch (JSONException e) {
-            isRefreshSuccess = false;
-        } catch (IOException e) {
+        } catch (JSONException | IOException e) {
             isRefreshSuccess = false;
         }
 

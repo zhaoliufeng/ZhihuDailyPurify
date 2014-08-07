@@ -8,8 +8,8 @@ public final class DailyNews {
     private String questionTitle;
     private String questionUrl;
     private String dailyTitle;
-    private List<String> questionTitleList = new ArrayList<String>();
-    private List<String> questionUrlList = new ArrayList<String>();
+    private List<String> questionTitleList = new ArrayList<>();
+    private List<String> questionUrlList = new ArrayList<>();
     private String thumbnailUrl;
 
     public DailyNews() {
@@ -23,14 +23,14 @@ public final class DailyNews {
         this.questionUrl = dailyNews.questionUrl;
         this.dailyTitle = dailyNews.dailyTitle;
 
-        List<String> tempQuestionTitleList = new ArrayList<String>();
+        List<String> tempQuestionTitleList = new ArrayList<>();
 
         for (String aQuestionTitleList : dailyNews.questionTitleList) {
             tempQuestionTitleList.add(aQuestionTitleList);
         }
         this.questionTitleList = tempQuestionTitleList;
 
-        List<String> tempQuestionUrlList = new ArrayList<String>();
+        List<String> tempQuestionUrlList = new ArrayList<>();
 
         for (String aQuestionUrlList : dailyNews.questionUrlList) {
             tempQuestionUrlList.add(aQuestionUrlList);

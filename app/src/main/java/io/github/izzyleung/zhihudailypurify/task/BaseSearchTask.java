@@ -1,11 +1,11 @@
 package io.github.izzyleung.zhihudailypurify.task;
 
 import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.support.Constants;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,11 +19,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
+import io.github.izzyleung.zhihudailypurify.support.Constants;
+
 public class BaseSearchTask extends BaseDownloadTask<String, Void, Void> {
     protected boolean isSearchSuccess = false;
 
-    protected List<String> dateResultList = new ArrayList<String>();
-    protected List<DailyNews> newsList = new ArrayList<DailyNews>();
+    protected List<String> dateResultList = new ArrayList<>();
+    protected List<DailyNews> newsList = new ArrayList<>();
 
     private SimpleDateFormat simpleDateFormat;
 
@@ -65,11 +68,7 @@ public class BaseSearchTask extends BaseDownloadTask<String, Void, Void> {
                     isSearchSuccess = true;
                 }
             }
-        } catch (IOException ignored) {
-
-        } catch (JSONException ignored) {
-
-        } catch (ParseException ignored) {
+        } catch (IOException | JSONException | ParseException ignored) {
 
         }
 

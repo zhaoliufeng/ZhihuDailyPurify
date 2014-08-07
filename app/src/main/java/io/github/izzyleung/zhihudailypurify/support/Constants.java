@@ -11,8 +11,8 @@ public final class Constants {
         public static final String ZHIHU_DAILY_BEFORE = "http://news.at.zhihu.com/api/3/news/before/";
         public static final String ZHIHU_DAILY_OFFLINE_NEWS = "http://news-at.zhihu.com/api/3/news/";
         public static final String ZHIHU_DAILY_PURIFY_HEROKU_BEFORE = "http://zhihu-daily-purify.herokuapp.com/raw/";
-        public static final String ZHIHU_DAILY_PURIFY_SAE_BEFORE = "http://zhihudailypurify.vipsinaapp.com/raw/";
-        public static final String SEARCH = "http://zhihudailypurify.vipsinaapp.com/search/";
+        public static final String ZHIHU_DAILY_PURIFY_SAE_BEFORE = "http://zhihudailypurify.sinaapp.com/raw/";
+        public static final String SEARCH = "http://zhihudailypurify.sinaapp.com/search/";
     }
 
     public static final class Date {

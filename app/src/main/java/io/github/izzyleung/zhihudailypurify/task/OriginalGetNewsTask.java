@@ -60,43 +60,51 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
         Elements viewMoreElements = doc.getElementsByClass("view-more");
 
         if (viewMoreElements.size() > 1) {
-            dailyNews.setMulti(true);
-            Elements questionTitleElements = doc.getElementsByClass("question-title");
+            return processMulti(doc, viewMoreElements, dailyNews);
+        } else {
+            return viewMoreElements.size() == 1 && processSingle(doc, viewMoreElements, dailyNews);
+        }
+    }
 
-            for (int j = 0; j < viewMoreElements.size(); j++) {
-                if (questionTitleElements.get(j).text().length() == 0) {
-                    dailyNews.addQuestionTitle(dailyNews.getDailyTitle());
-                } else {
-                    dailyNews.addQuestionTitle(questionTitleElements.get(j).text());
-                }
+    private boolean processMulti(Document doc, Elements viewMoreElements, DailyNews dailyNews) {
+        dailyNews.setMulti(true);
+        Elements questionTitleElements = doc.getElementsByClass("question-title");
 
-                Elements viewQuestionElement = viewMoreElements.get(j).select("a");
-
-                // Unless the url is a link to zhihu, do not add it to the result NewsList
-                if (viewQuestionElement.text().equals("查看知乎讨论")) {
-                    dailyNews.addQuestionUrl(viewQuestionElement.attr("href"));
-                } else {
-                    return false;
-                }
+        for (int j = 0; j < viewMoreElements.size(); j++) {
+            if (questionTitleElements.get(j).text().length() == 0) {
+                dailyNews.addQuestionTitle(dailyNews.getDailyTitle());
+            } else {
+                dailyNews.addQuestionTitle(questionTitleElements.get(j).text());
             }
-        } else if (viewMoreElements.size() == 1) {
-            dailyNews.setMulti(false);
 
-            Elements viewQuestionElement = viewMoreElements.select("a");
+            Elements viewQuestionElement = viewMoreElements.get(j).select("a");
+
+            // Unless the url is a link to zhihu, do not add it to the result NewsList
             if (viewQuestionElement.text().equals("查看知乎讨论")) {
-                dailyNews.setQuestionUrl(viewQuestionElement.attr("href"));
+                dailyNews.addQuestionUrl(viewQuestionElement.attr("href"));
             } else {
                 return false;
             }
+        }
 
-            // Question title is the same with daily title
-            if (doc.getElementsByClass("question-title").text().length() == 0) {
-                dailyNews.setQuestionTitle(dailyNews.getDailyTitle());
-            } else {
-                dailyNews.setQuestionTitle(doc.getElementsByClass("question-title").text());
-            }
+        return true;
+    }
+
+    private boolean processSingle(Document doc, Elements viewMoreElements, DailyNews dailyNews) {
+        dailyNews.setMulti(false);
+
+        Elements viewQuestionElement = viewMoreElements.select("a");
+        if (viewQuestionElement.text().equals("查看知乎讨论")) {
+            dailyNews.setQuestionUrl(viewQuestionElement.attr("href"));
         } else {
             return false;
+        }
+
+        // Question title is the same with daily title
+        if (doc.getElementsByClass("question-title").text().length() == 0) {
+            dailyNews.setQuestionTitle(dailyNews.getDailyTitle());
+        } else {
+            dailyNews.setQuestionTitle(doc.getElementsByClass("question-title").text());
         }
 
         return true;

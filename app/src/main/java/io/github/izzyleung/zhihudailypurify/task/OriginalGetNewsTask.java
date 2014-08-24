@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -68,14 +69,20 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
         dailyNews.setMulti(true);
         Elements questionTitleElements = doc.getElementsByClass("question-title");
 
-        for (int j = 0; j < viewMoreElements.size(); j++) {
-            if (questionTitleElements.get(j).text().length() == 0) {
+        for (int j = 0; j < questionTitleElements.size(); j++) {
+            if (j == 0 && questionTitleElements.get(j).text().length() == 0) {
                 dailyNews.addQuestionTitle(dailyNews.getDailyTitle());
-            } else {
-                dailyNews.addQuestionTitle(questionTitleElements.get(j).text());
             }
 
-            Elements viewQuestionElement = viewMoreElements.get(j).select("a");
+            if (questionTitleElements.get(j).text().equals("原题描述：")) {
+                continue;
+            }
+
+            dailyNews.addQuestionTitle(questionTitleElements.get(j).text());
+        }
+
+        for (Element viewMoreElement : viewMoreElements) {
+            Elements viewQuestionElement = viewMoreElement.select("a");
 
             // Unless the url is a link to zhihu, do not add it to the result NewsList
             if (viewQuestionElement.text().equals("查看知乎讨论")) {
@@ -102,7 +109,16 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
         if (doc.getElementsByClass("question-title").text().length() == 0) {
             dailyNews.setQuestionTitle(dailyNews.getDailyTitle());
         } else {
-            dailyNews.setQuestionTitle(doc.getElementsByClass("question-title").text());
+            if (doc.getElementsByClass("question-title").size() == 1) {
+                dailyNews.setQuestionTitle(doc.getElementsByClass("question-title").text());
+            } else {
+                for (Element questionTitle : doc.getElementsByClass("question-title")) {
+                    if (!questionTitle.text().equals("原题描述：")) {
+                        dailyNews.setQuestionTitle(questionTitle.text());
+                        break;
+                    }
+                }
+            }
         }
 
         return true;

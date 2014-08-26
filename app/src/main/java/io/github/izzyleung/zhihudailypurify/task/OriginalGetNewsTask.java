@@ -113,7 +113,7 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
                 dailyNews.setQuestionTitle(doc.getElementsByClass("question-title").text());
             } else {
                 for (Element questionTitle : doc.getElementsByClass("question-title")) {
-                    if (!questionTitle.text().equals("原题描述：")) {
+                    if (!(questionTitle.text().equals("原题描述：") || questionTitle.text().equals("原题描述"))) {
                         dailyNews.setQuestionTitle(questionTitle.text());
                         break;
                     }

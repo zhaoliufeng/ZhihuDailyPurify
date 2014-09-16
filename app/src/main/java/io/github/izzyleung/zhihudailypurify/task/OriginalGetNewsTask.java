@@ -38,7 +38,7 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
                         : null);
                 dailyNews.setDailyTitle(singleNews.getString("title"));
                 String newsInfoJson = downloadStringFromUrl(
-                        Constants.Url.ZHIHU_DAILY_OFFLINE_NEWS + singleNews.getString("id"));
+                        Constants.Url.ZHIHU_DAILY_OFFLINE_NEWS + singleNews.getInt("id"));
                 JSONObject newsDetail = new JSONObject(newsInfoJson);
                 if (newsDetail.has("body")) {
                     if (updateDailyNews(Jsoup.parse(newsDetail.getString("body")), dailyNews)) {

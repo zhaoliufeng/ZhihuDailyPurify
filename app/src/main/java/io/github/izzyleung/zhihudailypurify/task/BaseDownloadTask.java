@@ -36,8 +36,7 @@ public abstract class BaseDownloadTask<Params, Progress, Result> extends MyAsync
         return Html.fromHtml(Html.fromHtml(in).toString()).toString();
     }
 
-    //TODO Implement logging function
     protected void logErrorMessage(Throwable error, String className) {
-        Log.e(LOG_TAG, className, error);
+        Log.e(LOG_TAG + " :" + className, Log.getStackTraceString(error));
     }
 }

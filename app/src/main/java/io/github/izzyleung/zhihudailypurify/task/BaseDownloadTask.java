@@ -1,25 +1,24 @@
 package io.github.izzyleung.zhihudailypurify.task;
 
 import android.text.Html;
-import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
+import android.util.Log;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 
+import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
+
 public abstract class BaseDownloadTask<Params, Progress, Result> extends MyAsyncTask<Params, Progress, Result> {
+    public static final String LOG_TAG = "FailedToDownloadNews";
+
     protected String downloadStringFromUrl(String url) throws IOException {
         HttpClient client = new DefaultHttpClient();
-
-        HttpParams params = client.getParams();
-        HttpConnectionParams.setConnectionTimeout(params, 5 * 1000);
-        HttpConnectionParams.setSoTimeout(params, 5 * 1000);
 
         try {
             HttpResponse httpResponse = client.execute(new HttpGet(url));
@@ -35,5 +34,10 @@ public abstract class BaseDownloadTask<Params, Progress, Result> extends MyAsync
 
     protected String decodeHtml(String in) {
         return Html.fromHtml(Html.fromHtml(in).toString()).toString();
+    }
+
+    //TODO Implement logging function
+    protected void logErrorMessage(Throwable error, String className) {
+        Log.e(LOG_TAG, className, error);
     }
 }

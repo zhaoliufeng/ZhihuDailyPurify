@@ -39,6 +39,7 @@ public class AccelerateGetNewsTask extends BaseGetNewsTask {
             jsonFromWeb = downloadStringFromUrl(baseUrl + date);
         } catch (IOException e) {
             isRefreshSuccess = false;
+            logErrorMessage(e, AccelerateGetNewsTask.class.getSimpleName());
             return null;
         }
 
@@ -47,8 +48,8 @@ public class AccelerateGetNewsTask extends BaseGetNewsTask {
         if (!TextUtils.isEmpty(newsListJSON)) {
             try {
                 resultNewsList = new GsonBuilder().create().fromJson(newsListJSON, listType);
-            } catch (JsonSyntaxException ignored) {
-
+            } catch (JsonSyntaxException e) {
+                logErrorMessage(e, AccelerateGetNewsTask.class.getSimpleName());
             }
         } else {
             isRefreshSuccess = false;

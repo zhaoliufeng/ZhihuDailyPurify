@@ -48,6 +48,7 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
             }
         } catch (JSONException | IOException e) {
             isRefreshSuccess = false;
+            logErrorMessage(e, OriginalGetNewsTask.class.getSimpleName());
         }
 
         isContentSame = checkIsContentSame(resultNewsList);

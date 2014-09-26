@@ -14,6 +14,7 @@ import java.util.List;
 
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.Constants;
+import io.github.izzyleung.zhihudailypurify.support.Logger;
 
 public class OriginalGetNewsTask extends BaseGetNewsTask {
 
@@ -48,7 +49,7 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
             }
         } catch (JSONException | IOException e) {
             isRefreshSuccess = false;
-            logErrorMessage(e, OriginalGetNewsTask.class.getSimpleName());
+            Logger.e(e);
         }
 
         isContentSame = checkIsContentSame(resultNewsList);

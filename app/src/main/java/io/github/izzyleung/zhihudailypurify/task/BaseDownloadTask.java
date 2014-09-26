@@ -1,7 +1,6 @@
 package io.github.izzyleung.zhihudailypurify.task;
 
 import android.text.Html;
-import android.util.Log;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -34,9 +33,5 @@ public abstract class BaseDownloadTask<Params, Progress, Result> extends MyAsync
 
     protected String decodeHtml(String in) {
         return Html.fromHtml(Html.fromHtml(in).toString()).toString();
-    }
-
-    protected void logErrorMessage(Throwable error, String className) {
-        Log.e(LOG_TAG + " :" + className, Log.getStackTraceString(error));
     }
 }

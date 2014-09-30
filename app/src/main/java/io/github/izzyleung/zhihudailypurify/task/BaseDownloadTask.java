@@ -14,8 +14,6 @@ import java.io.IOException;
 import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
 
 public abstract class BaseDownloadTask<Params, Progress, Result> extends MyAsyncTask<Params, Progress, Result> {
-    public static final String LOG_TAG = "FailedToDownloadNews";
-
     protected String downloadStringFromUrl(String url) throws IOException {
         HttpClient client = new DefaultHttpClient();
 

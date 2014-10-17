@@ -29,7 +29,9 @@ public abstract class BaseGetNewsTask extends BaseDownloadTask<Void, Void, List<
             new SaveNewsListTask(date, resultNewsList).executeOnExecutor(MyAsyncTask.THREAD_POOL_EXECUTOR);
         }
 
-        mListener.afterTaskFinished(resultNewsList, isRefreshSuccess, isContentSame);
+        if (mListener != null) {
+            mListener.afterTaskFinished(resultNewsList, isRefreshSuccess, isContentSame);
+        }
         mListener = null;
     }
 

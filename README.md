@@ -11,12 +11,7 @@ __Disclaimer - 声明__
 
 『知乎』是 *知乎. Inc* 的注册商标。本软件与其代码非由知乎创作或维护。软件中所包含的信息与内容皆违反版权与知乎用户协议。它是一个免费软件，使用它不收取您任何费用。其中的所有内容均可在[知乎](http://www.zhihu.com)获取。
 
-__Notice - 请注意__  
-Zhihu is changing its API rapidly. Those changes may be subtle, but will make a huge impact to this App. Sometimes "Network Error" will be shown rather than the content, and that's due to those changes. Now I have a almost full schedule everyday, and am not likely to maintain this code base as feverishly as before. I will continue to maintain this App, but I cannot update the code that quickly.  
-
-知乎日报的 API 每隔几日就会有一些细微但对 App 影响很大的变化，经常导致软件出现无法显示内容的错误。现在学业繁重，已经难以像曾经那样投入很多的精力维护代码，处理由于 API 变化而带来的众多细节问题，和改进 App。我会继续维护这个 App，但是跟新的速率会降低很多  
-
-### Features - 特性
+## Features - 特性
   - All about discussion in [Zhihu](http://www.zhihu.com) - 只提取[知乎](http://www.zhihu.com)讨论
   - Light weighted, more than 10 times lighter than Zhihu Daily - 更小的体积：甚至不到『知乎日报』的 1/10
   - Do not request useless permission - 不需要多余的权限

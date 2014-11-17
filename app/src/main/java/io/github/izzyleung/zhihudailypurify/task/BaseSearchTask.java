@@ -45,9 +45,8 @@ public class BaseSearchTask extends BaseDownloadTask<String, Void, Void> {
         String result;
 
         try {
-            //noinspection deprecation
             result = decodeHtml(downloadStringFromUrl(Constants.Url.SEARCH
-                    + URLEncoder.encode(params[0].trim()).replace("+", "%20")));
+                    + URLEncoder.encode(params[0].trim(), "UTF-8").replace("+", "%20")));
             if (!TextUtils.isEmpty(result) && !isCancelled()) {
                 JSONArray resultArray = new JSONArray(result);
 

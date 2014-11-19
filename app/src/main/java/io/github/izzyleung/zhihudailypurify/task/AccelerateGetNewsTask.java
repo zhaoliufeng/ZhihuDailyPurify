@@ -14,6 +14,7 @@ import java.util.List;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.support.Logger;
+import io.github.izzyleung.zhihudailypurify.support.lib.Http;
 
 public class AccelerateGetNewsTask extends BaseGetNewsTask {
     private String serverCode;
@@ -37,7 +38,7 @@ public class AccelerateGetNewsTask extends BaseGetNewsTask {
 
         String jsonFromWeb;
         try {
-            jsonFromWeb = downloadStringFromUrl(baseUrl + date);
+            jsonFromWeb = Http.get(baseUrl, date);
         } catch (IOException e) {
             isRefreshSuccess = false;
             Logger.e(e);

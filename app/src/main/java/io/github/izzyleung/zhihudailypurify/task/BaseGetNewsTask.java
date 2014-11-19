@@ -6,7 +6,7 @@ import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
 
-public abstract class BaseGetNewsTask extends BaseDownloadTask<Void, Void, List<DailyNews>> {
+public abstract class BaseGetNewsTask extends BaseHttpTask<Void, Void, List<DailyNews>> {
     protected boolean isRefreshSuccess = true;
     protected boolean isContentSame = false;
     protected String date;

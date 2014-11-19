@@ -15,6 +15,7 @@ import java.util.List;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.support.Logger;
+import io.github.izzyleung.zhihudailypurify.support.lib.Http;
 
 public class OriginalGetNewsTask extends BaseGetNewsTask {
 
@@ -27,7 +28,7 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
         List<DailyNews> resultNewsList = new ArrayList<>();
 
         try {
-            JSONObject contents = new JSONObject(downloadStringFromUrl(Constants.Url.ZHIHU_DAILY_BEFORE + date));
+            JSONObject contents = new JSONObject(Http.get(Constants.Url.ZHIHU_DAILY_BEFORE, date));
 
             JSONArray newsArray = contents.getJSONArray("stories");
             for (int i = 0; i < newsArray.length(); i++) {
@@ -38,8 +39,8 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
                         ? (String) singleNews.getJSONArray("images").get(0)
                         : null);
                 dailyNews.setDailyTitle(singleNews.getString("title"));
-                String newsInfoJson = downloadStringFromUrl(
-                        Constants.Url.ZHIHU_DAILY_OFFLINE_NEWS + singleNews.getInt("id"));
+                String newsInfoJson = Http.get(Constants.Url.ZHIHU_DAILY_OFFLINE_NEWS,
+                        String.valueOf(singleNews.getInt("id")));
                 JSONObject newsDetail = new JSONObject(newsInfoJson);
                 if (newsDetail.has("body")) {
                     if (updateDailyNews(Jsoup.parse(newsDetail.getString("body")), dailyNews)) {

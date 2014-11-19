@@ -12,7 +12,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,8 +20,9 @@ import java.util.List;
 
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.Constants;
+import io.github.izzyleung.zhihudailypurify.support.lib.Http;
 
-public class BaseSearchTask extends BaseDownloadTask<String, Void, Void> {
+public class BaseSearchTask extends BaseHttpTask<String, Void, Void> {
     protected boolean isSearchSuccess = false;
 
     protected List<String> dateResultList = new ArrayList<>();
@@ -45,8 +45,7 @@ public class BaseSearchTask extends BaseDownloadTask<String, Void, Void> {
         String result;
 
         try {
-            result = decodeHtml(downloadStringFromUrl(Constants.Url.SEARCH
-                    + URLEncoder.encode(params[0].trim(), "UTF-8").replace("+", "%20")));
+            result = decodeHtml(Http.get(Constants.Url.SEARCH, params[0].trim()));
             if (!TextUtils.isEmpty(result) && !isCancelled()) {
                 JSONArray resultArray = new JSONArray(result);
 

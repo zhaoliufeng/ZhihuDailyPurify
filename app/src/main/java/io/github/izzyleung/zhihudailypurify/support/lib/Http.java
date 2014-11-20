@@ -49,7 +49,15 @@ public class Http {
     }
 
     public static String get(String baseUrl, String suffix) throws IOException {
-        return get(baseUrl + encodeString(suffix).replace("+", "%20"));
+        return get(baseUrl + encodeString(suffix));
+    }
+
+    public static String get(String baseUrl, String suffix, boolean replaceSpace) throws IOException {
+        if (replaceSpace) {
+            return get(baseUrl + encodeString(suffix).replace("+", "%20"));
+        } else {
+            return get(baseUrl, suffix);
+        }
     }
 
     private static String makeUrl(String baseUrl, Map<String, String> params) {

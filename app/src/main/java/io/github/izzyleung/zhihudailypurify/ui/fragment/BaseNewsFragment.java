@@ -32,7 +32,7 @@ public abstract class BaseNewsFragment extends Fragment
     protected int longClickedItemIndex = 0;
     protected int spinnerSelectedItemIndex = 0;
 
-    protected List<DailyNews> newsList = new ArrayList<DailyNews>();
+    protected List<DailyNews> newsList = new ArrayList<>();
     protected NewsAdapter listAdapter;
 
     private ActionMode mActionMode;

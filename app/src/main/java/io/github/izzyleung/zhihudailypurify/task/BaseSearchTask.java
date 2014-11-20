@@ -45,7 +45,7 @@ public class BaseSearchTask extends BaseHttpTask<String, Void, Void> {
         String result;
 
         try {
-            result = decodeHtml(Http.get(Constants.Url.SEARCH, params[0].trim()));
+            result = decodeHtml(Http.get(Constants.Url.SEARCH, params[0].trim(), true));
             if (!TextUtils.isEmpty(result) && !isCancelled()) {
                 JSONArray resultArray = new JSONArray(result);
 

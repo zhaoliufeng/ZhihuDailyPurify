@@ -20,10 +20,10 @@ __Disclaimer - 声明__
   - No tracking modules, do not collect any private data - 没有追踪模块，不收集您的任何隐私信息
 
 ### Dependency - 依赖
-  - Java Development Kit (JDK) 6 +
+  - Java Development Kit (JDK) +
   - Android SDK
-    - Android SDK Build-tools 19.1 +
-    - Android Support Repository 5 +
+    - Android SDK Build-tools +
+    - Android Support Repository +
     
 Set `ANDROID_HOME` environment variable properly - 将 `ANDROID_HOME` 环境变量指向你的 Android SDK 目录
 

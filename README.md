@@ -20,12 +20,14 @@ __Disclaimer - 声明__
   - No tracking modules, do not collect any private data - 没有追踪模块，不收集您的任何隐私信息
 
 ### Dependency - 依赖
-  - Java Development Kit (JDK) +
+  - Java Development Kit (JDK)
   - Android SDK
-    - Android SDK Build-tools +
-    - Android Support Repository +
-    
+    - Android SDK Build-tools
+    - Android Support Repository
+  
 Set `ANDROID_HOME` environment variable properly - 将 `ANDROID_HOME` 环境变量指向你的 Android SDK 目录
+Always use the lateset version of them - 永远使用它们的最新版本
+    
 
 ### Build - 构建
 `./gradlew assemble`  

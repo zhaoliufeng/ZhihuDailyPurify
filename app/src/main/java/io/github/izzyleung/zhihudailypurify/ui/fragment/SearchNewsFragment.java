@@ -6,17 +6,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
-import io.github.izzyleung.zhihudailypurify.R;
-import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.izzyleung.zhihudailypurify.R;
+import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
+
 public class SearchNewsFragment extends BaseNewsFragment {
-    private List<String> dateResultList = new ArrayList<String>();
+    private List<String> dateResultList = new ArrayList<>();
 
     private StickyListHeadersListView mStickyListHeadersListView;
 

@@ -200,7 +200,7 @@ public abstract class BaseNewsFragment extends Fragment
         mActionMode = getActivity().startActionMode(this);
         if (newsList.get(position).isMulti()) {
             Spinner spinner = new Spinner(getActivity());
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
                     getActivity(),
                     android.R.layout.simple_spinner_item,
                     newsList.get(position).getQuestionTitleList());

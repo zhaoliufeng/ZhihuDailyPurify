@@ -17,11 +17,8 @@ import io.github.izzyleung.zhihudailypurify.support.Logger;
 import io.github.izzyleung.zhihudailypurify.support.lib.Http;
 
 public class AccelerateGetNewsTask extends BaseGetNewsTask {
-    private String serverCode;
-
-    public AccelerateGetNewsTask(String serverCode, String date, UpdateUIListener callback) {
+    public AccelerateGetNewsTask(String date, UpdateUIListener callback) {
         super(date, callback);
-        this.serverCode = serverCode;
     }
 
     @Override
@@ -32,13 +29,9 @@ public class AccelerateGetNewsTask extends BaseGetNewsTask {
 
         }.getType();
 
-        String baseUrl = serverCode.equals(Constants.ServerCode.SAE) ?
-                Constants.Url.ZHIHU_DAILY_PURIFY_SAE_BEFORE :
-                Constants.Url.ZHIHU_DAILY_PURIFY_HEROKU_BEFORE;
-
         String jsonFromWeb;
         try {
-            jsonFromWeb = Http.get(baseUrl, date);
+            jsonFromWeb = Http.get(Constants.Url.ZHIHU_DAILY_PURIFY_HEROKU_BEFORE, date);
         } catch (IOException e) {
             isRefreshSuccess = false;
             Logger.e(e);

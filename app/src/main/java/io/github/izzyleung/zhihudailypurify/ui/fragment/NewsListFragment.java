@@ -21,7 +21,6 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
 import io.github.izzyleung.zhihudailypurify.task.AccelerateGetNewsTask;
 import io.github.izzyleung.zhihudailypurify.task.BaseGetNewsTask;
@@ -143,14 +142,7 @@ public class NewsListFragment extends BaseNewsFragment
             SharedPreferences sharedPreferences
                     = PreferenceManager.getDefaultSharedPreferences(getActivity());
             if (sharedPreferences.getBoolean("using_accelerate_server?", false)) {
-                String serverCode;
-                if (sharedPreferences.getString("which_accelerate_server", Constants.ServerCode.SAE)
-                        .equals(Constants.ServerCode.SAE)) {
-                    serverCode = Constants.ServerCode.SAE;
-                } else {
-                    serverCode = Constants.ServerCode.HEROKU;
-                }
-                new AccelerateGetNewsTask(serverCode, date, this).execute();
+                new AccelerateGetNewsTask(date, this).execute();
             } else {
                 new OriginalGetNewsTask(date, this).execute();
             }

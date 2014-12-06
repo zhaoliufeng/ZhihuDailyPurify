@@ -32,8 +32,6 @@
     <string name="no_result_found">抱歉，未找到相应结果</string>
     <string name="searching">搜索中，请稍候…</string>
     <string name="display_format">yyyy年M月d日 EEEE</string>
-    <string name="which_accelerate_server_title">使用哪个加速服务器？</string>
-    <string name="accelerate_server_dialog_title">请从下列加速服务器中选择</string>
     <string name="accelerate_server_hint_dialog_title">是否使用加速服务器？</string>
     <string name="accelerate_server_hint_dialog_message">若启用之，在使用更少流量同时，将会给您带来更快往日内容浏览速度。</string>
     <string name="action_share_url">分享</string>

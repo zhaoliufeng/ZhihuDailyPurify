@@ -25,7 +25,7 @@ __Disclaimer - 声明__
     - Android SDK Build-tools
     - Android Support Repository
   
-Set `ANDROID_HOME` environment variable properly - 将 `ANDROID_HOME` 环境变量指向你的 Android SDK 目录
+Set `ANDROID_HOME` environment variable properly - 将 `ANDROID_HOME` 环境变量指向你的 Android SDK 目录  
 Always use the lateset version of them - 永远使用它们的最新版本
     
 

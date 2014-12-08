@@ -36,4 +36,5 @@
     <string name="accelerate_server_hint_dialog_message">若启用之，在使用更少流量同时，将会给您带来更快往日内容浏览速度。</string>
     <string name="action_share_url">分享</string>
     <string name="share_to">分享至…</string>
+    <string name="accelerate_server_unlock">加速服务器已解锁</string>
 </resources>

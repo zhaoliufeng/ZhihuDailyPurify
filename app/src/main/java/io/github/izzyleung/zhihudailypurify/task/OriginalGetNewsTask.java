@@ -35,9 +35,11 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
                 JSONObject singleNews = newsArray.getJSONObject(i);
 
                 DailyNews dailyNews = new DailyNews();
-                dailyNews.setThumbnailUrl(singleNews.has("images")
-                        ? (String) singleNews.getJSONArray("images").get(0)
-                        : null);
+                String thumbnailUrl = "";
+                if (singleNews.has("images")) {
+                    thumbnailUrl = (String) singleNews.getJSONArray("images").get(0);
+                }
+                dailyNews.setThumbnailUrl(thumbnailUrl);
                 dailyNews.setDailyTitle(singleNews.getString("title"));
                 String newsInfoJson = Http.get(Constants.Url.ZHIHU_DAILY_OFFLINE_NEWS,
                         String.valueOf(singleNews.getInt("id")));

@@ -57,8 +57,7 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
         return resultNewsList;
     }
 
-    private boolean updateDailyNews(Document doc, DailyNews dailyNews)
-            throws JSONException {
+    private boolean updateDailyNews(Document doc, DailyNews dailyNews) {
         Elements viewMoreElements = doc.getElementsByClass("view-more");
 
         if (viewMoreElements.size() > 1) {

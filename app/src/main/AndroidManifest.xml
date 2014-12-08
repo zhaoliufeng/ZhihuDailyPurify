@@ -25,14 +25,14 @@
 
         <activity
             android:name=".ui.activity.PrefsActivity"
-            android:label="@string/action_settings"></activity>
+            android:label="@string/action_settings" />
 
         <activity
             android:name=".ui.activity.PortalActivity"
-            android:alwaysRetainTaskState="true"></activity>
+            android:alwaysRetainTaskState="true" />
 
         <activity
             android:name=".ui.activity.SearchActivity"
-            android:alwaysRetainTaskState="true"></activity>
+            android:alwaysRetainTaskState="true" />
     </application>
 </manifest>

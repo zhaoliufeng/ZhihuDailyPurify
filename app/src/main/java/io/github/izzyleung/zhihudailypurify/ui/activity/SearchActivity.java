@@ -3,7 +3,7 @@ package io.github.izzyleung.zhihudailypurify.ui.activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
 
@@ -14,7 +14,7 @@ import io.github.izzyleung.zhihudailypurify.task.BaseSearchTask;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.SearchNewsFragment;
 import io.github.izzyleung.zhihudailypurify.ui.widget.IzzySearchView;
 
-public class SearchActivity extends FragmentActivity {
+public class SearchActivity extends ActionBarActivity {
     private IzzySearchView searchView;
     private SearchNewsFragment searchNewsFragment;
 
@@ -51,9 +51,9 @@ public class SearchActivity extends FragmentActivity {
     }
 
     private void initView() {
-        getActionBar().setDisplayShowTitleEnabled(false);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
 
         searchView = new IzzySearchView(this);
         searchView.setQueryHint(getResources().getString(R.string.search_hint));
@@ -70,7 +70,7 @@ public class SearchActivity extends FragmentActivity {
 
         RelativeLayout relative = new RelativeLayout(this);
         relative.addView(searchView);
-        getActionBar().setCustomView(relative);
+        getSupportActionBar().setCustomView(relative);
     }
 
     class SearchTask extends BaseSearchTask {

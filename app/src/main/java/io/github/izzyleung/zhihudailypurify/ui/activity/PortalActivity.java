@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -21,7 +22,7 @@ import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.NewsListFragment;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.PickDateFragment;
 
-public class PortalActivity extends FragmentActivity
+public class PortalActivity extends ActionBarActivity
         implements PickDateFragment.PickDateListener {
     private static final int ACTION_PREVIOUS_DAY = 0, ACTION_NEXT_DAY = 1;
 
@@ -33,7 +34,7 @@ public class PortalActivity extends FragmentActivity
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         if (pref.getBoolean("accelerate_server_hint", true)) {
@@ -59,7 +60,7 @@ public class PortalActivity extends FragmentActivity
                 getSupportFragmentManager().popBackStack();
             }
 
-            getActionBar().setTitle(R.string.action_pick_date);
+            getSupportActionBar().setTitle(R.string.action_pick_date);
             prev.setVisible(false);
             next.setVisible(false);
         }
@@ -138,7 +139,7 @@ public class PortalActivity extends FragmentActivity
                 .replace(android.R.id.content, displayFragment)
                 .commit();
 
-        getActionBar().setTitle(R.string.action_pick_date);
+        getSupportActionBar().setTitle(R.string.action_pick_date);
     }
 
     private void updateFields(int action) {
@@ -176,7 +177,7 @@ public class PortalActivity extends FragmentActivity
         String displayDate = new SimpleDateFormat(getString(R.string.display_format)).
                 format(calendar.getTime());
 
-        getActionBar().setTitle(displayDate);
+        getSupportActionBar().setTitle(displayDate);
     }
 
     private boolean isSameDay(Calendar first, Calendar second) {

@@ -1,27 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.ZhihuDailyPurify.Light" parent="@style/Theme.AppCompat.Light">
-        <!--<item name="android:actionBarStyle">@style/Theme.ZhihuDailyPurify.ActionBarStyle</item>-->
-        <!--<item name="android:actionModeStyle">@style/Theme.ZhihuDailyPurify.Widget.ActionMode</item>-->
-        <!--<item name="android:actionModeCloseDrawable">@drawable/ic_cab_done_holo_dark</item>-->
-        <!--<item name="android:actionModeCloseButtonStyle">@android:style/Widget.Holo.ActionButton.CloseMode</item>-->
-        <!--<item name="android:dropDownSpinnerStyle">@style/Theme.ZhihuDailyPurify.SpinnerDropDownStyle</item>-->
-        <!--<item name="android:spinnerItemStyle">@style/Theme.ZhihuDailyPurify.SpinnerItemStyle</item>-->
+    <style name="Theme.ZhihuDailyPurify.Light" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <item name="android:fastScrollTrackDrawable">@null</item>
-        <item name="colorPrimary">#2196f3</item>
-        <item name="colorPrimaryDark">#1976d2</item>
-        <item name="colorAccent">#69f0ae</item>
-        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_accent</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="searchViewStyle">@style/Theme.ZhihuDailyPurify.SearchViewStyle</item>
         <!--<item name="android:textColorPrimaryInverse">#FFFFFF</item>-->
     </style>
 
-    <style name="Theme.ZhihuDailyPurify.ActionBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
-        <item name="android:titleTextStyle">@style/Theme.ZhihuDailyPurify.ActionBarStyle.TitleTextStyle</item>
+    <style name="Theme.ZhihuDailyPurify.Light.NoActionBar" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_accent</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <!--<item name="android:textColorPrimaryInverse">#FFFFFF</item>-->
     </style>
 
-    <style name="Theme.ZhihuDailyPurify.ActionBarStyle.TitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/title_gray</item>
+    <style name="Theme.ZhihuDailyPurify.SearchViewStyle" parent="Base.Widget.AppCompat.SearchView">
+        <item name="closeIcon">@drawable/noimage</item>
+    </style>
+
+    <style name="Theme.ZhihuDailyPurify.ActionBarStyle" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_accent</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
     </style>
 
     <style name="Theme.ZhihuDailyPurify.Widget.ActionMode" parent="@style/Widget.AppCompat.ActionMode">

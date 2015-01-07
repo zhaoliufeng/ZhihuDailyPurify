@@ -15,7 +15,8 @@
         <activity
             android:name=".ui.activity.MainActivity"
             android:alwaysRetainTaskState="true"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/Theme.ZhihuDailyPurify.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

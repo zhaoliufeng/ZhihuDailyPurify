@@ -27,7 +27,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.google.code.gson:gson:2.3'
     compile 'org.jsoup:jsoup:1.7.3'
-    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
+    compile 'com.jpardogo.materialtabstrip:library:1.0.6'
     compile 'se.emilsjolander:stickylistheaders:2.1.5'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile 'com.squareup:android-times-square:1.4.1@aar'

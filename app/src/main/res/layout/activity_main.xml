@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              style="@style/baseLayoutParam"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/baseLayoutParam"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar" />
 
     <com.astuetz.PagerSlidingTabStrip
-            style="@style/mainPageTabsStyle"
-            android:id="@+id/main_pager_tabs"
-            app:pstsTextAllCaps="false"/>
+        android:id="@+id/main_pager_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/color_primary"
+        android:textColor="@android:color/white"
+        app:pstsIndicatorColor="#FFFFFF"
+        app:pstsTextAllCaps="false" />
 
     <android.support.v4.view.ViewPager
-            style="@style/mainPagerStyle"
-            android:id="@+id/main_pager"
-            tools:context=".ui.activity.MainActivity"/>
+        android:id="@+id/main_pager"
+        style="@style/mainPagerStyle"
+        tools:context=".ui.activity.MainActivity" />
 </LinearLayout>

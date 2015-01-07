@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
 
@@ -12,10 +13,9 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.task.BaseSearchTask;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.SearchNewsFragment;
-import io.github.izzyleung.zhihudailypurify.ui.widget.IzzySearchView;
 
 public class SearchActivity extends ActionBarActivity {
-    private IzzySearchView searchView;
+    private SearchView searchView;
     private SearchNewsFragment searchNewsFragment;
 
     @Override
@@ -55,16 +55,27 @@ public class SearchActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
 
-        searchView = new IzzySearchView(this);
+        searchView = new SearchView(this);
+        searchView.setIconifiedByDefault(true);
+        searchView.setIconified(false);
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            public boolean onClose() {
+                return true;
+            }
+        });
         searchView.setQueryHint(getResources().getString(R.string.search_hint));
 
-        searchView.setOnQueryTextListener(new IzzySearchView.OnQueryTextListener() {
-
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 new SearchTask(getString(R.string.display_format)).execute(query);
                 searchView.clearFocus();
                 return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
             }
         });
 

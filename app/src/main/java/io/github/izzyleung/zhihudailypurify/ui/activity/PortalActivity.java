@@ -36,12 +36,7 @@ public class PortalActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        if (pref.getBoolean("accelerate_server_hint", true)) {
-            showDialogOnFirstLaunch(pref);
-        } else {
-            showPickDateFragment();
-        }
+        showPickDateFragment();
     }
 
     @Override
@@ -103,28 +98,6 @@ public class PortalActivity extends ActionBarActivity
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void showDialogOnFirstLaunch(final SharedPreferences pref) {
-        pref.edit().putBoolean("accelerate_server_hint", false).apply();
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this).setCancelable(false);
-        dialog.setTitle(getString(R.string.accelerate_server_hint_dialog_title));
-        dialog.setMessage(getString(R.string.accelerate_server_hint_dialog_message));
-        dialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                pref.edit().putBoolean("using_accelerate_server?", true).apply();
-                showPickDateFragment();
-            }
-        });
-        dialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                showPickDateFragment();
-            }
-        });
-
-        dialog.show();
     }
 
     private void showPickDateFragment() {

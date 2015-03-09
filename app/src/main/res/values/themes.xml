@@ -9,16 +9,14 @@
         <item name="colorAccent">@color/color_accent</item>
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="searchViewStyle">@style/Theme.ZhihuDailyPurify.SearchViewStyle</item>
-        <!--<item name="android:textColorPrimaryInverse">#FFFFFF</item>-->z
     </style>
 
     <style name="Theme.ZhihuDailyPurify.Light.NoActionBar" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="windowActionModeOverlay">true</item>
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
-        <item name="colorAccent">@color/color_accent</item>
         <item name="android:textColorPrimary">@android:color/white</item>
-        <!--<item name="android:textColorPrimaryInverse">#FFFFFF</item>-->
+        <item name="popupTheme">@style/Widget.AppCompat.Light.PopupMenu.Overflow</item>
     </style>
 
     <style name="Theme.ZhihuDailyPurify.SearchViewStyle" parent="Base.Widget.AppCompat.SearchView">

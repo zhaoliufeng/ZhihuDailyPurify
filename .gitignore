@@ -1,8 +1,1 @@
-.gradle
-build/
-*.iml
-/.idea/
 ZhihuDailyAPI.md
-android/
-.gradletasknamecache
-local.properties

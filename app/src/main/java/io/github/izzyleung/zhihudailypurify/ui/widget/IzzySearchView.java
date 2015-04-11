@@ -2,10 +2,12 @@ package io.github.izzyleung.zhihudailypurify.ui.widget;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.ResultReceiver;
 import android.text.*;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -224,12 +226,8 @@ public class IzzySearchView extends LinearLayout {
     }
 
     private CharSequence getDecoratedHint(CharSequence hintText) {
-        SpannableStringBuilder ssb = new SpannableStringBuilder("   ");
-        ssb.append(hintText);
-        Drawable searchIcon = getContext().getResources().getDrawable(R.drawable.ic_action_search);
-        int textSize = (int) (mQueryTextView.getTextSize() * 1.25);
-        searchIcon.setBounds(0, 0, textSize, textSize);
-        ssb.setSpan(new ImageSpan(searchIcon), 1, 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        Spannable ssb = new SpannableString(hintText);
+        ssb.setSpan(new ForegroundColorSpan(Color.parseColor("#e3f2fd")), 0, hintText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return ssb;
     }
 

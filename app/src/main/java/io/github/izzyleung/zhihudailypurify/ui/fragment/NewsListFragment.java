@@ -5,21 +5,18 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ListView;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
+import android.widget.Toast;
 
 import java.util.List;
 
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
+import io.github.izzyleung.zhihudailypurify.adapter.RecyclerViewAdapter;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
 import io.github.izzyleung.zhihudailypurify.task.AccelerateGetNewsTask;
@@ -28,16 +25,13 @@ import io.github.izzyleung.zhihudailypurify.task.OriginalGetNewsTask;
 
 public class NewsListFragment extends BaseNewsFragment
         implements SwipeRefreshLayout.OnRefreshListener, BaseGetNewsTask.UpdateUIListener {
+    RecyclerViewAdapter mAdapter;
     private String date;
-
     private boolean isAutoRefresh;
     private boolean isToday;
-
     // Fragment is single in PortalActivity
     private boolean isSingle;
     private boolean isRefreshed = false;
-
-    private ListView mListView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
@@ -66,14 +60,13 @@ public class NewsListFragment extends BaseNewsFragment
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
 
         assert view != null;
-        mListView = (ListView) view.findViewById(R.id.news_list);
-        mListView.setAdapter(listAdapter);
-        mListView.setOnScrollListener(
-                new PauseOnScrollListener(ImageLoader.getInstance(), false, true, this));
-
-        mListView.setOnItemClickListener(this);
-        mListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-        mListView.setOnItemLongClickListener(this);
+        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.news_list);
+        mRecyclerView.setHasFixedSize(!isToday);
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(llm);
+        mAdapter = new RecyclerViewAdapter(newsList);
+        mRecyclerView.setAdapter(mAdapter);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
@@ -105,28 +98,22 @@ public class NewsListFragment extends BaseNewsFragment
     }
 
     @Override
-    public void onDestroy() {
-        Crouton.cancelAllCroutons();
-
-        super.onDestroy();
-    }
-
-    @Override
     protected boolean shouldCleanListChoice() {
-        int position = mListView.getCheckedItemPosition();
-        return mListView.getFirstVisiblePosition() > position
-                || mListView.getLastVisiblePosition() < position;
+//        int position = mRecyclerView.getCheckedItemPosition();
+//        return mRecyclerView.getFirstVisiblePosition() > position
+//                || mRecyclerView.getLastVisiblePosition() < position;
+        return false;
     }
 
     @Override
     protected void clearListChoice() {
-        mListView.clearChoices();
+//        mRecyclerView.clearChoices();
         listAdapter.notifyDataSetChanged();
     }
 
     @Override
     protected void markItemCheckedAtPosition(int position) {
-        mListView.setItemChecked(position, true);
+//        mRecyclerView.setItemChecked(position, true);
     }
 
     private void refreshIf(boolean prerequisite) {
@@ -168,10 +155,11 @@ public class NewsListFragment extends BaseNewsFragment
         if (isRefreshSuccess) {
             if (!isContentSame) {
                 newsList = resultList;
-                listAdapter.updateNewsList(newsList);
+
+                mAdapter.updateNewsList(newsList);
             }
         } else if (isAdded()) {
-            Crouton.makeText(getActivity(), getActivity().getString(R.string.network_error), Style.ALERT).show();
+            Toast.makeText(getActivity(), getActivity().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -186,7 +174,7 @@ public class NewsListFragment extends BaseNewsFragment
         protected void onPostExecute(List<DailyNews> newsListRecovered) {
             if (newsListRecovered != null) {
                 newsList = newsListRecovered;
-                listAdapter.updateNewsList(newsListRecovered);
+                mAdapter.updateNewsList(newsList);
             }
         }
     }

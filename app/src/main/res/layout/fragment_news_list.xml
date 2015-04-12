@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/news_list"
-        style="@style/commonListViewStyle"
-        android:divider="@null" />
+        style="@style/commonListViewStyle" />
 </android.support.v4.widget.SwipeRefreshLayout>

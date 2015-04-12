@@ -6,9 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.task.BaseSearchTask;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.SearchNewsFragment;
@@ -33,7 +32,6 @@ public class SearchActivity extends ActionBarActivity {
 
     @Override
     public void onDestroy() {
-        Crouton.cancelAllCroutons();
         searchNewsFragment = null;
 
         super.onDestroy();
@@ -103,9 +101,9 @@ public class SearchActivity extends ActionBarActivity {
                 if (isSearchSuccess) {
                     searchNewsFragment.updateContent(newsList, dateResultList);
                 } else {
-                    Crouton.makeText(SearchActivity.this,
+                    Toast.makeText(SearchActivity.this,
                             getString(R.string.no_result_found),
-                            Style.ALERT).show();
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         }

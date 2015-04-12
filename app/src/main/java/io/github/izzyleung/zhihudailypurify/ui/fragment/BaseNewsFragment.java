@@ -220,6 +220,7 @@ public abstract class BaseNewsFragment extends Fragment
     private Intent prepareIntent() {
         Intent share = new Intent(android.content.Intent.ACTION_SEND);
         share.setType("text/plain");
+        //noinspection deprecation
         share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 
         StringBuilder shareText = new StringBuilder();

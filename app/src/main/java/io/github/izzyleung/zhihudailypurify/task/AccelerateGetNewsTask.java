@@ -13,7 +13,6 @@ import java.util.List;
 
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.Constants;
-import io.github.izzyleung.zhihudailypurify.support.Logger;
 import io.github.izzyleung.zhihudailypurify.support.lib.Http;
 
 public class AccelerateGetNewsTask extends BaseGetNewsTask {
@@ -34,7 +33,6 @@ public class AccelerateGetNewsTask extends BaseGetNewsTask {
             jsonFromWeb = Http.get(Constants.Url.ZHIHU_DAILY_PURIFY_BEFORE, date);
         } catch (IOException e) {
             isRefreshSuccess = false;
-            Logger.e(e);
             return null;
         }
 
@@ -43,8 +41,8 @@ public class AccelerateGetNewsTask extends BaseGetNewsTask {
         if (!TextUtils.isEmpty(newsListJSON)) {
             try {
                 resultNewsList = new GsonBuilder().create().fromJson(newsListJSON, listType);
-            } catch (JsonSyntaxException e) {
-                Logger.e(e);
+            } catch (JsonSyntaxException ignored) {
+
             }
         } else {
             isRefreshSuccess = false;

@@ -2,13 +2,14 @@ package io.github.izzyleung.zhihudailypurify.ui.widget;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.ResultReceiver;
-import android.text.*;
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -18,9 +19,10 @@ import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import io.github.izzyleung.zhihudailypurify.R;
 
 import java.lang.reflect.Method;
+
+import io.github.izzyleung.zhihudailypurify.R;
 
 /**
  * Simplified version of SearchView, only EditText and a clear text button is supported
@@ -227,7 +229,8 @@ public class IzzySearchView extends LinearLayout {
 
     private CharSequence getDecoratedHint(CharSequence hintText) {
         Spannable ssb = new SpannableString(hintText);
-        ssb.setSpan(new ForegroundColorSpan(Color.parseColor("#e3f2fd")), 0, hintText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.search_view_hint_color)),
+                0, hintText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return ssb;
     }
 

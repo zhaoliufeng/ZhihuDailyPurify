@@ -99,8 +99,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
     <string name="no_result_found">No result found</string>
     <string name="searching">Searching for result…</string>
     <string name="display_format">EEE, MMM d, yyyy</string>
-    <string name="accelerate_server_hint_dialog_title">Do you want to use the accelerate server?</string>
-    <string name="accelerate_server_hint_dialog_message">The server will save your data budget and bring you faster speed when browsing old days\' news.</string>
     <string name="action_share_url">Share</string>
     <string name="share_to">Share to…</string>
     <string name="accelerate_server_unlock">Accelerate server unlocked</string>

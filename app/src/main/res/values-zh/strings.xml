@@ -18,7 +18,6 @@
     <string name="no_browser"><![CDATA[您没有安装浏览器呢~ >_<]]></string>
     <string name="not_coming"><![CDATA[这一天还没有来临呢！>_<]]></string>
     <string name="not_born"><![CDATA[这一天知乎日报还没有诞生呢！>_<]]></string>
-    <string name="open_using_client">使用客户端打开讨论</string>
     <string name="zhihu_daily_today">今日之『知乎日报』|</string>
     <string name="action_forward">前一日</string>
     <string name="action_back">后一日</string>
@@ -32,8 +31,6 @@
     <string name="no_result_found">抱歉，未找到相应结果</string>
     <string name="searching">搜索中，请稍候…</string>
     <string name="display_format">yyyy年M月d日 EEEE</string>
-    <string name="accelerate_server_hint_dialog_title">是否使用加速服务器？</string>
-    <string name="accelerate_server_hint_dialog_message">若启用之，在使用更少流量同时，将会给您带来更快往日内容浏览速度。</string>
     <string name="action_share_url">分享</string>
     <string name="share_to">分享至…</string>
     <string name="accelerate_server_unlock">加速服务器已解锁</string>

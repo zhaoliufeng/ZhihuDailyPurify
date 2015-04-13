@@ -11,6 +11,7 @@ public final class DailyNews {
     private List<String> questionTitleList = new ArrayList<>();
     private List<String> questionUrlList = new ArrayList<>();
     private String thumbnailUrl;
+    private String date;
 
     public DailyNews() {
 
@@ -109,5 +110,13 @@ public final class DailyNews {
 
     public void addQuestionUrl(String questionUrl) {
         questionUrlList.add(questionUrl);
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

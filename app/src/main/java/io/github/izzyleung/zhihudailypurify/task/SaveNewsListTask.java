@@ -30,7 +30,7 @@ public class SaveNewsListTask extends MyAsyncTask<Void, Void, Void> {
 
         }.getType();
 
-        ZhihuDailyPurifyApplication.getDataSource().
-                insertOrUpdateNewsList(date, new GsonBuilder().create().toJson(newsList, listType));
+        ZhihuDailyPurifyApplication.getDataSource()
+                .insertOrUpdateNewsList(date, new GsonBuilder().create().toJson(newsList, listType));
     }
 }

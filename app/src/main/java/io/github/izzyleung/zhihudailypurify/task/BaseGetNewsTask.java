@@ -30,8 +30,13 @@ public abstract class BaseGetNewsTask extends BaseHttpTask<Void, Void, List<Dail
         }
 
         if (mListener != null) {
+            for (DailyNews news : resultNewsList) {
+                news.setDate(date);
+            }
+
             mListener.afterTaskFinished(resultNewsList, isRefreshSuccess, isContentSame);
         }
+
         mListener = null;
     }
 
@@ -39,9 +44,9 @@ public abstract class BaseGetNewsTask extends BaseHttpTask<Void, Void, List<Dail
         return externalNewsList.equals(ZhihuDailyPurifyApplication.getDataSource().newsOfTheDay(date));
     }
 
-    public static interface UpdateUIListener {
-        public void beforeTaskStart();
+    public interface UpdateUIListener {
+        void beforeTaskStart();
 
-        public void afterTaskFinished(List<DailyNews> resultList, boolean isRefreshSuccess, boolean isContentSame);
+        void afterTaskFinished(List<DailyNews> resultList, boolean isRefreshSuccess, boolean isContentSame);
     }
 }

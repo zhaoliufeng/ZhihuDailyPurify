@@ -34,6 +34,7 @@ import io.github.izzyleung.zhihudailypurify.support.Check;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private List<DailyNews> newsList;
+
     private ImageLoader imageLoader = ImageLoader.getInstance();
     private DisplayImageOptions options = new DisplayImageOptions.Builder()
             .showImageOnLoading(R.drawable.noimage)
@@ -60,11 +61,37 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.
-                from(parent.getContext()).
-                inflate(R.layout.news_list_item, parent, false);
+        final Context context = parent.getContext();
 
-        return new ViewHolder(itemView);
+        View itemView = LayoutInflater
+                .from(context)
+                .inflate(R.layout.news_list_item, parent, false);
+
+        return new ViewHolder(itemView, new ViewHolder.ClickResponseListener() {
+            @Override
+            public void onWholeClick(int position) {
+                browseOrShare(context, position, true);
+            }
+
+            @Override
+            public void onOverflowClick(View v, final int position) {
+                PopupMenu popup = new PopupMenu(context, v);
+                MenuInflater inflater = popup.getMenuInflater();
+                inflater.inflate(R.menu.contextual_news_list, popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_share_url:
+                                browseOrShare(context, position, false);
+                                break;
+                        }
+                        return true;
+                    }
+                });
+                popup.show();
+            }
+        });
     }
 
     @Override
@@ -80,34 +107,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.questionTitle.setText(dailyNews.getQuestionTitle());
             holder.dailyTitle.setText(dailyNews.getDailyTitle());
         }
-
-        holder.whole.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                browseOrShare(holder.whole.getContext(), position, true);
-            }
-        });
-
-        holder.overflow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu popup = new PopupMenu(holder.overflow.getContext(), holder.overflow);
-                MenuInflater inflater = popup.getMenuInflater();
-                inflater.inflate(R.menu.contextual_news_list, popup.getMenu());
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.action_share_url:
-                                browseOrShare(holder.overflow.getContext(), position, false);
-                                break;
-                        }
-                        return true;
-                    }
-                });
-                popup.show();
-            }
-        });
     }
 
     @Override
@@ -123,26 +122,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             new AlertDialog.Builder(context)
                     .setTitle(dailyNews.getDailyTitle())
-                    .setItems(questionTitles, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (browse) {
-                                goToZhihu(context, dailyNews.getQuestionUrlList().get(which));
-                            } else {
-                                String questionTitle, questionUrl;
-
-                                if (dailyNews.isMulti()) {
-                                    questionTitle = dailyNews.getQuestionTitleList().get(which);
-                                    questionUrl = dailyNews.getQuestionUrlList().get(which);
-                                } else {
-                                    questionTitle = dailyNews.getQuestionTitle();
-                                    questionUrl = dailyNews.getQuestionUrl();
-                                }
-
-                                share(context, questionTitle, questionUrl);
-                            }
-                        }
-                    }).show();
+                    .setItems(questionTitles, makeDialogListener(context, browse, dailyNews))
+                    .show();
         } else {
             if (browse) {
                 goToZhihu(context, dailyNews.getQuestionUrl());
@@ -153,6 +134,29 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 share(context, questionTitle, questionUrl);
             }
         }
+    }
+
+    private DialogInterface.OnClickListener makeDialogListener(final Context context, final boolean browse, final DailyNews dailyNews) {
+        return new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (browse) {
+                    goToZhihu(context, dailyNews.getQuestionUrlList().get(which));
+                } else {
+                    String questionTitle, questionUrl;
+
+                    if (dailyNews.isMulti()) {
+                        questionTitle = dailyNews.getQuestionTitleList().get(which);
+                        questionUrl = dailyNews.getQuestionUrlList().get(which);
+                    } else {
+                        questionTitle = dailyNews.getQuestionTitle();
+                        questionUrl = dailyNews.getQuestionUrl();
+                    }
+
+                    share(context, questionTitle, questionUrl);
+                }
+            }
+        };
     }
 
     private void goToZhihu(Context context, String url) {
@@ -188,21 +192,41 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         context.startActivity(Intent.createChooser(share, context.getString(R.string.share_to)));
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public View whole;
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView newsImage;
         public TextView questionTitle;
         public TextView dailyTitle;
         public ImageView overflow;
 
-        public ViewHolder(View v) {
+        private ClickResponseListener mClickResponseListener;
+
+        public ViewHolder(View v, ClickResponseListener clickResponseListener) {
             super(v);
 
-            whole = v;
+            this.mClickResponseListener = clickResponseListener;
+
             newsImage = (ImageView) v.findViewById(R.id.thumbnail_image);
             questionTitle = (TextView) v.findViewById(R.id.question_title);
             dailyTitle = (TextView) v.findViewById(R.id.daily_title);
             overflow = (ImageView) v.findViewById(R.id.card_share_overflow);
+
+            v.setOnClickListener(this);
+            overflow.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (v == overflow) {
+                mClickResponseListener.onOverflowClick(v, getAdapterPosition());
+            } else {
+                mClickResponseListener.onWholeClick(getAdapterPosition());
+            }
+        }
+
+        public interface ClickResponseListener {
+            void onWholeClick(int position);
+
+            void onOverflowClick(View v, int position);
         }
     }
 

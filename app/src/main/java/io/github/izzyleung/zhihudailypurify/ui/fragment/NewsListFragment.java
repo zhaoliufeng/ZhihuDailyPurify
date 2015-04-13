@@ -174,6 +174,11 @@ public class NewsListFragment extends BaseNewsFragment
         protected void onPostExecute(List<DailyNews> newsListRecovered) {
             if (newsListRecovered != null) {
                 newsList = newsListRecovered;
+
+                for (DailyNews news : newsList) {
+                    news.setDate(date);
+                }
+
                 mAdapter.updateNewsList(newsList);
             }
         }

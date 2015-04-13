@@ -85,7 +85,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
     <string name="no_browser"><![CDATA[No Browser Installed~ >_<]]></string>
     <string name="not_coming"><![CDATA[That day has not come yet! >_<]]></string>
     <string name="not_born"><![CDATA[Zhihu Daily not born that day! >_<]]></string>
-    <string name="open_using_client">Open Link Using Zhihu\'s Official Client</string>
     <string name="zhihu_daily_today">Zhihu Daily Today |</string>
     <string name="action_forward">The Day After</string>
     <string name="action_back">The Day Before</string>

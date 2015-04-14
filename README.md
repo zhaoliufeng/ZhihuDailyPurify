@@ -13,7 +13,7 @@ __Disclaimer - 声明__
 
 ## Features - 特性
   - All about discussion in [Zhihu](http://www.zhihu.com) - 只提取[知乎](http://www.zhihu.com)讨论
-  - Light weighted, more than 10 times lighter than Zhihu Daily - 更小的体积：甚至不到『知乎日报』的 1/10
+  - Light weighted, about 3 times lighter than Zhihu Daily - 更小的体积：甚至不到『知乎日报』的 1/3
   - Do not request useless permission - 不需要多余的权限
   - No ads - 没有广告
   - No push services, or any background activity - 没有推送消息，甚至没有任何的后台进程

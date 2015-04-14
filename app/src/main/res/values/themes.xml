@@ -7,8 +7,12 @@
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent</item>
         <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="searchViewStyle">@style/Theme.ZhihuDailyPurify.SearchViewStyle</item>
-        <item name="android:textColor">@android:color/black</item>
+        <item name="textAppearanceLargePopupMenu">
+            @style/Theme.ZhihuDailyPurify.PopupMenuTextAppearanceLarge
+        </item>
+        <item name="android:textAppearanceLargePopupMenu">
+            @style/Theme.ZhihuDailyPurify.PopupMenuTextAppearanceLarge
+        </item>
     </style>
 
     <style name="Theme.ZhihuDailyPurify.Light.NoActionBar" parent="@style/Theme.AppCompat.Light.NoActionBar">
@@ -17,17 +21,15 @@
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="popupTheme">@style/Widget.AppCompat.Light.PopupMenu.Overflow</item>
-        <item name="android:textColor">@android:color/black</item>
+        <item name="textAppearanceLargePopupMenu">
+            @style/Theme.ZhihuDailyPurify.PopupMenuTextAppearanceLarge
+        </item>
+        <item name="android:textAppearanceLargePopupMenu">
+            @style/Theme.ZhihuDailyPurify.PopupMenuTextAppearanceLarge
+        </item>
     </style>
 
-    <style name="Theme.ZhihuDailyPurify.SearchViewStyle" parent="Base.Widget.AppCompat.SearchView">
-        <item name="closeIcon">@drawable/noimage</item>
-    </style>
-
-    <style name="Theme.ZhihuDailyPurify.ActionBarStyle" parent="@style/ThemeOverlay.AppCompat.ActionBar">
-        <item name="colorPrimary">@color/color_primary</item>
-        <item name="colorPrimaryDark">@color/color_primary_dark</item>
-        <item name="colorAccent">@color/color_accent</item>
-        <item name="android:textColorPrimary">@android:color/white</item>
+    <style name="Theme.ZhihuDailyPurify.PopupMenuTextAppearanceLarge" parent="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large">
+        <item name="android:textColor">#000000</item>
     </style>
 </resources>

@@ -12,40 +12,29 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.support.lib.Http;
 
-public class BaseSearchTask extends BaseHttpTask<String, Void, Void> {
+public class BaseSearchTask extends BaseHttpTask<String, Void, List<DailyNews>> {
     protected boolean isSearchSuccess = false;
 
-    protected List<String> dateResultList = new ArrayList<>();
-    protected List<DailyNews> newsList = new ArrayList<>();
-
-    private SimpleDateFormat simpleDateFormat;
-
-    public BaseSearchTask(String dateFormat) {
-        this.simpleDateFormat = new SimpleDateFormat(dateFormat);
-    }
-
     @Override
-    protected Void doInBackground(String... params) {
+    protected List<DailyNews> doInBackground(String... params) {
         Gson gson = new GsonBuilder().create();
 
         Type newsType = new TypeToken<DailyNews>() {
 
         }.getType();
 
-        String result;
-
         try {
-            result = decodeHtml(Http.get(Constants.Url.SEARCH, params[0].trim(), true));
+            String result = decodeHtml(Http.get(Constants.Url.SEARCH, params[0].trim(), true));
+
+            List<DailyNews> newsList = new ArrayList<>();
+
             if (!TextUtils.isEmpty(result) && !isCancelled()) {
                 JSONArray resultArray = new JSONArray(result);
 
@@ -54,19 +43,17 @@ public class BaseSearchTask extends BaseHttpTask<String, Void, Void> {
                 } else {
                     for (int i = 0; i < resultArray.length(); i++) {
                         JSONObject newsObject = resultArray.getJSONObject(i);
-                        String date = newsObject.getString("date");
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTime(Constants.Date.simpleDateFormat.parse(date));
-                        calendar.add(Calendar.DAY_OF_YEAR, -1);
-                        dateResultList.add(simpleDateFormat.format(calendar.getTime()));
                         DailyNews news = gson.fromJson(newsObject.getString("content"), newsType);
+                        assert news != null;
+                        news.setDate(newsObject.getString("date"));
                         newsList.add(news);
                     }
 
                     isSearchSuccess = true;
+                    return newsList;
                 }
             }
-        } catch (IOException | JSONException | ParseException ignored) {
+        } catch (IOException | JSONException ignored) {
 
         }
 

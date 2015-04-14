@@ -8,7 +8,10 @@ import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import java.util.List;
+
 import io.github.izzyleung.zhihudailypurify.R;
+import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.task.BaseSearchTask;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.SearchNewsFragment;
 import io.github.izzyleung.zhihudailypurify.ui.widget.IzzySearchView;
@@ -58,7 +61,7 @@ public class SearchActivity extends ActionBarActivity {
         searchView.setOnQueryTextListener(new IzzySearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                new SearchTask(getString(R.string.display_format)).execute(query);
+                new SearchTask().execute(query);
                 searchView.clearFocus();
                 return true;
             }
@@ -71,10 +74,6 @@ public class SearchActivity extends ActionBarActivity {
 
     class SearchTask extends BaseSearchTask {
         private ProgressDialog dialog;
-
-        public SearchTask(String dateFormat) {
-            super(dateFormat);
-        }
 
         @Override
         protected void onPreExecute() {
@@ -91,7 +90,7 @@ public class SearchActivity extends ActionBarActivity {
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(List<DailyNews> newsList) {
             if (dialog != null) {
                 dialog.dismiss();
                 dialog = null;
@@ -99,7 +98,7 @@ public class SearchActivity extends ActionBarActivity {
 
             if (!isCancelled()) {
                 if (isSearchSuccess) {
-                    searchNewsFragment.updateContent(newsList, dateResultList);
+                    searchNewsFragment.updateContent(newsList);
                 } else {
                     Toast.makeText(SearchActivity.this,
                             getString(R.string.no_result_found),

@@ -6,12 +6,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.squareup.timessquare.CalendarPickerView;
-import io.github.izzyleung.zhihudailypurify.R;
-import io.github.izzyleung.zhihudailypurify.support.Constants;
 
 import java.util.Calendar;
 import java.util.Date;
+
+import io.github.izzyleung.zhihudailypurify.R;
+import io.github.izzyleung.zhihudailypurify.support.Constants;
 
 public class PickDateFragment extends Fragment {
     private PickDateListener mOnDateSelectedListener;
@@ -65,11 +67,11 @@ public class PickDateFragment extends Fragment {
         super.onDetach();
     }
 
-    public static interface PickDateListener {
-        public void onValidDateSelected(Date date);
+    public interface PickDateListener {
+        void onValidDateSelected(Date date);
 
-        public void onInvalidDateSelected(Date date);
+        void onInvalidDateSelected(Date date);
 
-        public Date getDate();
+        Date getDate();
     }
 }

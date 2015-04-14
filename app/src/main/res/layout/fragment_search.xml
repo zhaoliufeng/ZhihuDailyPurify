@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<se.emilsjolander.stickylistheaders.StickyListHeadersListView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        style="@style/commonListViewStyle"
-        android:id="@+id/result_list"
-        android:dividerHeight="0dp"
-        android:fastScrollEnabled="true"/>
+<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_result_list"
+    style="@style/commonListViewStyle" />

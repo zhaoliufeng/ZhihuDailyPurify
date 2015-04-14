@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.izzyleung.zhihudailypurify.R;
-import io.github.izzyleung.zhihudailypurify.adapter.RecyclerViewAdapter;
+import io.github.izzyleung.zhihudailypurify.adapter.NewsAdapter;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.task.AccelerateGetNewsTask;
 import io.github.izzyleung.zhihudailypurify.task.BaseGetNewsTask;
@@ -25,7 +25,7 @@ import io.github.izzyleung.zhihudailypurify.task.OriginalGetNewsTask;
 public class RecyclerNewsListFragment extends Fragment
         implements SwipeRefreshLayout.OnRefreshListener, BaseGetNewsTask.UpdateUIListener {
     protected List<DailyNews> newsList = new ArrayList<>();
-    RecyclerViewAdapter mAdapter;
+    NewsAdapter mAdapter;
     private String date;
     private boolean isAutoRefresh;
     private boolean isToday;
@@ -58,7 +58,7 @@ public class RecyclerNewsListFragment extends Fragment
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(llm);
-        mAdapter = new RecyclerViewAdapter(newsList);
+        mAdapter = new NewsAdapter(newsList);
         mRecyclerView.setAdapter(mAdapter);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,20 +13,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
-import io.github.izzyleung.zhihudailypurify.adapter.RecyclerViewAdapter;
+import io.github.izzyleung.zhihudailypurify.adapter.NewsAdapter;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
 import io.github.izzyleung.zhihudailypurify.task.AccelerateGetNewsTask;
 import io.github.izzyleung.zhihudailypurify.task.BaseGetNewsTask;
 import io.github.izzyleung.zhihudailypurify.task.OriginalGetNewsTask;
 
-public class NewsListFragment extends BaseNewsFragment
+public class NewsListFragment extends Fragment
         implements SwipeRefreshLayout.OnRefreshListener, BaseGetNewsTask.UpdateUIListener {
-    RecyclerViewAdapter mAdapter;
+    private List<DailyNews> newsList = new ArrayList<>();
+
+    private NewsAdapter mAdapter;
     private String date;
     private boolean isAutoRefresh;
     private boolean isToday;
@@ -63,18 +67,16 @@ public class NewsListFragment extends BaseNewsFragment
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.news_list);
         mRecyclerView.setHasFixedSize(!isToday);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(llm);
-        mAdapter = new RecyclerViewAdapter(newsList);
+        mAdapter = new NewsAdapter(newsList);
+
         mRecyclerView.setAdapter(mAdapter);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorSchemeResources(
-                android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.color_primary);
 
         return view;
     }
@@ -82,7 +84,6 @@ public class NewsListFragment extends BaseNewsFragment
     @Override
     public void onResume() {
         super.onResume();
-        clearActionMode();
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         isAutoRefresh = pref.getBoolean("auto_refresh?", true);
@@ -95,25 +96,6 @@ public class NewsListFragment extends BaseNewsFragment
         super.setUserVisibleHint(isVisibleToUser);
 
         refreshIf(isVisibleToUser && isAutoRefresh && !isRefreshed);
-    }
-
-    @Override
-    protected boolean shouldCleanListChoice() {
-//        int position = mRecyclerView.getCheckedItemPosition();
-//        return mRecyclerView.getFirstVisiblePosition() > position
-//                || mRecyclerView.getLastVisiblePosition() < position;
-        return false;
-    }
-
-    @Override
-    protected void clearListChoice() {
-//        mRecyclerView.clearChoices();
-        listAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    protected void markItemCheckedAtPosition(int position) {
-//        mRecyclerView.setItemChecked(position, true);
     }
 
     private void refreshIf(boolean prerequisite) {
@@ -148,7 +130,6 @@ public class NewsListFragment extends BaseNewsFragment
 
     @Override
     public void afterTaskFinished(List<DailyNews> resultList, boolean isRefreshSuccess, boolean isContentSame) {
-        clearActionMode();
         mSwipeRefreshLayout.setRefreshing(false);
         isRefreshed = true;
 

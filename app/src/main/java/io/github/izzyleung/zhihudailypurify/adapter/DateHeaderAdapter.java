@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import com.eowise.recyclerview.stickyheaders.StickyHeadersAdapter;
 
+import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -20,7 +20,8 @@ import io.github.izzyleung.zhihudailypurify.support.Constants;
 
 public class DateHeaderAdapter implements StickyHeadersAdapter<DateHeaderAdapter.HeaderViewHolder> {
     private List<DailyNews> newsList;
-    private SimpleDateFormat simpleDateFormat;
+
+    private DateFormat dateFormat = DateFormat.getDateInstance();
 
     public DateHeaderAdapter(List<DailyNews> newsList) {
         this.newsList = newsList;
@@ -36,8 +37,6 @@ public class DateHeaderAdapter implements StickyHeadersAdapter<DateHeaderAdapter
         View itemView = LayoutInflater.from(context)
                 .inflate(R.layout.date_sticky_header, parent, false);
 
-        simpleDateFormat = new SimpleDateFormat(context.getString(R.string.display_format));
-
         return new HeaderViewHolder(itemView);
     }
 
@@ -52,7 +51,7 @@ public class DateHeaderAdapter implements StickyHeadersAdapter<DateHeaderAdapter
 
         }
 
-        viewHolder.title.setText(simpleDateFormat.format(calendar.getTime()));
+        viewHolder.title.setText(dateFormat.format(calendar.getTime()));
     }
 
     @Override

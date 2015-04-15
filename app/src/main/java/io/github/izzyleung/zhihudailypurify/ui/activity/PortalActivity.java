@@ -7,7 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -134,8 +134,7 @@ public class PortalActivity extends ActionBarActivity
                 .addToBackStack(null)
                 .commit();
 
-        String displayDate = new SimpleDateFormat(getString(R.string.display_format)).
-                format(calendar.getTime());
+        String displayDate = DateFormat.getDateInstance().format(calendar.getTime());
 
         getSupportActionBar().setTitle(displayDate);
     }

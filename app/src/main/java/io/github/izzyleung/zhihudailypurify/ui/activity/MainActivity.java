@@ -13,7 +13,7 @@ import android.view.MenuItem;
 
 import com.astuetz.PagerSlidingTabStrip;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.Calendar;
 
 import io.github.izzyleung.zhihudailypurify.R;
@@ -97,7 +97,7 @@ public class MainActivity extends ActionBarActivity {
             displayDate.add(Calendar.DAY_OF_YEAR, -position);
 
             return (position == 0 ? getString(R.string.zhihu_daily_today) + " " : "")
-                    + new SimpleDateFormat(getString(R.string.display_format)).format(displayDate.getTime());
+                    + DateFormat.getDateInstance().format(displayDate.getTime());
         }
     }
 }

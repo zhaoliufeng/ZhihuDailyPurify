@@ -1,6 +1,12 @@
 package io.github.izzyleung.zhihudailypurify.support;
 
+import com.google.gson.reflect.TypeToken;
+
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Locale;
+
+import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 
 public final class Constants {
     private Constants() {
@@ -15,8 +21,18 @@ public final class Constants {
     }
 
     public static final class Date {
-        public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+        public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd", Locale.US);
         @SuppressWarnings("deprecation")
         public static final java.util.Date birthday = new java.util.Date(113, 4, 19); // May 19th, 2013
+    }
+
+    public static final class Type {
+        public static final java.lang.reflect.Type newsType = new TypeToken<DailyNews>() {
+
+        }.getType();
+
+        public static final java.lang.reflect.Type newsListType = new TypeToken<List<DailyNews>>() {
+
+        }.getType();
     }
 }

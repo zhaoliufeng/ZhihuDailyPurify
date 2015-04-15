@@ -1,5 +1,7 @@
 package io.github.izzyleung.zhihudailypurify.task;
 
+import android.text.TextUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -112,7 +114,13 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
             dailyNews.setQuestionTitle(dailyNews.getDailyTitle());
         } else {
             if (doc.getElementsByClass("question-title").size() == 1) {
-                dailyNews.setQuestionTitle(doc.getElementsByClass("question-title").text());
+                String questionTitle = doc.getElementsByClass("question-title").text();
+
+                if (TextUtils.isEmpty(questionTitle)) {
+                    dailyNews.setQuestionTitle(dailyNews.getDailyTitle());
+                } else {
+                    dailyNews.setQuestionTitle(questionTitle);
+                }
             } else {
                 for (Element questionTitle : doc.getElementsByClass("question-title")) {
                     if (!(questionTitle.text().equals("原题描述：") || questionTitle.text().equals("原题描述"))) {

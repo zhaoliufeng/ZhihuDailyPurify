@@ -106,7 +106,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CardViewHolder
             String simplifiedMultiQuestion = "这里包含多个知乎讨论，请点击后选择";
             holder.dailyTitle.setText(simplifiedMultiQuestion);
         } else {
-            holder.questionTitle.setText(dailyNews.getQuestionTitle());
+            if (dailyNews.getQuestionTitle() == null || dailyNews.getQuestionTitle().equals("")) {
+                holder.questionTitle.setText(dailyNews.getDailyTitle());
+            } else {
+                holder.questionTitle.setText(dailyNews.getQuestionTitle());
+            }
             holder.dailyTitle.setText(dailyNews.getDailyTitle());
         }
     }

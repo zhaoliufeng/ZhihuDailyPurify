@@ -17,7 +17,10 @@ public class PrefsActivity extends ActionBarActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getFragmentManager().beginTransaction().replace(R.id.prefs_frame, new PrefsFragment()).commit();
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.prefs_frame, new PrefsFragment())
+                .commit();
     }
 
 }

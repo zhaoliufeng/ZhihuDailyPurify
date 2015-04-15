@@ -5,12 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 
-import java.lang.reflect.Type;
+import com.google.gson.GsonBuilder;
+
 import java.util.List;
+
+import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
+import io.github.izzyleung.zhihudailypurify.support.Constants;
 
 public final class DailyNewsDataSource {
     private SQLiteDatabase database;
@@ -34,11 +35,9 @@ public final class DailyNewsDataSource {
         values.put(DBHelper.COLUMN_DATE, date);
         values.put(DBHelper.COLUMN_CONTENT, content);
 
-        long insertId = database.insert(DBHelper.TABLE_NAME, null,
-                values);
+        long insertId = database.insert(DBHelper.TABLE_NAME, null, values);
         Cursor cursor = database.query(DBHelper.TABLE_NAME,
-                allColumns, DBHelper.COLUMN_ID + " = " + insertId, null,
-                null, null, null);
+                allColumns, DBHelper.COLUMN_ID + " = " + insertId, null, null, null, null);
         cursor.moveToFirst();
         List<DailyNews> newsList = cursorToNewsList(cursor);
         cursor.close();
@@ -63,8 +62,7 @@ public final class DailyNewsDataSource {
     // That reminds you of Queen, huh? ;-)
     public List<DailyNews> newsOfTheDay(String date) {
         Cursor cursor = database.query(DBHelper.TABLE_NAME,
-                allColumns, DBHelper.COLUMN_DATE + " = " + date, null,
-                null, null, null);
+                allColumns, DBHelper.COLUMN_DATE + " = " + date, null, null, null, null);
 
         cursor.moveToFirst();
         List<DailyNews> newsList = cursorToNewsList(cursor);
@@ -74,12 +72,7 @@ public final class DailyNewsDataSource {
 
     private List<DailyNews> cursorToNewsList(Cursor cursor) {
         if (cursor != null && cursor.getCount() > 0) {
-            String string = cursor.getString(2);
-            Type listType = new TypeToken<List<DailyNews>>() {
-
-            }.getType();
-
-            return new GsonBuilder().create().fromJson(string, listType);
+            return new GsonBuilder().create().fromJson(cursor.getString(2), Constants.Type.newsListType);
         } else {
             return null;
         }

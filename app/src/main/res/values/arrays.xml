@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string-array name="apache_licensed_projects" tools:ignore="MissingTranslation">
         <item>PagerSlidingTabStrip (Andreas Stuetz)</item>
-        <item>Sticky List Headers (Emil Sjölander)</item>
+        <item>RecyclerView StickyHeaders (Aurélien)</item>
         <item>Universal Image Loader (Sergey Tarasevich)</item>
         <item>Android Times Square (Square)</item>
     </string-array>

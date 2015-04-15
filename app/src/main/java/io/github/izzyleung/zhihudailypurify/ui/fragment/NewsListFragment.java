@@ -2,6 +2,7 @@ package io.github.izzyleung.zhihudailypurify.ui.fragment;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -20,7 +21,6 @@ import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
 import io.github.izzyleung.zhihudailypurify.adapter.NewsAdapter;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.support.lib.MyAsyncTask;
 import io.github.izzyleung.zhihudailypurify.task.AccelerateGetNewsTask;
 import io.github.izzyleung.zhihudailypurify.task.BaseGetNewsTask;
 import io.github.izzyleung.zhihudailypurify.task.OriginalGetNewsTask;
@@ -42,7 +42,7 @@ public class NewsListFragment extends Fragment
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        new RecoverNewsListTask().executeOnExecutor(MyAsyncTask.THREAD_POOL_EXECUTOR);
+        new RecoverNewsListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
@@ -66,12 +66,12 @@ public class NewsListFragment extends Fragment
         assert view != null;
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.news_list);
         mRecyclerView.setHasFixedSize(!isToday);
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
 
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(llm);
-        mAdapter = new NewsAdapter(newsList);
 
+        mAdapter = new NewsAdapter(newsList);
         mRecyclerView.setAdapter(mAdapter);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
@@ -144,7 +144,7 @@ public class NewsListFragment extends Fragment
         }
     }
 
-    private class RecoverNewsListTask extends MyAsyncTask<Void, Void, List<DailyNews>> {
+    private class RecoverNewsListTask extends AsyncTask<Void, Void, List<DailyNews>> {
 
         @Override
         protected List<DailyNews> doInBackground(Void... params) {

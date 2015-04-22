@@ -3,6 +3,7 @@ package io.github.izzyleung.zhihudailypurify.ui.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -28,6 +29,10 @@ public class PortalActivity extends ActionBarActivity
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_common);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         showPickDateFragment();
@@ -96,7 +101,7 @@ public class PortalActivity extends ActionBarActivity
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(android.R.id.content, displayFragment)
+                .replace(R.id.fragment_frame, displayFragment)
                 .commit();
 
         getSupportActionBar().setTitle(R.string.action_pick_date);
@@ -130,7 +135,7 @@ public class PortalActivity extends ActionBarActivity
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(android.R.id.content, displayFragment)
+                .replace(R.id.fragment_frame, displayFragment)
                 .addToBackStack(null)
                 .commit();
 

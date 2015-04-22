@@ -12,14 +12,14 @@ public class PrefsActivity extends ActionBarActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_prefs);
+        setContentView(R.layout.activity_common);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getFragmentManager()
                 .beginTransaction()
-                .replace(R.id.prefs_frame, new PrefsFragment())
+                .replace(R.id.fragment_frame, new PrefsFragment())
                 .commit();
     }
 

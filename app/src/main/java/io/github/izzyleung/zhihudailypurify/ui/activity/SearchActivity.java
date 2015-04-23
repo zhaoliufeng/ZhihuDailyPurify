@@ -3,7 +3,8 @@ package io.github.izzyleung.zhihudailypurify.ui.activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -16,7 +17,7 @@ import io.github.izzyleung.zhihudailypurify.task.BaseSearchTask;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.SearchNewsFragment;
 import io.github.izzyleung.zhihudailypurify.ui.widget.IzzySearchView;
 
-public class SearchActivity extends ActionBarActivity {
+public class SearchActivity extends AppCompatActivity {
     private IzzySearchView searchView;
     private SearchNewsFragment searchNewsFragment;
 
@@ -29,7 +30,7 @@ public class SearchActivity extends ActionBarActivity {
         searchNewsFragment = new SearchNewsFragment();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(android.R.id.content, searchNewsFragment)
+                .add(R.id.fragment_frame, searchNewsFragment)
                 .commit();
     }
 
@@ -52,9 +53,8 @@ public class SearchActivity extends ActionBarActivity {
     }
 
     private void initView() {
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        setContentView(R.layout.activity_common);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         searchView = new IzzySearchView(this);
         searchView.setQueryHint(getResources().getString(R.string.search_hint));
@@ -69,7 +69,12 @@ public class SearchActivity extends ActionBarActivity {
 
         RelativeLayout relative = new RelativeLayout(this);
         relative.addView(searchView);
-        getSupportActionBar().setCustomView(relative);
+
+        toolbar.addView(relative);
+
+        setSupportActionBar(toolbar);
+        //noinspection ConstantConditions
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     class SearchTask extends BaseSearchTask {

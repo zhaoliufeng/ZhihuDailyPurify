@@ -2,7 +2,7 @@ package io.github.izzyleung.zhihudailypurify.ui.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,7 +17,7 @@ import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.NewsListFragment;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.PickDateFragment;
 
-public class PortalActivity extends ActionBarActivity
+public class PortalActivity extends AppCompatActivity
         implements PickDateFragment.PickDateListener {
     private static final int ACTION_PREVIOUS_DAY = 0, ACTION_NEXT_DAY = 1;
 

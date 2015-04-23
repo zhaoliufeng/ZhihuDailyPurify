@@ -1,13 +1,13 @@
 package io.github.izzyleung.zhihudailypurify.ui.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.PrefsFragment;
 
-public class PrefsActivity extends ActionBarActivity {
+public class PrefsActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

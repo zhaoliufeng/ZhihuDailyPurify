@@ -1,20 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.ZhihuDailyPurify.Light" parent="@style/Theme.AppCompat.Light">
-        <item name="windowActionModeOverlay">true</item>
-        <item name="android:fastScrollTrackDrawable">@null</item>
-        <item name="colorPrimary">@color/color_primary</item>
-        <item name="colorPrimaryDark">@color/color_primary_dark</item>
-        <item name="colorAccent">@color/color_accent</item>
-        <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="textAppearanceLargePopupMenu">
-            @style/Theme.ZhihuDailyPurify.PopupMenuTextAppearanceLarge
-        </item>
-        <item name="android:textAppearanceLargePopupMenu">
-            @style/Theme.ZhihuDailyPurify.PopupMenuTextAppearanceLarge
-        </item>
-    </style>
-
     <style name="Theme.ZhihuDailyPurify.Light.NoActionBar" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="windowActionModeOverlay">true</item>
         <item name="colorPrimary">@color/color_primary</item>

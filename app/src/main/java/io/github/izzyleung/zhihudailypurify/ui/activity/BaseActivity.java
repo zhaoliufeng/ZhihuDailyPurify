@@ -5,16 +5,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import io.github.izzyleung.zhihudailypurify.R;
-import io.github.izzyleung.zhihudailypurify.ui.fragment.PrefsFragment;
 
-public class PrefsActivity extends BaseActivity {
+public class BaseActivity extends AppCompatActivity {
+    protected Toolbar mToolBar;
+    protected int layoutResID = R.layout.activity_base;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_frame, new PrefsFragment())
-                .commit();
+        setContentView(layoutResID);
+
+        mToolBar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolBar);
     }
 }

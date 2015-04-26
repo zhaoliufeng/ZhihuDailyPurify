@@ -3,8 +3,6 @@ package io.github.izzyleung.zhihudailypurify.ui.activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -17,7 +15,7 @@ import io.github.izzyleung.zhihudailypurify.task.BaseSearchTask;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.SearchNewsFragment;
 import io.github.izzyleung.zhihudailypurify.ui.widget.IzzySearchView;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends BaseActivity {
     private IzzySearchView searchView;
     private SearchNewsFragment searchNewsFragment;
 
@@ -53,9 +51,6 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        setContentView(R.layout.activity_common);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
         searchView = new IzzySearchView(this);
         searchView.setQueryHint(getResources().getString(R.string.search_hint));
         searchView.setOnQueryTextListener(new IzzySearchView.OnQueryTextListener() {
@@ -70,9 +65,9 @@ public class SearchActivity extends AppCompatActivity {
         RelativeLayout relative = new RelativeLayout(this);
         relative.addView(searchView);
 
-        toolbar.addView(relative);
+        mToolBar.addView(relative);
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolBar);
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

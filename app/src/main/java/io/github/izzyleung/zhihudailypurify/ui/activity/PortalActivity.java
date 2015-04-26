@@ -2,8 +2,6 @@ package io.github.izzyleung.zhihudailypurify.ui.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -17,7 +15,7 @@ import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.NewsListFragment;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.PickDateFragment;
 
-public class PortalActivity extends AppCompatActivity
+public class PortalActivity extends BaseActivity
         implements PickDateFragment.PickDateListener {
     private static final int ACTION_PREVIOUS_DAY = 0, ACTION_NEXT_DAY = 1;
 
@@ -29,10 +27,8 @@ public class PortalActivity extends AppCompatActivity
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_common);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         showPickDateFragment();
@@ -47,7 +43,7 @@ public class PortalActivity extends AppCompatActivity
                 getSupportFragmentManager().popBackStack();
             }
 
-            getSupportActionBar().setTitle(R.string.action_pick_date);
+            mToolBar.setTitle(R.string.action_pick_date);
             prev.setVisible(false);
             next.setVisible(false);
         }
@@ -104,7 +100,7 @@ public class PortalActivity extends AppCompatActivity
                 .replace(R.id.fragment_frame, displayFragment)
                 .commit();
 
-        getSupportActionBar().setTitle(R.string.action_pick_date);
+        mToolBar.setTitle(R.string.action_pick_date);
     }
 
     private void updateFields(int action) {
@@ -141,7 +137,7 @@ public class PortalActivity extends AppCompatActivity
 
         String displayDate = DateFormat.getDateInstance().format(calendar.getTime());
 
-        getSupportActionBar().setTitle(displayDate);
+        mToolBar.setTitle(displayDate);
     }
 
     private boolean isSameDay(Calendar first, Calendar second) {

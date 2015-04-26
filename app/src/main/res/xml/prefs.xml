@@ -3,7 +3,7 @@
     <PreferenceCategory
         android:key="settings_network_settings"
         android:title="@string/settings_network_settings">
-    <CheckBoxPreference
+        <CheckBoxPreference
             android:defaultValue="false"
             android:enabled="true"
             android:key="using_accelerate_server?"

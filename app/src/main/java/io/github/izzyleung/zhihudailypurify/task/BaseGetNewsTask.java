@@ -27,14 +27,14 @@ public abstract class BaseGetNewsTask extends BaseDownloadTask<Void, Void, List<
     @Override
     protected void onPostExecute(List<DailyNews> resultNewsList) {
         if (isRefreshSuccess && !isContentSame) {
-            new SaveNewsListTask(date, resultNewsList).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }
-
-        if (mListener != null) {
             for (DailyNews news : resultNewsList) {
                 news.setDate(date);
             }
 
+            new SaveNewsListTask(date, resultNewsList).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+
+        if (mListener != null) {
             mListener.afterTaskFinished(resultNewsList, isRefreshSuccess, isContentSame);
         }
 

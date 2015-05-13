@@ -36,6 +36,7 @@ dependencies {
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile 'com.squareup:android-times-square:1.5.0@aar'
     compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'
+    compile 'com.tonicartos:superslim:0.4.13'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }

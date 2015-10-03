@@ -2,14 +2,15 @@ package io.github.izzyleung.zhihudailypurify.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import com.astuetz.PagerSlidingTabStrip;
+import android.view.View;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -27,13 +28,21 @@ public class MainActivity extends BaseActivity {
 
         super.onCreate(savedInstanceState);
 
-        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.main_pager_tabs);
+        TabLayout tabs = (TabLayout) findViewById(R.id.main_pager_tabs);
         ViewPager viewPager = (ViewPager) findViewById(R.id.main_pager);
         viewPager.setOffscreenPageLimit(7);
 
         MainPagerAdapter adapter = new MainPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
-        tabs.setViewPager(viewPager);
+        tabs.setupWithViewPager(viewPager);
+
+        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.fab_pick_date);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                prepareIntent(PortalActivity.class);
+            }
+        });
     }
 
     @Override
@@ -47,8 +56,6 @@ public class MainActivity extends BaseActivity {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 return prepareIntent(PrefsActivity.class);
-            case R.id.action_pick_date:
-                return prepareIntent(PortalActivity.class);
             case R.id.action_go_to_search:
                 return prepareIntent(SearchActivity.class);
         }

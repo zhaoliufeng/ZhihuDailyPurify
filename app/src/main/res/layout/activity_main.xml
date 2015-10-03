@@ -1,24 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/baseLayoutParam"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/baseLayoutParam">
 
-    <include layout="@layout/toolbar" />
-
-    <com.astuetz.PagerSlidingTabStrip
-        android:id="@+id/main_pager_tabs"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@color/color_primary"
-        android:textColor="@android:color/white"
-        app:pstsIndicatorColor="#FFFFFF"
-        app:pstsTextAllCaps="false" />
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+        <include layout="@layout/toolbar" />
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/main_pager_tabs"
+            style="@style/tabLayoutStyle" />
+    </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/main_pager"
         style="@style/mainPagerStyle"
-        tools:context=".ui.activity.MainActivity" />
-</LinearLayout>
+        tools:context=".ui.activity.MainActivity"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_pick_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:src="@drawable/ic_action_go_to_date" />
+</android.support.design.widget.CoordinatorLayout>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-<style name="baseLayoutParam">
+    <style name="baseLayoutParam">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
     </style>
@@ -57,5 +56,14 @@
         <item name="android:layout_height">24dp</item>
         <item name="android:src">@drawable/ic_card_overflow</item>
         <item name="android:layout_alignParentRight">true</item>
+    </style>
+
+    <style name="tabLayoutStyle" parent="Widget.Design.TabLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark</item>
+        <item name="tabBackground">?attr/colorPrimary</item>
+        <item name="tabIndicatorColor">@android:color/white</item>
+        <item name="tabMode">scrollable</item>
     </style>
 </resources>

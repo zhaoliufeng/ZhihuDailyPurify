@@ -116,15 +116,11 @@ public class PortalActivity extends BaseActivity
 
     private void updateView() {
         Bundle bundle = new Bundle();
+
         bundle.putBoolean("auto_refresh?", true);
         bundle.putBoolean("single?", true);
         bundle.putString("date", dateForFragment);
-
-        if (isSameDay(calendar, Calendar.getInstance())) {
-            bundle.putBoolean("first_page?", true);
-        } else {
-            bundle.putBoolean("first_page?", false);
-        }
+        bundle.putBoolean("first_page?", isSameDay(calendar, Calendar.getInstance()));
 
         Fragment displayFragment = new NewsListFragment();
         displayFragment.setArguments(bundle);

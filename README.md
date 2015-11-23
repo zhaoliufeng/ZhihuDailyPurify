@@ -47,7 +47,7 @@ You can find the code that drives those accelerate servers in my repo [Robots](h
 `echo aXp6eWxpYW5nQGdtYWlsLmNvbQo= | base64 --decode`
 
 ## License - 许可证
-    Copyright 2013 Izzy Leung
+    Copyright 2013 Xiao Liang
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

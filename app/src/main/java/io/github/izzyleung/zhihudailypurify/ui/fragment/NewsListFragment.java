@@ -1,6 +1,6 @@
 package io.github.izzyleung.zhihudailypurify.ui.fragment;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -39,8 +39,8 @@ public class NewsListFragment extends Fragment
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
         new RecoverNewsListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }

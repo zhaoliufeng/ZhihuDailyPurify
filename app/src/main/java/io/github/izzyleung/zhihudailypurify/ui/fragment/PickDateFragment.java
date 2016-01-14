@@ -1,6 +1,6 @@
 package io.github.izzyleung.zhihudailypurify.ui.fragment;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -19,13 +19,13 @@ public class PickDateFragment extends Fragment {
     private PickDateListener mOnDateSelectedListener;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
         try {
-            mOnDateSelectedListener = (PickDateListener) activity;
+            mOnDateSelectedListener = (PickDateListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnDateSelectedListener");
+            throw new ClassCastException(context.toString() + " must implement OnDateSelectedListener");
         }
     }
 

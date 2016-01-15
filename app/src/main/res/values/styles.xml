@@ -59,6 +59,7 @@
     </style>
 
     <style name="cardOverflowIconStyle">
+        <item name="android:contentDescription">@string/share_this_news</item>
         <item name="android:layout_width">24dp</item>
         <item name="android:layout_height">24dp</item>
         <item name="android:src">@drawable/ic_card_overflow</item>

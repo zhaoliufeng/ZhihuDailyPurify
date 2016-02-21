@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +23,7 @@ import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.task.AccelerateGetNewsTask;
 import io.github.izzyleung.zhihudailypurify.task.BaseGetNewsTask;
 import io.github.izzyleung.zhihudailypurify.task.OriginalGetNewsTask;
+import io.github.izzyleung.zhihudailypurify.ui.activity.BaseActivity;
 
 public class NewsListFragment extends Fragment
         implements SwipeRefreshLayout.OnRefreshListener, BaseGetNewsTask.UpdateUIListener {
@@ -33,7 +33,7 @@ public class NewsListFragment extends Fragment
     private String date;
     private boolean isAutoRefresh;
     private boolean isToday;
-    // Fragment is single in PortalActivity
+    // Fragment is single in SingleDayNewsActivity
     private boolean isSingle;
     private boolean isRefreshed = false;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -140,7 +140,7 @@ public class NewsListFragment extends Fragment
                 mAdapter.updateNewsList(newsList);
             }
         } else if (isAdded()) {
-            Toast.makeText(getActivity(), getActivity().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+            ((BaseActivity) getActivity()).showSnackbar(R.string.network_error);
         }
     }
 

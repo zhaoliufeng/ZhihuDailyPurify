@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -100,9 +99,7 @@ public class SearchActivity extends BaseActivity {
                 if (isSearchSuccess) {
                     searchNewsFragment.updateContent(newsList);
                 } else {
-                    Toast.makeText(SearchActivity.this,
-                            getString(R.string.no_result_found),
-                            Toast.LENGTH_SHORT).show();
+                    showSnackbar(R.string.no_result_found);
                 }
             }
         }

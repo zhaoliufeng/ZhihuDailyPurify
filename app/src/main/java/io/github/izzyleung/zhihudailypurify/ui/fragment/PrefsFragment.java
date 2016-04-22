@@ -7,14 +7,15 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
-import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import io.github.izzyleung.zhihudailypurify.R;
+import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
 import io.github.izzyleung.zhihudailypurify.support.Check;
+import io.github.izzyleung.zhihudailypurify.support.Constants;
 
 public class PrefsFragment extends PreferenceFragment
         implements Preference.OnPreferenceClickListener {
@@ -31,8 +32,8 @@ public class PrefsFragment extends PreferenceFragment
                     .removePreference(findPreference("using_client?"));
         }
 
-        if (!PreferenceManager.getDefaultSharedPreferences(getActivity())
-                .getBoolean("enable_accelerate_server?", false)) {
+        if (!ZhihuDailyPurifyApplication.getSharedPreferences()
+                .getBoolean(Constants.SharedPreferencesKeys.KEY_SHOULD_ENABLE_ACCELERATE_SERVER, false)) {
             ((PreferenceScreen) findPreference("preference_screen"))
                     .removePreference(findPreference("settings_network_settings"));
         }
@@ -70,23 +71,18 @@ public class PrefsFragment extends PreferenceFragment
 
         Button closeDialogButton = (Button) apacheLicenseDialog.findViewById(R.id.close_dialog_button);
 
-        closeDialogButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                apacheLicenseDialog.dismiss();
-            }
-        });
+        closeDialogButton.setOnClickListener(view -> apacheLicenseDialog.dismiss());
 
-        closeDialogButton.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                apacheLicenseDialog.dismiss();
-                Toast.makeText(getActivity(),
-                        getActivity().getString(R.string.accelerate_server_unlock),
-                        Toast.LENGTH_SHORT).show();
-                PreferenceManager.getDefaultSharedPreferences(getActivity())
-                        .edit().putBoolean("enable_accelerate_server?", true).apply();
-                return true;
-            }
+        closeDialogButton.setOnLongClickListener(v -> {
+            apacheLicenseDialog.dismiss();
+            Toast.makeText(getActivity(),
+                    getActivity().getString(R.string.accelerate_server_unlock),
+                    Toast.LENGTH_SHORT).show();
+            PreferenceManager.getDefaultSharedPreferences(getActivity())
+                    .edit()
+                    .putBoolean(Constants.SharedPreferencesKeys.KEY_SHOULD_ENABLE_ACCELERATE_SERVER, true)
+                    .apply();
+            return true;
         });
 
         apacheLicenseDialog.show();

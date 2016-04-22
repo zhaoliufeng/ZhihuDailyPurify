@@ -9,6 +9,20 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class Helper {
+    static Observable<String> getHtml(String baseUrl, String suffix, boolean replaceSpace) {
+        return Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                try {
+                    subscriber.onNext(Http.get(baseUrl, suffix, replaceSpace));
+                    subscriber.onCompleted();
+                } catch (IOException e) {
+                    subscriber.onError(e);
+                }
+            }
+        });
+    }
+
     static Observable<String> getHtml(String url) {
         return Observable.create(new Observable.OnSubscribe<String>() {
             @Override

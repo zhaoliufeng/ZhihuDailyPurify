@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.Calendar;
 import java.util.Date;
 
 import io.github.izzyleung.zhihudailypurify.R;
@@ -20,7 +19,7 @@ public class SingleDayNewsActivity extends BaseActivity {
         Bundle bundle = getIntent().getExtras();
         Fragment newFragment = new NewsListFragment();
 
-        String dateString = bundle.getString("date");
+        String dateString = bundle.getString(Constants.BundleKeys.DATE);
         Date date;
         try {
             date = Constants.Dates.simpleDateFormat.parse(dateString);
@@ -33,9 +32,8 @@ public class SingleDayNewsActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(DateFormat.getDateInstance().format(date));
 
-        bundle.putString("date", dateString);
-        bundle.putBoolean("first_page?", isSameDay(date, Calendar.getInstance().getTime()));
-        bundle.putBoolean("single?", true);
+        bundle.putString(Constants.BundleKeys.DATE, dateString);
+        bundle.putBoolean(Constants.BundleKeys.IS_SINGLE, true);
 
         newFragment.setArguments(bundle);
 
@@ -43,9 +41,5 @@ public class SingleDayNewsActivity extends BaseActivity {
                 .beginTransaction()
                 .replace(R.id.fragment_frame, newFragment)
                 .commit();
-    }
-
-    private boolean isSameDay(Date first, Date second) {
-        return first.equals(second);
     }
 }

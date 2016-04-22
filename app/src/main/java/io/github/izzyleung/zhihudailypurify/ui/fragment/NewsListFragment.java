@@ -1,10 +1,7 @@
 package io.github.izzyleung.zhihudailypurify.ui.fragment;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,37 +10,48 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
 import io.github.izzyleung.zhihudailypurify.adapter.NewsAdapter;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.task.AccelerateGetNewsTask;
-import io.github.izzyleung.zhihudailypurify.task.BaseGetNewsTask;
-import io.github.izzyleung.zhihudailypurify.task.OriginalGetNewsTask;
+import io.github.izzyleung.zhihudailypurify.observable.DailyNewsFromAccelerateServerObservable;
+import io.github.izzyleung.zhihudailypurify.observable.DailyNewsFromDatabaseObservable;
+import io.github.izzyleung.zhihudailypurify.observable.DailyNewsFromZhihuObservable;
+import io.github.izzyleung.zhihudailypurify.observable.SaveDailyNewsObservable;
+import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.ui.activity.BaseActivity;
+import rx.Observable;
 import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class NewsListFragment extends Fragment
-        implements SwipeRefreshLayout.OnRefreshListener, BaseGetNewsTask.UpdateUIListener, Observer<DailyNews> {
+        implements SwipeRefreshLayout.OnRefreshListener, Observer<DailyNews> {
     private List<DailyNews> newsList = new ArrayList<>();
+    private List<DailyNews> temporary = new ArrayList<>();
 
-    private NewsAdapter mAdapter;
     private String date;
-    private boolean isAutoRefresh;
-    private boolean isToday;
+    private NewsAdapter mAdapter;
+
     // Fragment is single in SingleDayNewsActivity
     private boolean isSingle;
     private boolean isRefreshed = false;
+
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        new RecoverNewsListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        DailyNewsFromDatabaseObservable.ofDate(date)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this);
     }
 
     @Override
@@ -52,9 +60,8 @@ public class NewsListFragment extends Fragment
 
         if (savedInstanceState == null) {
             Bundle bundle = getArguments();
-            date = bundle.getString("date");
-            isToday = bundle.getBoolean("first_page?");
-            isSingle = bundle.getBoolean("single?");
+            date = bundle.getString(Constants.BundleKeys.DATE);
+            isSingle = bundle.getBoolean(Constants.BundleKeys.IS_SINGLE);
 
             setRetainInstance(true);
         }
@@ -66,7 +73,7 @@ public class NewsListFragment extends Fragment
 
         assert view != null;
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.news_list);
-        mRecyclerView.setHasFixedSize(!isToday);
+        mRecyclerView.setHasFixedSize(!isToday());
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -86,17 +93,14 @@ public class NewsListFragment extends Fragment
     public void onResume() {
         super.onResume();
 
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        isAutoRefresh = pref.getBoolean("auto_refresh?", true);
-
-        refreshIf((isToday || isSingle) && isAutoRefresh && !isRefreshed);
+        refreshIf(shouldRefreshOnResume());
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
-        refreshIf(isVisibleToUser && isAutoRefresh && !isRefreshed);
+        refreshIf(shouldRefreshOnVisibilityChange(isVisibleToUser));
     }
 
     private void refreshIf(boolean prerequisite) {
@@ -106,17 +110,44 @@ public class NewsListFragment extends Fragment
     }
 
     private void doRefresh() {
-        if (isToday) {
-            new OriginalGetNewsTask(date, this).execute();
+        Observable<DailyNews> observable;
+
+        if (shouldSubscribeToZhihu()) {
+            observable = DailyNewsFromZhihuObservable.ofDate(date);
         } else {
-            SharedPreferences sharedPreferences
-                    = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            if (sharedPreferences.getBoolean("using_accelerate_server?", false)) {
-                new AccelerateGetNewsTask(date, this).execute();
-            } else {
-                new OriginalGetNewsTask(date, this).execute();
-            }
+            observable = DailyNewsFromAccelerateServerObservable.ofDate(date);
         }
+
+        Observable.defer(() -> observable)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this);
+
+        if (mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.setRefreshing(true);
+        }
+    }
+
+    private boolean shouldSubscribeToZhihu() {
+        return isToday() || shouldUseAccelerateServer();
+    }
+
+    private boolean shouldUseAccelerateServer() {
+        return ZhihuDailyPurifyApplication.getSharedPreferences()
+                .getBoolean(Constants.SharedPreferencesKeys.KEY_SHOULD_USE_ACCELERATE_SERVER, false);
+    }
+
+    private boolean shouldAutoRefresh() {
+        return ZhihuDailyPurifyApplication.getSharedPreferences()
+                .getBoolean(Constants.SharedPreferencesKeys.KEY_SHOULD_AUTO_REFRESH, true);
+    }
+
+    private boolean shouldRefreshOnVisibilityChange(boolean isVisibleToUser) {
+        return isVisibleToUser && shouldAutoRefresh() && !isRefreshed;
+    }
+
+    private boolean shouldRefreshOnResume() {
+        return (isToday() || isSingle) && shouldAutoRefresh() && !isRefreshed;
     }
 
     @Override
@@ -125,59 +156,53 @@ public class NewsListFragment extends Fragment
     }
 
     @Override
-    public void beforeTaskStart() {
-        mSwipeRefreshLayout.setRefreshing(true);
+    public void onNext(DailyNews dailyNews) {
+        temporary.add(dailyNews);
     }
 
     @Override
-    public void afterTaskFinished(List<DailyNews> resultList, boolean isRefreshSuccess, boolean isContentSame) {
+    public void onError(Throwable e) {
+        temporary.clear();
+
         mSwipeRefreshLayout.setRefreshing(false);
-        isRefreshed = true;
-
-        if (isRefreshSuccess) {
-            if (!isContentSame) {
-                newsList = resultList;
-
-                mAdapter.updateNewsList(newsList);
-            }
-        } else if (isAdded()) {
+        if (isAdded()) {
             ((BaseActivity) getActivity()).showSnackbar(R.string.network_error);
         }
     }
 
     @Override
     public void onCompleted() {
+        isRefreshed = true;
 
+        newsList.clear();
+        newsList.addAll(temporary);
+        temporary.clear();
+
+        mSwipeRefreshLayout.setRefreshing(false);
+        mAdapter.notifyDataSetChanged();
+
+        SaveDailyNewsObservable.saveToDatabase(date, newsList)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
     }
 
-    @Override
-    public void onError(Throwable e) {
+    private boolean isToday() {
+        Calendar today = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
 
-    }
+        try {
+            calendar.setTime(Constants.Dates.simpleDateFormat.parse(date));
+            calendar.add(Calendar.DAY_OF_YEAR, -1);
+        } catch (ParseException ignored) {
 
-    @Override
-    public void onNext(DailyNews dailyNews) {
-
-    }
-
-    private class RecoverNewsListTask extends AsyncTask<Void, Void, List<DailyNews>> {
-
-        @Override
-        protected List<DailyNews> doInBackground(Void... params) {
-            return ZhihuDailyPurifyApplication.getDataSource().newsOfTheDay(date);
         }
 
-        @Override
-        protected void onPostExecute(List<DailyNews> newsListRecovered) {
-            if (newsListRecovered != null) {
-                newsList = newsListRecovered;
+        return isSameDay(today, calendar);
+    }
 
-                for (DailyNews news : newsList) {
-                    news.setDate(date);
-                }
-
-                mAdapter.updateNewsList(newsList);
-            }
-        }
+    private boolean isSameDay(Calendar first, Calendar second) {
+        return (first.get(Calendar.YEAR) == second.get(Calendar.YEAR)) &&
+                (first.get(Calendar.MONTH) == second.get(Calendar.MONTH)) &&
+                (first.get(Calendar.DAY_OF_MONTH) == second.get(Calendar.DAY_OF_MONTH));
     }
 }

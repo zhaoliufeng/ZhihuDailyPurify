@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -30,13 +29,16 @@ public class MainActivity extends BaseActivity {
 
         TabLayout tabs = (TabLayout) findViewById(R.id.main_pager_tabs);
         ViewPager viewPager = (ViewPager) findViewById(R.id.main_pager);
-        viewPager.setOffscreenPageLimit(7);
+        assert viewPager != null;
+        viewPager.setOffscreenPageLimit(PAGE_COUNT);
 
         MainPagerAdapter adapter = new MainPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
+        assert tabs != null;
         tabs.setupWithViewPager(viewPager);
 
         FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.fab_pick_date);
+        assert floatingActionButton != null;
         floatingActionButton.setOnClickListener(v -> prepareIntent(PickDateActivity.class));
     }
 
@@ -76,9 +78,8 @@ public class MainActivity extends BaseActivity {
             dateToGetUrl.add(Calendar.DAY_OF_YEAR, 1 - i);
             String date = Constants.Dates.simpleDateFormat.format(dateToGetUrl.getTime());
 
-            bundle.putString("date", date);
-            bundle.putBoolean("first_page?", i == 0);
-            bundle.putBoolean("single?", false);
+            bundle.putString(Constants.BundleKeys.DATE, date);
+            bundle.putBoolean(Constants.BundleKeys.IS_SINGLE, false);
 
             newFragment.setArguments(bundle);
             return newFragment;

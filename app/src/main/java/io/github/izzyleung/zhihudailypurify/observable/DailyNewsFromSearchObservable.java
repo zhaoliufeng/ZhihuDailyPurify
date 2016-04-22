@@ -14,7 +14,8 @@ import static io.github.izzyleung.zhihudailypurify.observable.Helper.getHtml;
 
 public class DailyNewsFromSearchObservable {
     public static Observable<DailyNews> withKeyword(String keyword) {
-        return getHtml(Constants.Urls.SEARCH + keyword.trim())
+        return getHtml(Constants.Urls.SEARCH, keyword.trim(), true)
+                .map(Helper::decodeHtml)
                 .flatMap(DailyNewsFromSearchObservable::toNewsJSONArray)
                 .flatMap(DailyNewsFromSearchObservable::toDailyNews);
     }

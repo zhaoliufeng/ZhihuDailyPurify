@@ -2,6 +2,8 @@ package io.github.izzyleung.zhihudailypurify;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -40,5 +42,9 @@ public final class ZhihuDailyPurifyApplication extends Application {
         initImageLoader(getApplicationContext());
         dataSource = new DailyNewsDataSource(getApplicationContext());
         dataSource.open();
+    }
+
+    public static SharedPreferences getSharedPreferences() {
+        return PreferenceManager.getDefaultSharedPreferences(applicationContext);
     }
 }

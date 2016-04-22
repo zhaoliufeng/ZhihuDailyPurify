@@ -2,6 +2,7 @@ package io.github.izzyleung.zhihudailypurify.support;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+
 import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
 
 public final class Check {
@@ -11,7 +12,7 @@ public final class Check {
 
     public static boolean isZhihuClientInstalled() {
         try {
-            return preparePackageManager().getPackageInfo("com.zhihu.android", PackageManager.GET_ACTIVITIES) != null;
+            return preparePackageManager().getPackageInfo(Constants.Information.ZHIHU_PACKAGE_ID, PackageManager.GET_ACTIVITIES) != null;
         } catch (PackageManager.NameNotFoundException ignored) {
             return false;
         }

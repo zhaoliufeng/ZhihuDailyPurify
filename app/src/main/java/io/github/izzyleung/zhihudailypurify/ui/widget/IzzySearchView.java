@@ -29,6 +29,7 @@ import io.github.izzyleung.zhihudailypurify.R;
  * Thanks to code of SearchView in AppCompat
  */
 
+@SuppressWarnings({"Convert2Lambda", "Anonymous2MethodRef", "deprecation"})
 public class IzzySearchView extends LinearLayout {
     static final AutoCompleteTextViewReflector HIDDEN_METHOD_INVOKER = new AutoCompleteTextViewReflector();
 

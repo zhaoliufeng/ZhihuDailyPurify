@@ -39,9 +39,4 @@ public class OriginalNews {
     public void setDocument(Document document) {
         this.document = document;
     }
-
-    public OriginalNews updateDocument(Document document) {
-        this.document = document;
-        return this;
-    }
 }

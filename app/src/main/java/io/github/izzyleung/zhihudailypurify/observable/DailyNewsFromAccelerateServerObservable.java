@@ -1,5 +1,7 @@
 package io.github.izzyleung.zhihudailypurify.observable;
 
+import com.annimon.stream.Stream;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.List;
@@ -18,14 +20,12 @@ public class DailyNewsFromAccelerateServerObservable {
                 .doOnNext(dailyNews -> dailyNews.setDate(date));
     }
 
-    public static Observable<DailyNews> convert(String data) {
+    private static Observable<DailyNews> convert(String data) {
         return Observable.create(subscriber -> {
-            List<DailyNews> newsList
-                    = new GsonBuilder().create().fromJson(data, Constants.Types.newsListType);
+            Gson gson = new GsonBuilder().create();
+            List<DailyNews> newsList = gson.fromJson(data, Constants.Types.newsListType);
 
-            for (DailyNews news : newsList) {
-                subscriber.onNext(news);
-            }
+            Stream.of(newsList).forEach(subscriber::onNext);
 
             subscriber.onCompleted();
         });

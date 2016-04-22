@@ -12,17 +12,14 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.bean.OriginalNews;
 import io.github.izzyleung.zhihudailypurify.support.Constants;
-import io.github.izzyleung.zhihudailypurify.support.lib.Http;
 import io.github.izzyleung.zhihudailypurify.support.lib.optional.Optional;
 import rx.Observable;
-import rx.Subscriber;
 
 import static io.github.izzyleung.zhihudailypurify.observable.Helper.getHtml;
 
@@ -31,13 +28,17 @@ public class DailyNewsFromZhihuObservable {
     private static final String QUESTION_LINKS_SELECTOR = "div.view-more a";
 
     public static Observable<DailyNews> ofDate(String date) {
-        return getHtml(Constants.Urls.ZHIHU_DAILY_BEFORE + date)
-                .flatMap(DailyNewsFromZhihuObservable::getOriginalNewsObservable)
-                .flatMap(DailyNewsFromZhihuObservable::updateNewsDocument)
+        Observable<OriginalNews> originalNewsWithoutDocument = getHtml(Constants.Urls.ZHIHU_DAILY_BEFORE + date)
+                .flatMap(DailyNewsFromZhihuObservable::getOriginalNewsObservable);
+
+        Observable<Document> document = originalNewsWithoutDocument
+                .flatMap(DailyNewsFromZhihuObservable::getNewsDocument);
+
+        return Observable.zip(originalNewsWithoutDocument, document, DailyNewsFromZhihuObservable::updateOriginalNewsDocument)
+                .filter(news -> news.getDocument() != null)
                 .map(DailyNewsFromZhihuObservable::originalNewsToDailyNews)
                 .filter(Optional::isPresent)
-                .map(Optional::get)
-                .doOnNext(dailyNews -> dailyNews.setDate(date));
+                .map(Optional::get);
     }
 
     private static Observable<OriginalNews> getOriginalNewsObservable(String html) {
@@ -73,24 +74,20 @@ public class DailyNewsFromZhihuObservable {
     }
 
 
-    private static Observable<OriginalNews> updateNewsDocument(OriginalNews news) {
+    private static Observable<Document> getNewsDocument(OriginalNews news) {
         return getHtml(Constants.Urls.ZHIHU_DAILY_OFFLINE_NEWS + news.getNewsId())
-                .flatMap(DailyNewsFromZhihuObservable::getNewsDocument)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(news::updateDocument);
+                .flatMap(DailyNewsFromZhihuObservable::getNewsDocumentFromWebData);
     }
 
-    private static Observable<Optional<Document>> getNewsDocument(String json) {
+    private static Observable<Document> getNewsDocumentFromWebData(String json) {
         return Observable.create(subscriber -> {
             try {
                 JSONObject newsJson = new JSONObject(json);
 
                 if (newsJson.has("body")) {
-                    subscriber.onNext(Optional.of(Jsoup.parse(newsJson.getString("body"))));
+                    subscriber.onNext(Jsoup.parse(newsJson.getString("body")));
                 } else {
-                    Optional<Document> empty = Optional.empty();
-                    subscriber.onNext(empty);
+                    subscriber.onNext(null);
                 }
 
                 subscriber.onCompleted();
@@ -98,6 +95,11 @@ public class DailyNewsFromZhihuObservable {
                 subscriber.onError(e);
             }
         });
+    }
+
+    private static OriginalNews updateOriginalNewsDocument(OriginalNews originalNews, Document document) {
+        originalNews.setDocument(document);
+        return originalNews;
     }
 
     private static Optional<DailyNews> originalNewsToDailyNews(OriginalNews news) {
@@ -118,15 +120,11 @@ public class DailyNewsFromZhihuObservable {
         dailyNews.setDailyTitle(news.getDailyTitle());
         dailyNews.setThumbnailUrl(news.getThumbnailUrl());
 
-        for (String questionTitle : getQuestionTitleList(news)) {
-            dailyNews.addQuestionTitle(questionTitle);
-        }
+        Stream.of(getQuestionTitleList(news)).forEach(dailyNews::addQuestionTitle);
 
         Optional<List<String>> questionUrlListOptional = getQuestionUrlList(news);
         if (questionUrlListOptional.isPresent()) {
-            for (String questionUrl : questionUrlListOptional.get()) {
-                dailyNews.addQuestionTitle(questionUrl);
-            }
+            Stream.of(questionUrlListOptional.get()).forEach(dailyNews::addQuestionUrl);
         } else {
             return Optional.empty();
         }

@@ -1,28 +1,38 @@
 package io.github.izzyleung.zhihudailypurify.ui.activity;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.task.BaseSearchTask;
+import io.github.izzyleung.zhihudailypurify.observable.DailyNewsFromSearchObservable;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.SearchNewsFragment;
 import io.github.izzyleung.zhihudailypurify.ui.widget.IzzySearchView;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
-public class SearchActivity extends BaseActivity {
+public class SearchActivity extends BaseActivity implements Observer<DailyNews> {
     private IzzySearchView searchView;
     private SearchNewsFragment searchNewsFragment;
+    private ProgressDialog dialog;
+
+    private Subscription searchSubscription;
+    private List<DailyNews> newsList = new ArrayList<>();
+    private List<DailyNews> temporary = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         initView();
+        initDialog();
 
         searchNewsFragment = new SearchNewsFragment();
         getSupportFragmentManager()
@@ -52,13 +62,16 @@ public class SearchActivity extends BaseActivity {
     private void initView() {
         searchView = new IzzySearchView(this);
         searchView.setQueryHint(getResources().getString(R.string.search_hint));
-        searchView.setOnQueryTextListener(new IzzySearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                new SearchTask().execute(query);
-                searchView.clearFocus();
-                return true;
-            }
+        searchView.setOnQueryTextListener(query -> {
+            dialog.show();
+            searchView.clearFocus();
+            searchSubscription = DailyNewsFromSearchObservable.withKeyword(query)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .doOnSubscribe(this::onSubscribe)
+                    .doOnUnsubscribe(this::onUnsubscribe)
+                    .subscribe(this);
+            return true;
         });
 
         RelativeLayout relative = new RelativeLayout(this);
@@ -71,37 +84,46 @@ public class SearchActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    class SearchTask extends BaseSearchTask {
-        private ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            dialog = new ProgressDialog(SearchActivity.this);
-            dialog.setMessage(getString(R.string.searching));
-            dialog.setCancelable(true);
-            dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    SearchTask.this.cancel(true);
-                }
-            });
-            dialog.show();
-        }
-
-        @Override
-        protected void onPostExecute(List<DailyNews> newsList) {
-            if (dialog != null) {
-                dialog.dismiss();
-                dialog = null;
+    private void initDialog() {
+        dialog = new ProgressDialog(SearchActivity.this);
+        dialog.setMessage(getString(R.string.searching));
+        dialog.setCancelable(true);
+        dialog.setOnCancelListener(dialog -> {
+            if (searchSubscription != null && !searchSubscription.isUnsubscribed()) {
+                searchSubscription.unsubscribe();
             }
+        });
+    }
 
-            if (!isCancelled()) {
-                if (isSearchSuccess) {
-                    searchNewsFragment.updateContent(newsList);
-                } else {
-                    showSnackbar(R.string.no_result_found);
-                }
-            }
-        }
+    private void onSubscribe() {
+        dialog.show();
+    }
+
+    private void onUnsubscribe() {
+        dialog.dismiss();
+        temporary.clear();
+    }
+
+    @Override
+    public void onNext(DailyNews dailyNews) {
+        temporary.add(dailyNews);
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        temporary.clear();
+
+        dialog.dismiss();
+        showSnackbar(R.string.no_result_found);
+    }
+
+    @Override
+    public void onCompleted() {
+        dialog.dismiss();
+
+        newsList.clear();
+        newsList.addAll(temporary);
+        temporary.clear();
+        searchNewsFragment.updateContent(newsList);
     }
 }

@@ -17,45 +17,6 @@ public final class DailyNews {
 
     }
 
-    //Copy constructor
-    public DailyNews(DailyNews dailyNews) {
-        this.isMulti = dailyNews.isMulti;
-        this.questionTitle = dailyNews.questionTitle;
-        this.questionUrl = dailyNews.questionUrl;
-        this.dailyTitle = dailyNews.dailyTitle;
-
-        List<String> tempQuestionTitleList = new ArrayList<>();
-
-        for (String aQuestionTitleList : dailyNews.questionTitleList) {
-            tempQuestionTitleList.add(aQuestionTitleList);
-        }
-        this.questionTitleList = tempQuestionTitleList;
-
-        List<String> tempQuestionUrlList = new ArrayList<>();
-
-        for (String aQuestionUrlList : dailyNews.questionUrlList) {
-            tempQuestionUrlList.add(aQuestionUrlList);
-        }
-        this.questionUrlList = tempQuestionUrlList;
-
-        this.thumbnailUrl = dailyNews.thumbnailUrl;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        DailyNews dailyNews = (DailyNews) o;
-
-        return dailyTitle.equals(dailyNews.dailyTitle);
-    }
-
-    @Override
-    public int hashCode() {
-        return dailyTitle.hashCode();
-    }
-
     public String getQuestionUrl() {
         return questionUrl;
     }

@@ -37,12 +37,7 @@ public class MainActivity extends BaseActivity {
         tabs.setupWithViewPager(viewPager);
 
         FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.fab_pick_date);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                prepareIntent(PickDateActivity.class);
-            }
-        });
+        floatingActionButton.setOnClickListener(v -> prepareIntent(PickDateActivity.class));
     }
 
     @Override
@@ -79,7 +74,7 @@ public class MainActivity extends BaseActivity {
 
             Calendar dateToGetUrl = Calendar.getInstance();
             dateToGetUrl.add(Calendar.DAY_OF_YEAR, 1 - i);
-            String date = Constants.Date.simpleDateFormat.format(dateToGetUrl.getTime());
+            String date = Constants.Dates.simpleDateFormat.format(dateToGetUrl.getTime());
 
             bundle.putString("date", date);
             bundle.putBoolean("first_page?", i == 0);

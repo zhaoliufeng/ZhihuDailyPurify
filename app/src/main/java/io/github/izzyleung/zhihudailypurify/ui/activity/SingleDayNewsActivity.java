@@ -23,10 +23,10 @@ public class SingleDayNewsActivity extends BaseActivity {
         String dateString = bundle.getString("date");
         Date date;
         try {
-            date = Constants.Date.simpleDateFormat.parse(dateString);
+            date = Constants.Dates.simpleDateFormat.parse(dateString);
         } catch (ParseException e) {
             // This shall never happen.
-            date = Constants.Date.birthday;
+            date = Constants.Dates.birthday;
         }
 
         //noinspection ConstantConditions

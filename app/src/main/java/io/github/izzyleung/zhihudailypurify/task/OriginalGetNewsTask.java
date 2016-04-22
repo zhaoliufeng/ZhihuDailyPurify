@@ -29,7 +29,7 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
         List<DailyNews> resultNewsList = new ArrayList<>();
 
         try {
-            JSONObject contents = new JSONObject(Http.get(Constants.Url.ZHIHU_DAILY_BEFORE, date));
+            JSONObject contents = new JSONObject(Http.get(Constants.Urls.ZHIHU_DAILY_BEFORE, date));
 
             JSONArray newsArray = contents.getJSONArray("stories");
             for (int i = 0; i < newsArray.length(); i++) {
@@ -42,7 +42,7 @@ public class OriginalGetNewsTask extends BaseGetNewsTask {
                 }
                 dailyNews.setThumbnailUrl(thumbnailUrl);
                 dailyNews.setDailyTitle(singleNews.getString("title"));
-                String newsInfoJson = Http.get(Constants.Url.ZHIHU_DAILY_OFFLINE_NEWS,
+                String newsInfoJson = Http.get(Constants.Urls.ZHIHU_DAILY_OFFLINE_NEWS,
                         String.valueOf(singleNews.getInt("id")));
                 JSONObject newsDetail = new JSONObject(newsInfoJson);
                 if (newsDetail.has("body")) {

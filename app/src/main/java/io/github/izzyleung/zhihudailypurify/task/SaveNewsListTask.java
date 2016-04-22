@@ -28,6 +28,6 @@ public class SaveNewsListTask extends AsyncTask<Void, Void, Void> {
     private void saveNewsList(List<DailyNews> newsList) {
         ZhihuDailyPurifyApplication.getDataSource().insertOrUpdateNewsList(
                 date,
-                new GsonBuilder().create().toJson(newsList, Constants.Type.newsListType));
+                new GsonBuilder().create().toJson(newsList, Constants.Types.newsListType));
     }
 }

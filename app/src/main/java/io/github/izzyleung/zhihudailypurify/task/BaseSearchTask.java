@@ -25,7 +25,7 @@ public class BaseSearchTask extends BaseDownloadTask<String, Void, List<DailyNew
         Gson gson = new GsonBuilder().create();
 
         try {
-            String result = decodeHtml(Http.get(Constants.Url.SEARCH, params[0].trim(), true));
+            String result = decodeHtml(Http.get(Constants.Urls.SEARCH, params[0].trim(), true));
 
             List<DailyNews> newsList = new ArrayList<>();
 
@@ -37,7 +37,7 @@ public class BaseSearchTask extends BaseDownloadTask<String, Void, List<DailyNew
                 } else {
                     for (int i = 0; i < resultArray.length(); i++) {
                         JSONObject newsObject = resultArray.getJSONObject(i);
-                        DailyNews news = gson.fromJson(newsObject.getString("content"), Constants.Type.newsType);
+                        DailyNews news = gson.fromJson(newsObject.getString("content"), Constants.Types.newsType);
                         assert news != null;
                         news.setDate(newsObject.getString("date"));
                         newsList.add(news);

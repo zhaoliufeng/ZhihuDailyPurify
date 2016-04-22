@@ -24,9 +24,10 @@ import io.github.izzyleung.zhihudailypurify.task.AccelerateGetNewsTask;
 import io.github.izzyleung.zhihudailypurify.task.BaseGetNewsTask;
 import io.github.izzyleung.zhihudailypurify.task.OriginalGetNewsTask;
 import io.github.izzyleung.zhihudailypurify.ui.activity.BaseActivity;
+import rx.Observer;
 
 public class NewsListFragment extends Fragment
-        implements SwipeRefreshLayout.OnRefreshListener, BaseGetNewsTask.UpdateUIListener {
+        implements SwipeRefreshLayout.OnRefreshListener, BaseGetNewsTask.UpdateUIListener, Observer<DailyNews> {
     private List<DailyNews> newsList = new ArrayList<>();
 
     private NewsAdapter mAdapter;
@@ -142,6 +143,21 @@ public class NewsListFragment extends Fragment
         } else if (isAdded()) {
             ((BaseActivity) getActivity()).showSnackbar(R.string.network_error);
         }
+    }
+
+    @Override
+    public void onCompleted() {
+
+    }
+
+    @Override
+    public void onError(Throwable e) {
+
+    }
+
+    @Override
+    public void onNext(DailyNews dailyNews) {
+
     }
 
     private class RecoverNewsListTask extends AsyncTask<Void, Void, List<DailyNews>> {

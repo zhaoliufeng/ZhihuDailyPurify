@@ -72,7 +72,7 @@ public final class DailyNewsDataSource {
 
     private List<DailyNews> cursorToNewsList(Cursor cursor) {
         if (cursor != null && cursor.getCount() > 0) {
-            return new GsonBuilder().create().fromJson(cursor.getString(2), Constants.Type.newsListType);
+            return new GsonBuilder().create().fromJson(cursor.getString(2), Constants.Types.newsListType);
         } else {
             return null;
         }

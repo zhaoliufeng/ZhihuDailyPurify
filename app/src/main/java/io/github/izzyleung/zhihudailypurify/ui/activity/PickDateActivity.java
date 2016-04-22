@@ -26,7 +26,7 @@ public class PickDateActivity extends BaseActivity {
         nextDay.add(Calendar.DAY_OF_YEAR, 1);
 
         CalendarPickerView calendarPickerView = (CalendarPickerView) findViewById(R.id.calendar_view);
-        calendarPickerView.init(Constants.Date.birthday, nextDay.getTime())
+        calendarPickerView.init(Constants.Dates.birthday, nextDay.getTime())
                 .withSelectedDate(Calendar.getInstance().getTime());
         calendarPickerView.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
             @Override
@@ -36,7 +36,7 @@ public class PickDateActivity extends BaseActivity {
                 calendar.add(Calendar.DAY_OF_YEAR, 1);
 
                 Intent intent = new Intent(PickDateActivity.this, SingleDayNewsActivity.class);
-                intent.putExtra("date", Constants.Date.simpleDateFormat.format(calendar.getTime()));
+                intent.putExtra("date", Constants.Dates.simpleDateFormat.format(calendar.getTime()));
                 startActivity(intent);
             }
 
@@ -45,14 +45,11 @@ public class PickDateActivity extends BaseActivity {
 
             }
         });
-        calendarPickerView.setOnInvalidDateSelectedListener(new CalendarPickerView.OnInvalidDateSelectedListener() {
-            @Override
-            public void onInvalidDateSelected(Date date) {
-                if (date.after(new Date())) {
-                    showSnackbar(R.string.not_coming);
-                } else {
-                    showSnackbar(R.string.not_born);
-                }
+        calendarPickerView.setOnInvalidDateSelectedListener(date -> {
+            if (date.after(new Date())) {
+                showSnackbar(R.string.not_coming);
+            } else {
+                showSnackbar(R.string.not_born);
             }
         });
     }

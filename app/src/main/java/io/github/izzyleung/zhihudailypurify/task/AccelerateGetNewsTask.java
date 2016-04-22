@@ -30,7 +30,7 @@ public class AccelerateGetNewsTask extends BaseGetNewsTask {
 
         String jsonFromWeb;
         try {
-            jsonFromWeb = Http.get(Constants.Url.ZHIHU_DAILY_PURIFY_BEFORE, date);
+            jsonFromWeb = Http.get(Constants.Urls.ZHIHU_DAILY_PURIFY_BEFORE, date);
         } catch (IOException e) {
             isRefreshSuccess = false;
             return null;

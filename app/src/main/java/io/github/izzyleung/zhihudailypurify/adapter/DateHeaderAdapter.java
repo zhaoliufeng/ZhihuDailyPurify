@@ -45,7 +45,7 @@ public class DateHeaderAdapter implements StickyHeadersAdapter<DateHeaderAdapter
         Calendar calendar = Calendar.getInstance();
 
         try {
-            calendar.setTime(Constants.Date.simpleDateFormat.parse(newsList.get(position).getDate()));
+            calendar.setTime(Constants.Dates.simpleDateFormat.parse(newsList.get(position).getDate()));
             calendar.add(Calendar.DAY_OF_YEAR, -1);
         } catch (ParseException ignored) {
 

@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
@@ -17,6 +16,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.annimon.stream.Stream;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
@@ -30,6 +30,7 @@ import java.util.List;
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
+import io.github.izzyleung.zhihudailypurify.bean.Question;
 import io.github.izzyleung.zhihudailypurify.support.Check;
 import io.github.izzyleung.zhihudailypurify.support.Constants;
 
@@ -54,7 +55,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CardViewHolder
     }
 
     public void setNewsList(List<DailyNews> newsList) {
-        this.newsList = newsList;
+        this.newsList.clear();
+        this.newsList.addAll(newsList);
     }
 
     public void updateNewsList(List<DailyNews> newsList) {
@@ -99,16 +101,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CardViewHolder
         final DailyNews dailyNews = newsList.get(position);
         imageLoader.displayImage(dailyNews.getThumbnailUrl(), holder.newsImage, options, animateFirstListener);
 
-        if (dailyNews.isMulti()) {
+        if (dailyNews.getQuestions().size() > 1) {
             holder.questionTitle.setText(dailyNews.getDailyTitle());
             String simplifiedMultiQuestion = Constants.Strings.MULTIPLE_DISCUSSION;
             holder.dailyTitle.setText(simplifiedMultiQuestion);
         } else {
-            if (TextUtils.isEmpty(dailyNews.getQuestionTitle())) {
-                holder.questionTitle.setText(dailyNews.getDailyTitle());
-            } else {
-                holder.questionTitle.setText(dailyNews.getQuestionTitle());
-            }
+            holder.questionTitle.setText(dailyNews.getQuestions().get(0).getTitle());
             holder.dailyTitle.setText(dailyNews.getDailyTitle());
         }
     }
@@ -124,21 +122,20 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CardViewHolder
     }
 
     private void browseOrShare(final Context context, int position, final boolean browse) {
-        final DailyNews dailyNews = newsList.get(position);
-        if (dailyNews.isMulti()) {
-            String[] questionTitles = dailyNews.getQuestionTitleList()
-                    .toArray(new String[dailyNews.getQuestionTitleList().size()]);
-
+        DailyNews dailyNews = newsList.get(position);
+        if (dailyNews.getQuestions().size() > 1) {
+            String[] questionTitles = Stream.of(dailyNews.getQuestions()).map(Question::getTitle)
+                    .toArray(String[]::new);
             new AlertDialog.Builder(context)
                     .setTitle(dailyNews.getDailyTitle())
                     .setItems(questionTitles, makeDialogListener(context, browse, dailyNews))
                     .show();
         } else {
             if (browse) {
-                goToZhihu(context, dailyNews.getQuestionUrl());
+                goToZhihu(context, dailyNews.getQuestions().get(0).getUrl());
             } else {
-                String questionTitle = dailyNews.getQuestionTitle(),
-                        questionUrl = dailyNews.getQuestionUrl();
+                String questionTitle = dailyNews.getQuestions().get(0).getTitle(),
+                        questionUrl = dailyNews.getQuestions().get(0).getUrl();
 
                 share(context, questionTitle, questionUrl);
             }
@@ -148,17 +145,10 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CardViewHolder
     private DialogInterface.OnClickListener makeDialogListener(Context context, boolean browse, DailyNews dailyNews) {
         return (dialog, which) -> {
             if (browse) {
-                goToZhihu(context, dailyNews.getQuestionUrlList().get(which));
+                goToZhihu(context, dailyNews.getQuestions().get(which).getUrl());
             } else {
-                String questionTitle, questionUrl;
-
-                if (dailyNews.isMulti()) {
-                    questionTitle = dailyNews.getQuestionTitleList().get(which);
-                    questionUrl = dailyNews.getQuestionUrlList().get(which);
-                } else {
-                    questionTitle = dailyNews.getQuestionTitle();
-                    questionUrl = dailyNews.getQuestionUrl();
-                }
+                String questionTitle = dailyNews.getQuestions().get(which).getTitle(),
+                        questionUrl = dailyNews.getQuestions().get(which).getUrl();
 
                 share(context, questionTitle, questionUrl);
             }

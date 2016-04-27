@@ -29,12 +29,12 @@ public class MainActivity extends BaseActivity {
 
         TabLayout tabs = (TabLayout) findViewById(R.id.main_pager_tabs);
         ViewPager viewPager = (ViewPager) findViewById(R.id.main_pager);
+        assert tabs != null;
         assert viewPager != null;
         viewPager.setOffscreenPageLimit(PAGE_COUNT);
 
         MainPagerAdapter adapter = new MainPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
-        assert tabs != null;
         tabs.setupWithViewPager(viewPager);
 
         FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.fab_pick_date);
@@ -79,6 +79,7 @@ public class MainActivity extends BaseActivity {
             String date = Constants.Dates.simpleDateFormat.format(dateToGetUrl.getTime());
 
             bundle.putString(Constants.BundleKeys.DATE, date);
+            bundle.putBoolean(Constants.BundleKeys.IS_FIRST_PAGE, i == 0);
             bundle.putBoolean(Constants.BundleKeys.IS_SINGLE, false);
 
             newFragment.setArguments(bundle);

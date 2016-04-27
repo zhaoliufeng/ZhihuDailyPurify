@@ -1,60 +1,21 @@
 package io.github.izzyleung.zhihudailypurify.bean;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import io.github.izzyleung.zhihudailypurify.support.lib.optional.Optional;
+
 public final class DailyNews {
-    private boolean isMulti;
-    private String questionTitle;
-    private String questionUrl;
-    private String dailyTitle;
-    private List<String> questionTitleList = new ArrayList<>();
-    private List<String> questionUrlList = new ArrayList<>();
-    private String thumbnailUrl;
     private String date;
+    private String thumbnailUrl;
+    private String dailyTitle;
+    private List<Question> questions;
 
-    public DailyNews() {
-
+    public String getDate() {
+        return date;
     }
 
-    public String getQuestionUrl() {
-        return questionUrl;
-    }
-
-    public void setQuestionUrl(String questionUrl) {
-        this.questionUrl = questionUrl;
-    }
-
-    public boolean isMulti() {
-        return isMulti;
-    }
-
-    public void setMulti(boolean isMulti) {
-        this.isMulti = isMulti;
-    }
-
-    public String getQuestionTitle() {
-        return questionTitle;
-    }
-
-    public void setQuestionTitle(String questionTitle) {
-        this.questionTitle = questionTitle;
-    }
-
-    public String getDailyTitle() {
-        return dailyTitle;
-    }
-
-    public void setDailyTitle(String dailyTitle) {
-        this.dailyTitle = dailyTitle;
-    }
-
-    public List<String> getQuestionTitleList() {
-        return questionTitleList;
-    }
-
-    public List<String> getQuestionUrlList() {
-        return questionUrlList;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getThumbnailUrl() {
@@ -65,19 +26,33 @@ public final class DailyNews {
         this.thumbnailUrl = thumbnailUrl;
     }
 
-    public void addQuestionTitle(String questionTitle) {
-        questionTitleList.add(questionTitle);
+    public String getDailyTitle() {
+        return dailyTitle;
     }
 
-    public void addQuestionUrl(String questionUrl) {
-        questionUrlList.add(questionUrl);
+    public void setDailyTitle(String dailyTitle) {
+        this.dailyTitle = dailyTitle;
     }
 
-    public String getDate() {
-        return date;
+    public List<Question> getQuestions() {
+        return questions;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
+
+    public static Optional<DailyNews> createFromStory(Story story) {
+        if (story.getDocument() == null) {
+            return Optional.empty();
+        }
+
+        DailyNews result = new DailyNews();
+
+        result.setDate(story.getDate());
+        result.setThumbnailUrl(story.getThumbnailUrl());
+        result.setDailyTitle(story.getDailyTitle());
+
+        return Optional.of(result);
     }
 }

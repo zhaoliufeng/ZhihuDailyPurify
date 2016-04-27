@@ -40,46 +40,20 @@ public class Http {
         }
     }
 
-    public static String get(String baseUrl, Map<String, String> params) throws IOException {
-        return get(makeUrl(baseUrl, params));
-    }
-
     public static String get(String baseUrl, String key, String value) throws IOException {
         return get(baseUrl + "?" + concatKeyValue(key, value));
+    }
+
+    public static String get(String baseUrl, int suffix) throws IOException {
+        return get(baseUrl + suffix);
     }
 
     public static String get(String baseUrl, String suffix) throws IOException {
         return get(baseUrl + encodeString(suffix));
     }
 
-    public static String get(String baseUrl, String suffix, boolean replaceSpace) throws IOException {
-        if (replaceSpace) {
-            return get(baseUrl + encodeString(suffix).replace("+", "%20"));
-        } else {
-            return get(baseUrl, suffix);
-        }
-    }
-
-    private static String makeUrl(String baseUrl, Map<String, String> params) {
-        if (params == null || params.size() == 0) {
-            return baseUrl;
-        }
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(baseUrl);
-        sb.append("?");
-
-        for (Iterator<Map.Entry<String, String>> iterator = params.entrySet().iterator(); iterator.hasNext(); sb.append("&")) {
-            Map.Entry<String, String> item = iterator.next();
-
-            sb.append(concatKeyValue(item.getKey(), item.getValue()));
-        }
-
-        return sb.toString();
-    }
-
     private static String concatKeyValue(String key, String value) {
-        return encodeString(key) + "=" + encodeString(value);
+        return encodeString(key) + "=" + encodeString(value).replace("+", "%20");
     }
 
     private static String encodeString(String str) {

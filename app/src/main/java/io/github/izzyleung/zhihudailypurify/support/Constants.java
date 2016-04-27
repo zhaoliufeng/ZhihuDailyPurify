@@ -18,8 +18,8 @@ public final class Constants {
     public static final class Urls {
         public static final String ZHIHU_DAILY_BEFORE = "http://news.at.zhihu.com/api/4/news/before/";
         public static final String ZHIHU_DAILY_OFFLINE_NEWS = "http://news-at.zhihu.com/api/4/news/";
-        public static final String ZHIHU_DAILY_PURIFY_BEFORE = "http://zhihu-daily-purify.herokuapp.com/raw/";
-        public static final String SEARCH = "http://zhihu-daily-purify.herokuapp.com/search/";
+        public static final String ZHIHU_DAILY_PURIFY_BEFORE = "http://zhihu-daily-purify.azurewebsites.net/news/";
+        public static final String SEARCH = "http://zhihu-daily-purify.azurewebsites.net/search/";
     }
 
     public static final class Dates {
@@ -39,8 +39,7 @@ public final class Constants {
     }
 
     public static final class Strings {
-        public static final String VIEW_ZHIHU_DISCUSSION = "查看知乎讨论";
-        public static final String ORIGINAL_DESCRIPTION = "原题描述";
+        public static final String ZHIHU_QUESTION_LINK_PREFIX = "http://www.zhihu.com/question/";
         public static final String SHARE_FROM_ZHIHU = " 分享自知乎网";
         public static final String MULTIPLE_DISCUSSION = "这里包含多个知乎讨论，请点击后选择";
     }
@@ -59,5 +58,6 @@ public final class Constants {
     public static final class BundleKeys {
         public static final String DATE = "date";
         public static final String IS_SINGLE = "single?";
+        public static final String IS_FIRST_PAGE = "first_page?";
     }
 }

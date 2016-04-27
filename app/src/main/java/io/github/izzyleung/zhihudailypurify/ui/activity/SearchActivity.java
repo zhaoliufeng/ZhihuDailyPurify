@@ -18,14 +18,13 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class SearchActivity extends BaseActivity implements Observer<DailyNews> {
+public class SearchActivity extends BaseActivity implements Observer<List<DailyNews>> {
     private IzzySearchView searchView;
     private SearchNewsFragment searchNewsFragment;
     private ProgressDialog dialog;
 
     private Subscription searchSubscription;
     private List<DailyNews> newsList = new ArrayList<>();
-    private List<DailyNews> temporary = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,18 +100,15 @@ public class SearchActivity extends BaseActivity implements Observer<DailyNews> 
 
     private void onUnsubscribe() {
         dialog.dismiss();
-        temporary.clear();
     }
 
     @Override
-    public void onNext(DailyNews dailyNews) {
-        temporary.add(dailyNews);
+    public void onNext(List<DailyNews> newsList) {
+        this.newsList = newsList;
     }
 
     @Override
     public void onError(Throwable e) {
-        temporary.clear();
-
         dialog.dismiss();
         showSnackbar(R.string.no_result_found);
     }
@@ -120,10 +116,6 @@ public class SearchActivity extends BaseActivity implements Observer<DailyNews> 
     @Override
     public void onCompleted() {
         dialog.dismiss();
-
-        newsList.clear();
-        newsList.addAll(temporary);
-        temporary.clear();
         searchNewsFragment.updateContent(newsList);
     }
 }

@@ -1,6 +1,5 @@
 package io.github.izzyleung.zhihudailypurify.ui.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -10,9 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import io.github.izzyleung.zhihudailypurify.R;
@@ -22,8 +19,8 @@ import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.observable.DailyNewsFromAccelerateServerObservable;
 import io.github.izzyleung.zhihudailypurify.observable.DailyNewsFromDatabaseObservable;
 import io.github.izzyleung.zhihudailypurify.observable.DailyNewsFromZhihuObservable;
-import io.github.izzyleung.zhihudailypurify.observable.SaveDailyNewsObservable;
 import io.github.izzyleung.zhihudailypurify.support.Constants;
+import io.github.izzyleung.zhihudailypurify.task.SaveNewsListTask;
 import io.github.izzyleung.zhihudailypurify.ui.activity.BaseActivity;
 import rx.Observable;
 import rx.Observer;
@@ -31,28 +28,17 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class NewsListFragment extends Fragment
-        implements SwipeRefreshLayout.OnRefreshListener, Observer<DailyNews> {
+        implements SwipeRefreshLayout.OnRefreshListener, Observer<List<DailyNews>> {
     private List<DailyNews> newsList = new ArrayList<>();
-    private List<DailyNews> temporary = new ArrayList<>();
 
     private String date;
     private NewsAdapter mAdapter;
 
     // Fragment is single in SingleDayNewsActivity
-    private boolean isSingle;
+    private boolean isToday;
     private boolean isRefreshed = false;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        DailyNewsFromDatabaseObservable.ofDate(date)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +47,7 @@ public class NewsListFragment extends Fragment
         if (savedInstanceState == null) {
             Bundle bundle = getArguments();
             date = bundle.getString(Constants.BundleKeys.DATE);
-            isSingle = bundle.getBoolean(Constants.BundleKeys.IS_SINGLE);
+            isToday = bundle.getBoolean(Constants.BundleKeys.IS_FIRST_PAGE);
 
             setRetainInstance(true);
         }
@@ -73,7 +59,7 @@ public class NewsListFragment extends Fragment
 
         assert view != null;
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.news_list);
-        mRecyclerView.setHasFixedSize(!isToday());
+        mRecyclerView.setHasFixedSize(!isToday);
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -93,7 +79,10 @@ public class NewsListFragment extends Fragment
     public void onResume() {
         super.onResume();
 
-        refreshIf(shouldRefreshOnResume());
+        DailyNewsFromDatabaseObservable.ofDate(date)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this);
     }
 
     @Override
@@ -110,16 +99,16 @@ public class NewsListFragment extends Fragment
     }
 
     private void doRefresh() {
-        Observable<DailyNews> observable;
+        newsList.clear();
 
+        Observable<List<DailyNews>> observable;
         if (shouldSubscribeToZhihu()) {
             observable = DailyNewsFromZhihuObservable.ofDate(date);
         } else {
             observable = DailyNewsFromAccelerateServerObservable.ofDate(date);
         }
 
-        Observable.defer(() -> observable)
-                .subscribeOn(Schedulers.io())
+        observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this);
 
@@ -129,7 +118,7 @@ public class NewsListFragment extends Fragment
     }
 
     private boolean shouldSubscribeToZhihu() {
-        return isToday() || shouldUseAccelerateServer();
+        return isToday || shouldUseAccelerateServer();
     }
 
     private boolean shouldUseAccelerateServer() {
@@ -146,24 +135,18 @@ public class NewsListFragment extends Fragment
         return isVisibleToUser && shouldAutoRefresh() && !isRefreshed;
     }
 
-    private boolean shouldRefreshOnResume() {
-        return (isToday() || isSingle) && shouldAutoRefresh() && !isRefreshed;
-    }
-
     @Override
     public void onRefresh() {
         doRefresh();
     }
 
     @Override
-    public void onNext(DailyNews dailyNews) {
-        temporary.add(dailyNews);
+    public void onNext(List<DailyNews> newsList) {
+        this.newsList = newsList;
     }
 
     @Override
     public void onError(Throwable e) {
-        temporary.clear();
-
         mSwipeRefreshLayout.setRefreshing(false);
         if (isAdded()) {
             ((BaseActivity) getActivity()).showSnackbar(R.string.network_error);
@@ -174,35 +157,9 @@ public class NewsListFragment extends Fragment
     public void onCompleted() {
         isRefreshed = true;
 
-        newsList.clear();
-        newsList.addAll(temporary);
-        temporary.clear();
-
         mSwipeRefreshLayout.setRefreshing(false);
-        mAdapter.notifyDataSetChanged();
+        mAdapter.updateNewsList(newsList);
 
-        SaveDailyNewsObservable.saveToDatabase(date, newsList)
-                .subscribeOn(Schedulers.io())
-                .subscribe();
-    }
-
-    private boolean isToday() {
-        Calendar today = Calendar.getInstance();
-        Calendar calendar = Calendar.getInstance();
-
-        try {
-            calendar.setTime(Constants.Dates.simpleDateFormat.parse(date));
-            calendar.add(Calendar.DAY_OF_YEAR, -1);
-        } catch (ParseException ignored) {
-
-        }
-
-        return isSameDay(today, calendar);
-    }
-
-    private boolean isSameDay(Calendar first, Calendar second) {
-        return (first.get(Calendar.YEAR) == second.get(Calendar.YEAR)) &&
-                (first.get(Calendar.MONTH) == second.get(Calendar.MONTH)) &&
-                (first.get(Calendar.DAY_OF_MONTH) == second.get(Calendar.DAY_OF_MONTH));
+        new SaveNewsListTask(date, newsList).execute();
     }
 }

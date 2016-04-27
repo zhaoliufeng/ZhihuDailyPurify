@@ -1,7 +1,5 @@
 package io.github.izzyleung.zhihudailypurify.observable;
 
-import android.text.TextUtils;
-
 import com.annimon.stream.Stream;
 
 import org.json.JSONArray;
@@ -16,7 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.bean.OriginalNews;
+import io.github.izzyleung.zhihudailypurify.bean.Question;
+import io.github.izzyleung.zhihudailypurify.bean.Story;
 import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.support.lib.optional.Optional;
 import rx.Observable;
@@ -24,35 +23,39 @@ import rx.Observable;
 import static io.github.izzyleung.zhihudailypurify.observable.Helper.getHtml;
 
 public class DailyNewsFromZhihuObservable {
-    private static final String QUESTION_TITLES_SELECTOR = "question-title";
+    private static final String QUESTION_SELECTOR = "div.question";
+    private static final String QUESTION_TITLES_SELECTOR = "h2.question-title";
     private static final String QUESTION_LINKS_SELECTOR = "div.view-more a";
 
-    public static Observable<DailyNews> ofDate(String date) {
-        Observable<OriginalNews> originalNewsWithoutDocument = getHtml(Constants.Urls.ZHIHU_DAILY_BEFORE + date)
-                .flatMap(DailyNewsFromZhihuObservable::getOriginalNewsObservable);
-
-        Observable<Document> document = originalNewsWithoutDocument
-                .flatMap(DailyNewsFromZhihuObservable::getNewsDocument);
-
-        return Observable.zip(originalNewsWithoutDocument, document, DailyNewsFromZhihuObservable::updateOriginalNewsDocument)
-                .filter(news -> news.getDocument() != null)
-                .map(DailyNewsFromZhihuObservable::originalNewsToDailyNews)
+    public static Observable<List<DailyNews>> ofDate(String date) {
+        return getHtml(Constants.Urls.ZHIHU_DAILY_BEFORE, date)
+                .flatMap(DailyNewsFromZhihuObservable::getStoriesJsonArray)
+                .flatMap(jsonArray -> getStoriesObservable(jsonArray, date))
+                .flatMap(DailyNewsFromZhihuObservable::updateNewsDocument)
+                .map(DailyNewsFromZhihuObservable::convertStoryToDailyNews)
                 .filter(Optional::isPresent)
-                .map(Optional::get);
+                .map(Optional::get)
+                .filter(dailyNews -> dailyNews.getQuestions() != null)
+                .toList();
     }
 
-    private static Observable<OriginalNews> getOriginalNewsObservable(String html) {
+    private static Observable<JSONArray> getStoriesJsonArray(String html) {
         return Observable.create(subscriber -> {
             try {
-                JSONArray newsArray = new JSONObject(html).getJSONArray("stories");
+                subscriber.onNext(new JSONObject(html).getJSONArray("stories"));
+                subscriber.onCompleted();
+            } catch (JSONException e) {
+                subscriber.onError(e);
+            }
+        });
+    }
 
+    private static Observable<Story> getStoriesObservable(JSONArray newsArray, String date) {
+        return Observable.create(subscriber -> {
+            try {
                 for (int i = 0; i < newsArray.length(); i++) {
                     JSONObject newsJson = newsArray.getJSONObject(i);
-
-                    OriginalNews news = new OriginalNews();
-                    prepareOriginalNewsInfo(newsJson, news);
-
-                    subscriber.onNext(news);
+                    subscriber.onNext(getStoryFromJSON(newsJson, date));
                 }
 
                 subscriber.onCompleted();
@@ -62,168 +65,98 @@ public class DailyNewsFromZhihuObservable {
         });
     }
 
-    private static void prepareOriginalNewsInfo(JSONObject singleNews, OriginalNews news) throws JSONException {
-        String thumbnailUrl = "";
-        if (singleNews.has("images")) {
-            thumbnailUrl = (String) singleNews.getJSONArray("images").get(0);
-        }
+    private static Story getStoryFromJSON(JSONObject jsonStory, String date) throws JSONException {
+        Story story = new Story();
 
-        news.setThumbnailUrl(thumbnailUrl);
-        news.setDailyTitle(singleNews.getString("title"));
-        news.setNewsId(singleNews.getInt("id"));
+        story.setDate(date);
+        story.setStoryId(jsonStory.getInt("id"));
+        story.setDailyTitle(jsonStory.getString("title"));
+        story.setThumbnailUrl(getThumbnailUrlForStory(jsonStory));
+
+        return story;
     }
 
-
-    private static Observable<Document> getNewsDocument(OriginalNews news) {
-        return getHtml(Constants.Urls.ZHIHU_DAILY_OFFLINE_NEWS + news.getNewsId())
-                .flatMap(DailyNewsFromZhihuObservable::getNewsDocumentFromWebData);
-    }
-
-    private static Observable<Document> getNewsDocumentFromWebData(String json) {
-        return Observable.create(subscriber -> {
-            try {
-                JSONObject newsJson = new JSONObject(json);
-
-                if (newsJson.has("body")) {
-                    subscriber.onNext(Jsoup.parse(newsJson.getString("body")));
-                } else {
-                    subscriber.onNext(null);
-                }
-
-                subscriber.onCompleted();
-            } catch (JSONException e) {
-                subscriber.onError(e);
-            }
-        });
-    }
-
-    private static OriginalNews updateOriginalNewsDocument(OriginalNews originalNews, Document document) {
-        originalNews.setDocument(document);
-        return originalNews;
-    }
-
-    private static Optional<DailyNews> originalNewsToDailyNews(OriginalNews news) {
-        Elements questionLinkElements = getQuestionLinkElements(news);
-
-        if (questionLinkElements.size() > 1) {
-            return processMulti(news);
-        } else if (questionLinkElements.size() == 1) {
-            return processSingle(news);
+    private static String getThumbnailUrlForStory(JSONObject jsonStory) throws JSONException {
+        if (jsonStory.has("images")) {
+            return (String) jsonStory.getJSONArray("images").get(0);
         } else {
-            return Optional.empty();
+            return null;
         }
     }
 
-    private static Optional<DailyNews> processMulti(OriginalNews news) {
-        DailyNews dailyNews = new DailyNews();
-        dailyNews.setMulti(true);
-        dailyNews.setDailyTitle(news.getDailyTitle());
-        dailyNews.setThumbnailUrl(news.getThumbnailUrl());
+    private static Observable<Story> updateNewsDocument(Story news) {
+        return getHtml(Constants.Urls.ZHIHU_DAILY_OFFLINE_NEWS, news.getStoryId())
+                .map(DailyNewsFromZhihuObservable::getStoryDocument)
+                .map(news::updateDocument);
+    }
 
-        Stream.of(getQuestionTitleList(news)).forEach(dailyNews::addQuestionTitle);
-
-        Optional<List<String>> questionUrlListOptional = getQuestionUrlList(news);
-        if (questionUrlListOptional.isPresent()) {
-            Stream.of(questionUrlListOptional.get()).forEach(dailyNews::addQuestionUrl);
-        } else {
-            return Optional.empty();
+    private static Document getStoryDocument(String json) {
+        try {
+            JSONObject newsJson = new JSONObject(json);
+            return newsJson.has("body") ? Jsoup.parse(newsJson.getString("body")) : null;
+        } catch (JSONException e) {
+            return null;
         }
-
-        return Optional.of(dailyNews);
     }
 
-    private static boolean isLinkToZhihuDiscussion(Element element) {
-        return element.text().equals(Constants.Strings.VIEW_ZHIHU_DISCUSSION);
-    }
+    private static Optional<DailyNews> convertStoryToDailyNews(Story story) {
+        Optional<DailyNews> newsOptional = DailyNews.createFromStory(story);
 
-    private static Optional<List<String>> getQuestionUrlList(OriginalNews news) {
-        List<String> result = new ArrayList<>();
-
-        Elements questionLinkElements = getQuestionLinkElements(news);
-        for (Element questionLinkElement : questionLinkElements) {
-            if (isLinkToZhihuDiscussion(questionLinkElement)) {
-                result.add(extractQuestionUrl(questionLinkElement));
-            } else {
-                return Optional.empty();
+        if (newsOptional.isPresent()) {
+            List<Question> questions = getQuestions(story.getDocument(), newsOptional.get().getDailyTitle());
+            if (Stream.of(questions).allMatch(q -> isLinkToZhihu(q.getUrl()))) {
+                newsOptional.get().setQuestions(questions);
             }
         }
 
-        return Optional.of(result);
+        return newsOptional;
     }
 
-    private static Elements getQuestionLinkElements(OriginalNews news) {
-        return news.getDocument().select(QUESTION_LINKS_SELECTOR);
-    }
+    private static List<Question> getQuestions(Document document, String dailyTitle) {
+        List<Question> result = new ArrayList<>();
+        Elements questionElements = getQuestionElements(document);
 
-    private static String extractQuestionUrl(Element questionLinkElement) {
-        return questionLinkElement.attr("href");
-    }
+        for (Element questionElement : questionElements) {
+            Question question = new Question();
 
-    private static List<String> getQuestionTitleList(OriginalNews news) {
-        List<String> result = new ArrayList<>();
+            String questionTitle = getQuestionTitleFromQuestionElement(questionElement);
+            String questionUrl = getQuestionUrlFromQuestionElement(questionElement);
+            questionTitle = questionTitle == null ? dailyTitle : questionTitle;
 
-        Elements questionTitleElements = getQuestionTitleElements(news);
-        for (int i = 0; i < questionTitleElements.size(); i++) {
-            Optional<String> questionTitle = extractQuestionTitle(questionTitleElements.get(i));
+            question.setTitle(questionTitle);
+            question.setUrl(questionUrl);
 
-            if (questionTitle.isPresent()) {
-                result.add(questionTitle.get());
-            } else if (i == 0) {
-                result.add(news.getDailyTitle());
-            }
+            result.add(question);
         }
 
         return result;
     }
 
-    private static Elements getQuestionTitleElements(OriginalNews news) {
-        return news.getDocument().getElementsByClass(QUESTION_TITLES_SELECTOR);
+    private static Elements getQuestionElements(Document document) {
+        return document.select(QUESTION_SELECTOR);
     }
 
-    private static Optional<String> extractQuestionTitle(Element questionTitleElement) {
-        String title = questionTitleElement.text();
+    private static String getQuestionTitleFromQuestionElement(Element questionElement) {
+        Element questionTitleElement = questionElement.select(QUESTION_TITLES_SELECTOR).first();
 
-        if (TextUtils.isEmpty(title) || title.startsWith(Constants.Strings.ORIGINAL_DESCRIPTION)) {
-            return Optional.empty();
+        if (questionTitleElement == null) {
+            return null;
         } else {
-            return Optional.of(title);
+            return questionTitleElement.text();
         }
     }
 
-    private static Optional<DailyNews> processSingle(OriginalNews news) {
-        DailyNews dailyNews = new DailyNews();
-        dailyNews.setMulti(false);
-        dailyNews.setDailyTitle(news.getDailyTitle());
-        dailyNews.setThumbnailUrl(news.getThumbnailUrl());
+    private static String getQuestionUrlFromQuestionElement(Element questionElement) {
+        Element viewMoreElement = questionElement.select(QUESTION_LINKS_SELECTOR).first();
 
-        dailyNews.setQuestionTitle(getQuestionTitle(news));
-
-        Optional<String> questionUrl = getQuestionUrl(news);
-        if (questionUrl.isPresent()) {
-            dailyNews.setQuestionUrl(questionUrl.get());
+        if (viewMoreElement == null) {
+            return null;
         } else {
-            return Optional.empty();
-        }
-
-        return Optional.of(dailyNews);
-    }
-
-    private static Optional<String> getQuestionUrl(OriginalNews news) {
-        Element questionLinkElement = getQuestionLinkElements(news).first();
-
-        if (isLinkToZhihuDiscussion(questionLinkElement)) {
-            return Optional.of(extractQuestionUrl(questionLinkElement));
-        } else {
-            return Optional.empty();
+            return viewMoreElement.attr("href");
         }
     }
 
-    private static String getQuestionTitle(OriginalNews news) {
-        return Stream.of(getQuestionTitleElements(news))
-                .map(DailyNewsFromZhihuObservable::extractQuestionTitle)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findFirst()
-                .orElse(news.getDailyTitle());
+    private static boolean isLinkToZhihu(String url) {
+        return url != null && url.startsWith(Constants.Strings.ZHIHU_QUESTION_LINK_PREFIX);
     }
 }

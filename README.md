@@ -40,8 +40,7 @@ Always use the lateset version of them - 永远使用它们的最新版本
 [APIs](https://github.com/izzyleung/ZhihuDailyPurify/wiki/%E7%9F%A5%E4%B9%8E%E6%97%A5%E6%8A%A5-API-%E5%88%86%E6%9E%90)
 
 ## Accelerate Server - 加速服务器
-You can find the code that drives those accelerate servers in my repo [Robots](https://github.com/izzyleung/Robots), under directories called `zhihu_daily_purify_backend_rails` and `zhihu_daily_purify_backend_django`.  
-您可以在我的 repo [Robots](https://github.com/izzyleung/Robots) 中名为 `zhihu_daily_purify_backend_rails` 和 `zhihu_daily_purify_backend_django` 的文件夹中找到为加速服务器提供服务的代码。
+[Source Code](https://github.com/izzyleung/Robots/tree/master/zhihu-daily-purify-azure)
 
 ## Contact - 联系
 `echo aXp6eWxpYW5nQGdtYWlsLmNvbQo= | base64 --decode`

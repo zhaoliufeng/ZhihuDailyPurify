@@ -29,10 +29,6 @@ public final class Constants {
     }
 
     public static final class Types {
-        public static final Type newsType = new TypeToken<DailyNews>() {
-
-        }.getType();
-
         public static final Type newsListType = new TypeToken<List<DailyNews>>() {
 
         }.getType();

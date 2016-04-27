@@ -1,5 +1,7 @@
 package io.github.izzyleung.zhihudailypurify.observable;
 
+import android.text.TextUtils;
+
 import com.annimon.stream.Stream;
 
 import org.json.JSONArray;
@@ -121,7 +123,7 @@ public class DailyNewsFromZhihuObservable {
 
             String questionTitle = getQuestionTitleFromQuestionElement(questionElement);
             String questionUrl = getQuestionUrlFromQuestionElement(questionElement);
-            questionTitle = questionTitle == null ? dailyTitle : questionTitle;
+            questionTitle = TextUtils.isEmpty(questionTitle) ? dailyTitle : questionTitle;
 
             question.setTitle(questionTitle);
             question.setUrl(questionUrl);

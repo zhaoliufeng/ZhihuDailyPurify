@@ -19,6 +19,10 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class Helper {
+    private Helper() {
+
+    }
+
     static Observable<String> getHtml(String url) {
         return Observable.create(new Observable.OnSubscribe<String>() {
             @Override

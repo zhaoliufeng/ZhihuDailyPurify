@@ -18,7 +18,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.lang.reflect.Method;
 
@@ -28,8 +27,6 @@ import io.github.izzyleung.zhihudailypurify.R;
  * Simplified version of SearchView, only EditText and a clear text button is supported
  * Thanks to code of SearchView in AppCompat
  */
-
-@SuppressWarnings({"Convert2Lambda", "Anonymous2MethodRef", "deprecation"})
 public class IzzySearchView extends LinearLayout {
     static final AutoCompleteTextViewReflector HIDDEN_METHOD_INVOKER = new AutoCompleteTextViewReflector();
 
@@ -40,22 +37,16 @@ public class IzzySearchView extends LinearLayout {
     private ImageView mClearTextButton;
     private OnQueryTextListener mOnQueryChangeListener;
     private CharSequence mQueryHint;
-    private Runnable mShowImeRunnable = new Runnable() {
-        public void run() {
-            InputMethodManager imm = (InputMethodManager)
-                    getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+    private Runnable mShowImeRunnable = () -> {
+        InputMethodManager imm = (InputMethodManager)
+                getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-            if (imm != null) {
-                HIDDEN_METHOD_INVOKER.showSoftInputUnchecked(imm, IzzySearchView.this, 0);
-            }
+        if (imm != null) {
+            HIDDEN_METHOD_INVOKER.showSoftInputUnchecked(imm, IzzySearchView.this, 0);
         }
     };
 
-    private Runnable mUpdateDrawableStateRunnable = new Runnable() {
-        public void run() {
-            updateFocusedState();
-        }
-    };
+    private Runnable mUpdateDrawableStateRunnable = this::updateFocusedState;
 
     public IzzySearchView(Context context) {
         this(context, null);
@@ -74,14 +65,11 @@ public class IzzySearchView extends LinearLayout {
         mSearchPlate = findViewById(R.id.search_plate);
         mClearTextButton = (ImageView) findViewById(R.id.search_close_btn);
 
-        mClearTextButton.setOnClickListener(new OnClickListener() {
-
-            public void onClick(View v) {
-                if (!TextUtils.isEmpty(mQueryTextView.getText())) {
-                    mQueryTextView.setText("");
-                    mQueryTextView.requestFocus();
-                    setImeVisibility(true);
-                }
+        mClearTextButton.setOnClickListener(v -> {
+            if (!TextUtils.isEmpty(mQueryTextView.getText())) {
+                mQueryTextView.setText("");
+                mQueryTextView.requestFocus();
+                setImeVisibility(true);
             }
         });
 
@@ -99,11 +87,9 @@ public class IzzySearchView extends LinearLayout {
             }
         });
 
-        mQueryTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                onSubmitQuery();
-                return true;
-            }
+        mQueryTextView.setOnEditorActionListener((v, actionId, event) -> {
+            onSubmitQuery();
+            return true;
         });
 
         setFocusable(true);
@@ -230,6 +216,7 @@ public class IzzySearchView extends LinearLayout {
 
     private CharSequence getDecoratedHint(CharSequence hintText) {
         Spannable ssb = new SpannableString(hintText);
+        //noinspection deprecation
         ssb.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.search_view_hint_color)),
                 0, hintText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return ssb;

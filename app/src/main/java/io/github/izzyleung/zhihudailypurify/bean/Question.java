@@ -1,5 +1,7 @@
 package io.github.izzyleung.zhihudailypurify.bean;
 
+import io.github.izzyleung.zhihudailypurify.support.Constants;
+
 public class Question {
     private String title;
     private String url;
@@ -18,6 +20,10 @@ public class Question {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public boolean isValidZhihuQuestion() {
+        return url != null && url.startsWith(Constants.Strings.ZHIHU_QUESTION_LINK_PREFIX);
     }
 }
 

@@ -101,7 +101,7 @@ public class Helper {
         });
     }
 
-    static List<DailyNews> reflectDailyNewsFromJSON(JSONArray newsListJsonArray) {
+    static List<DailyNews> reflectNewsListFromJSON(JSONArray newsListJsonArray) {
         Gson gson = new GsonBuilder().create();
         return gson.fromJson(newsListJsonArray.toString(), Constants.Types.newsListType);
     }

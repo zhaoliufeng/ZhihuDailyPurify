@@ -14,6 +14,6 @@ public class DailyNewsFromAccelerateServerObservable {
                 .map(Helper::decodeHtml)
                 .flatMap(Helper::toJSONObject)
                 .flatMap(Helper::getDailyNewsJSONArray)
-                .map(Helper::reflectDailyNewsFromJSON);
+                .map(Helper::reflectNewsListFromJSON);
     }
 }

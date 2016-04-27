@@ -2,8 +2,6 @@ package io.github.izzyleung.zhihudailypurify.observable;
 
 import android.text.TextUtils;
 
-import com.annimon.stream.Stream;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,17 +29,16 @@ public class DailyNewsFromZhihuObservable {
 
     public static Observable<List<DailyNews>> ofDate(String date) {
         return getHtml(Constants.Urls.ZHIHU_DAILY_BEFORE, date)
-                .flatMap(DailyNewsFromZhihuObservable::getStoriesJsonArray)
+                .flatMap(DailyNewsFromZhihuObservable::getStoriesJsonArrayObservable)
                 .flatMap(jsonArray -> getStoriesObservable(jsonArray, date))
                 .flatMap(DailyNewsFromZhihuObservable::updateNewsDocument)
                 .map(DailyNewsFromZhihuObservable::convertStoryToDailyNews)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .filter(dailyNews -> dailyNews.getQuestions() != null)
                 .toList();
     }
 
-    private static Observable<JSONArray> getStoriesJsonArray(String html) {
+    private static Observable<JSONArray> getStoriesJsonArrayObservable(String html) {
         return Observable.create(subscriber -> {
             try {
                 subscriber.onNext(new JSONObject(html).getJSONArray("stories"));
@@ -102,16 +99,11 @@ public class DailyNewsFromZhihuObservable {
     }
 
     private static Optional<DailyNews> convertStoryToDailyNews(Story story) {
-        Optional<DailyNews> newsOptional = DailyNews.createFromStory(story);
+        Document document = story.getDocument();
+        String dailyTitle = story.getDailyTitle();
 
-        if (newsOptional.isPresent()) {
-            List<Question> questions = getQuestions(story.getDocument(), newsOptional.get().getDailyTitle());
-            if (Stream.of(questions).allMatch(q -> isLinkToZhihu(q.getUrl()))) {
-                newsOptional.get().setQuestions(questions);
-            }
-        }
-
-        return newsOptional;
+        return DailyNews.createFromStory(story)
+                .flatMap(news -> news.updateQuestions(getQuestions(document, dailyTitle)));
     }
 
     private static List<Question> getQuestions(Document document, String dailyTitle) {
@@ -123,6 +115,7 @@ public class DailyNewsFromZhihuObservable {
 
             String questionTitle = getQuestionTitleFromQuestionElement(questionElement);
             String questionUrl = getQuestionUrlFromQuestionElement(questionElement);
+            // Make sure that the question's title is not empty.
             questionTitle = TextUtils.isEmpty(questionTitle) ? dailyTitle : questionTitle;
 
             question.setTitle(questionTitle);
@@ -156,9 +149,5 @@ public class DailyNewsFromZhihuObservable {
         } else {
             return viewMoreElement.attr("href");
         }
-    }
-
-    private static boolean isLinkToZhihu(String url) {
-        return url != null && url.startsWith(Constants.Strings.ZHIHU_QUESTION_LINK_PREFIX);
     }
 }

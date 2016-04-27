@@ -26,7 +26,7 @@ __Disclaimer - 声明__
     - Android Support Repository
 
 Set `ANDROID_HOME` environment variable properly - 将 `ANDROID_HOME` 环境变量指向你的 Android SDK 目录  
-Always use the lateset version of them - 永远使用它们的最新版本
+Always use the latest version of them - 永远使用它们的最新版本
 
 
 ## Build - 构建
@@ -35,6 +35,9 @@ Always use the lateset version of them - 永远使用它们的最新版本
 ## Design Principles - 设计理念
   - Less is more - 更少即更多
   - Apply MVC patterns as much as possible - 尽可能实现 MVC 模式
+  - Apply the concept of Reactive Functional programming as much as possible - 尽可能使用响应式函数编程
+    - Use RxAndroid to simplify asynchronous programming - 使用 RxAndroid 简化异步编程
+    - Use Java 8 lambda syntax whenever possible - 如果可以，默认使用 Java 8 lambda 表达式
 
 ## API Reference - API 分析
 [APIs](https://github.com/izzyleung/ZhihuDailyPurify/wiki/%E7%9F%A5%E4%B9%8E%E6%97%A5%E6%8A%A5-API-%E5%88%86%E6%9E%90)

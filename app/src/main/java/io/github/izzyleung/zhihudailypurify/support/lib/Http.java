@@ -7,14 +7,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Iterator;
-import java.util.Map;
 
 public class Http {
     public static final String CHARSET = "UTF-8";
 
-    public static String get(String urlAddr) throws IOException {
-        URL url = new URL(urlAddr);
+    public static String get(String address) throws IOException {
+        URL url = new URL(address);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("User-Agent", "Mozilla/5.0");

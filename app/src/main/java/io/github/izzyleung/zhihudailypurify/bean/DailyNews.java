@@ -42,6 +42,10 @@ public final class DailyNews {
         this.questions = questions;
     }
 
+    public boolean hasMultipleQuestions() {
+        return this.getQuestions().size() > 1;
+    }
+
     public static Optional<DailyNews> createFromStory(Story story) {
         if (story.getDocument() == null) {
             return Optional.empty();

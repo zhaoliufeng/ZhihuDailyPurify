@@ -60,7 +60,6 @@ public class DateHeaderAdapter implements StickyHeadersAdapter<DateHeaderAdapter
     }
 
     public static class HeaderViewHolder extends RecyclerView.ViewHolder {
-
         TextView title;
 
         public HeaderViewHolder(View itemView) {

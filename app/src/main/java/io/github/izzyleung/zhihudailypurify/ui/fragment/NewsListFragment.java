@@ -99,21 +99,20 @@ public class NewsListFragment extends Fragment
     }
 
     private void doRefresh() {
-        newsList.clear();
-
-        Observable<List<DailyNews>> observable;
-        if (shouldSubscribeToZhihu()) {
-            observable = DailyNewsFromZhihuObservable.ofDate(date);
-        } else {
-            observable = DailyNewsFromAccelerateServerObservable.ofDate(date);
-        }
-
-        observable.subscribeOn(Schedulers.io())
+        getNewsListObservable().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this);
 
         if (mSwipeRefreshLayout != null) {
             mSwipeRefreshLayout.setRefreshing(true);
+        }
+    }
+
+    private Observable<List<DailyNews>> getNewsListObservable() {
+        if (shouldSubscribeToZhihu()) {
+            return DailyNewsFromZhihuObservable.ofDate(date);
+        } else {
+            return DailyNewsFromAccelerateServerObservable.ofDate(date);
         }
     }
 

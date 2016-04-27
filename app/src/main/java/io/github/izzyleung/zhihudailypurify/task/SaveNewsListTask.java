@@ -14,9 +14,9 @@ public class SaveNewsListTask extends AsyncTask<Void, Void, Void> {
     private String date;
     private List<DailyNews> newsList;
 
-    public SaveNewsListTask(String date, List<DailyNews> newsList) {
-        this.date = date;
+    public SaveNewsListTask(List<DailyNews> newsList) {
         this.newsList = newsList;
+        this.date = newsList.get(0).getDate();
     }
 
     @Override

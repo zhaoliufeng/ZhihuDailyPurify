@@ -118,7 +118,7 @@ public class NewsListFragment extends Fragment
     }
 
     private boolean shouldSubscribeToZhihu() {
-        return isToday || shouldUseAccelerateServer();
+        return isToday || !shouldUseAccelerateServer();
     }
 
     private boolean shouldUseAccelerateServer() {

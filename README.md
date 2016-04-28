@@ -36,7 +36,7 @@ Always use the latest version of them - 永远使用它们的最新版本
   - Less is more - 更少即更多
   - Apply MVC patterns as much as possible - 尽可能实现 MVC 模式
   - Apply the concept of Reactive Functional programming as much as possible - 尽可能使用响应式函数编程
-    - Use RxAndroid to simplify asynchronous programming - 使用 RxAndroid 简化异步编程
+    - Use RxAndroid/RxJava to simplify asynchronous programming - 使用 RxAndroid/RxJava 简化异步编程
     - Use Java 8 lambda syntax whenever possible - 如果可以，默认使用 Java 8 lambda 表达式
 
 ## API Reference - API 分析

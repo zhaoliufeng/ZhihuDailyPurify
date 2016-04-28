@@ -55,8 +55,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CardViewHolder
     }
 
     public void setNewsList(List<DailyNews> newsList) {
-        this.newsList.clear();
-        this.newsList.addAll(newsList);
+        this.newsList = newsList;
     }
 
     public void updateNewsList(List<DailyNews> newsList) {
@@ -112,7 +111,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CardViewHolder
 
     @Override
     public int getItemCount() {
-        return newsList.size();
+        return newsList == null ? 0 : newsList.size();
     }
 
     @Override

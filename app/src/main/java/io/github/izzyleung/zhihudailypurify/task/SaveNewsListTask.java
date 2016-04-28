@@ -11,12 +11,10 @@ import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.Constants;
 
 public class SaveNewsListTask extends AsyncTask<Void, Void, Void> {
-    private String date;
     private List<DailyNews> newsList;
 
     public SaveNewsListTask(List<DailyNews> newsList) {
         this.newsList = newsList;
-        this.date = newsList.get(0).getDate();
     }
 
     @Override
@@ -26,7 +24,10 @@ public class SaveNewsListTask extends AsyncTask<Void, Void, Void> {
     }
 
     private void saveNewsList(List<DailyNews> newsList) {
-        ZhihuDailyPurifyApplication.getDataSource().insertOrUpdateNewsList(date,
-                new GsonBuilder().create().toJson(newsList, Constants.Types.newsListType));
+        if (newsList != null && newsList.size() > 0) {
+            String date = newsList.get(0).getDate();
+            ZhihuDailyPurifyApplication.getDataSource().insertOrUpdateNewsList(date,
+                    new GsonBuilder().create().toJson(newsList, Constants.Types.newsListType));
+        }
     }
 }

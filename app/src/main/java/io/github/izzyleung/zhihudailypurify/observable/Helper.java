@@ -87,7 +87,7 @@ public class Helper {
                 .map(Helper::reflectNewsListFromJSON);
     }
 
-    static Observable<JSONObject> toJSONObject(String data) {
+    private static Observable<JSONObject> toJSONObject(String data) {
         return Observable.create(subscriber -> {
             try {
                 subscriber.onNext(new JSONObject(data));
@@ -98,7 +98,7 @@ public class Helper {
         });
     }
 
-    static Observable<JSONArray> getDailyNewsJSONArray(JSONObject dailyNewsJsonObject) {
+    private static Observable<JSONArray> getDailyNewsJSONArray(JSONObject dailyNewsJsonObject) {
         return Observable.create(subscriber -> {
             try {
                 subscriber.onNext(dailyNewsJsonObject.getJSONArray("news"));
@@ -109,12 +109,12 @@ public class Helper {
         });
     }
 
-    static List<DailyNews> reflectNewsListFromJSON(JSONArray newsListJsonArray) {
+    private static List<DailyNews> reflectNewsListFromJSON(JSONArray newsListJsonArray) {
         Gson gson = new GsonBuilder().create();
         return gson.fromJson(newsListJsonArray.toString(), Constants.Types.newsListType);
     }
 
-    static String decodeHtml(String in) {
+    private static String decodeHtml(String in) {
         return Html.fromHtml(Html.fromHtml(in).toString()).toString();
     }
 }

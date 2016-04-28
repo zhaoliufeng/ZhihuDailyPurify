@@ -103,8 +103,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CardViewHolder
 
         if (dailyNews.getQuestions().size() > 1) {
             holder.questionTitle.setText(dailyNews.getDailyTitle());
-            String simplifiedMultiQuestion = Constants.Strings.MULTIPLE_DISCUSSION;
-            holder.dailyTitle.setText(simplifiedMultiQuestion);
+            holder.dailyTitle.setText(Constants.Strings.MULTIPLE_DISCUSSION);
         } else {
             holder.questionTitle.setText(dailyNews.getQuestions().get(0).getTitle());
             holder.dailyTitle.setText(dailyNews.getDailyTitle());

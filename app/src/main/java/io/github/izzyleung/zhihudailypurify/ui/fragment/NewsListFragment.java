@@ -99,7 +99,8 @@ public class NewsListFragment extends Fragment
     }
 
     private void doRefresh() {
-        getNewsListObservable().subscribeOn(Schedulers.io())
+        getNewsListObservable()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this);
 
@@ -159,6 +160,6 @@ public class NewsListFragment extends Fragment
         mSwipeRefreshLayout.setRefreshing(false);
         mAdapter.updateNewsList(newsList);
 
-//        new SaveNewsListTask(newsList).execute();
+        new SaveNewsListTask(newsList).execute();
     }
 }

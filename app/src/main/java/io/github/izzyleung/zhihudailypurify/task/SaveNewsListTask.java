@@ -8,7 +8,7 @@ import java.util.List;
 
 import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.support.Constants;
+import io.github.izzyleung.zhihudailypurify.db.DailyNewsDataSource;
 
 public class SaveNewsListTask extends AsyncTask<Void, Void, Void> {
     private List<DailyNews> newsList;
@@ -19,15 +19,22 @@ public class SaveNewsListTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        saveNewsList(newsList);
+        if (newsList != null && newsList.size() > 0) {
+            saveNewsList(newsList);
+        }
+
         return null;
     }
 
     private void saveNewsList(List<DailyNews> newsList) {
-        if (newsList != null && newsList.size() > 0) {
-            String date = newsList.get(0).getDate();
-            ZhihuDailyPurifyApplication.getDataSource().insertOrUpdateNewsList(date,
-                    new GsonBuilder().create().toJson(newsList, Constants.Types.newsListType));
+        DailyNewsDataSource dataSource = ZhihuDailyPurifyApplication.getDataSource();
+        String date = newsList.get(0).getDate();
+
+        List<DailyNews> originalData = dataSource.newsOfTheDay(date);
+        boolean isDataUnchanged = originalData == null || originalData.equals(newsList);
+
+        if (!isDataUnchanged) {
+            dataSource.insertOrUpdateNewsList(date, new GsonBuilder().create().toJson(newsList));
         }
     }
 }

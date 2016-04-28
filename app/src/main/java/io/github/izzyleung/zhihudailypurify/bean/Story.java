@@ -9,18 +9,6 @@ public class Story {
     private String thumbnailUrl;
     private Document document;
 
-    public Story() {
-
-    }
-
-    public Story(Story story) {
-        setStoryId(story.getStoryId());
-        setDate(story.getDate());
-        setDailyTitle(story.getDailyTitle());
-        setThumbnailUrl(story.getThumbnailUrl());
-        setDocument(story.getDocument());
-    }
-
     public int getStoryId() {
         return storyId;
     }
@@ -62,8 +50,20 @@ public class Story {
     }
 
     public Story updateDocument(Document document) {
-        Story result = new Story(this);
+        Story result = copy(this);
         result.setDocument(document);
+
+        return result;
+    }
+
+    private static Story copy(Story story) {
+        Story result = new Story();
+
+        result.setStoryId(story.getStoryId());
+        result.setDate(story.getDate());
+        result.setDailyTitle(story.getDailyTitle());
+        result.setThumbnailUrl(story.getThumbnailUrl());
+        result.setDocument(story.getDocument());
 
         return result;
     }

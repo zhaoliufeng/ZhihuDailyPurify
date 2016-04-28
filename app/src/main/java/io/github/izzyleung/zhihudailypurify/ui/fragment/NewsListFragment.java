@@ -159,6 +159,6 @@ public class NewsListFragment extends Fragment
         mSwipeRefreshLayout.setRefreshing(false);
         mAdapter.updateNewsList(newsList);
 
-        new SaveNewsListTask(newsList).execute();
+//        new SaveNewsListTask(newsList).execute();
     }
 }

@@ -7,13 +7,10 @@ import io.github.izzyleung.zhihudailypurify.support.Constants;
 import rx.Observable;
 
 import static io.github.izzyleung.zhihudailypurify.observable.Helper.getHtml;
+import static io.github.izzyleung.zhihudailypurify.observable.Helper.toNewsListObservable;
 
 public class DailyNewsFromAccelerateServerObservable {
     public static Observable<List<DailyNews>> ofDate(String date) {
-        return getHtml(Constants.Urls.ZHIHU_DAILY_PURIFY_BEFORE, date)
-                .map(Helper::decodeHtml)
-                .flatMap(Helper::toJSONObject)
-                .flatMap(Helper::getDailyNewsJSONArray)
-                .map(Helper::reflectNewsListFromJSON);
+        return toNewsListObservable(getHtml(Constants.Urls.ZHIHU_DAILY_PURIFY_BEFORE, date));
     }
 }

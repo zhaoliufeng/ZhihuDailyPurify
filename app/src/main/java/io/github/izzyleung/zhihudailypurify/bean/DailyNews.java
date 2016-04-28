@@ -12,31 +12,6 @@ public final class DailyNews {
     private String thumbnailUrl;
     private List<Question> questions;
 
-    public DailyNews() {
-
-    }
-
-    public DailyNews(DailyNews other) {
-        this.setDate(other.getDate());
-        this.setDailyTitle(other.getDailyTitle());
-        this.setThumbnailUrl(other.getThumbnailUrl());
-        this.setQuestions(other.getQuestions());
-    }
-
-    public static Optional<DailyNews> createFromStory(Story story) {
-        if (story.getDocument() == null) {
-            return Optional.empty();
-        }
-
-        DailyNews result = new DailyNews();
-
-        result.setDate(story.getDate());
-        result.setThumbnailUrl(story.getThumbnailUrl());
-        result.setDailyTitle(story.getDailyTitle());
-
-        return Optional.of(result);
-    }
-
     public String getDate() {
         return date;
     }
@@ -75,11 +50,36 @@ public final class DailyNews {
 
     public Optional<DailyNews> updateQuestions(List<Question> questions) {
         if (Stream.of(questions).allMatch(Question::isValidZhihuQuestion)) {
-            DailyNews result = new DailyNews(this);
+            DailyNews result = copy(this);
             result.setQuestions(questions);
             return Optional.of(result);
         } else {
             return Optional.empty();
         }
+    }
+
+    public static Optional<DailyNews> createFromStory(Story story) {
+        if (story.getDocument() == null) {
+            return Optional.empty();
+        }
+
+        DailyNews result = new DailyNews();
+
+        result.setDate(story.getDate());
+        result.setThumbnailUrl(story.getThumbnailUrl());
+        result.setDailyTitle(story.getDailyTitle());
+
+        return Optional.of(result);
+    }
+
+    private static DailyNews copy(DailyNews news) {
+        DailyNews result = new DailyNews();
+
+        result.setDate(news.getDate());
+        result.setDailyTitle(news.getDailyTitle());
+        result.setThumbnailUrl(news.getThumbnailUrl());
+        result.setQuestions(news.getQuestions());
+
+        return result;
     }
 }

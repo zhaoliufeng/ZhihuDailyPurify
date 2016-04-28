@@ -99,11 +99,17 @@ public class DailyNewsFromZhihuObservable {
     }
 
     private static Optional<DailyNews> convertStoryToDailyNews(Story story) {
-        Document document = story.getDocument();
-        String dailyTitle = story.getDailyTitle();
+        Optional<DailyNews> newsOptional = DailyNews.createFromStory(story);
 
-        return DailyNews.createFromStory(story)
-                .flatMap(news -> news.updateQuestions(getQuestions(document, dailyTitle)));
+        if (newsOptional.isPresent()) {
+            Document document = story.getDocument();
+            String dailyTitle = story.getDailyTitle();
+
+            return DailyNews.createFromStory(story)
+                    .flatMap(news -> news.updateQuestions(getQuestions(document, dailyTitle)));
+        } else {
+            return Optional.empty();
+        }
     }
 
     private static List<Question> getQuestions(Document document, String dailyTitle) {

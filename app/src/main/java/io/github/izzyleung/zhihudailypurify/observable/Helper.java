@@ -79,6 +79,14 @@ public class Helper {
         });
     }
 
+    static Observable<List<DailyNews>> toNewsListObservable(Observable<String> htmlObservable) {
+        return htmlObservable
+                .map(Helper::decodeHtml)
+                .flatMap(Helper::toJSONObject)
+                .flatMap(Helper::getDailyNewsJSONArray)
+                .map(Helper::reflectNewsListFromJSON);
+    }
+
     static Observable<JSONObject> toJSONObject(String data) {
         return Observable.create(subscriber -> {
             try {

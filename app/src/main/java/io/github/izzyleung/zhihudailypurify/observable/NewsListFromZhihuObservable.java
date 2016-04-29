@@ -3,6 +3,7 @@ package io.github.izzyleung.zhihudailypurify.observable;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 
 import org.json.JSONArray;
@@ -20,7 +21,6 @@ import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.bean.Question;
 import io.github.izzyleung.zhihudailypurify.bean.Story;
 import io.github.izzyleung.zhihudailypurify.support.Constants;
-import io.github.izzyleung.zhihudailypurify.support.lib.optional.Optional;
 import rx.Observable;
 
 import static io.github.izzyleung.zhihudailypurify.observable.Helper.getHtml;

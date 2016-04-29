@@ -2,6 +2,7 @@ package io.github.izzyleung.zhihudailypurify.observable;
 
 import android.text.Html;
 
+import com.annimon.stream.Optional;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -15,7 +16,6 @@ import java.util.List;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.support.lib.Http;
-import io.github.izzyleung.zhihudailypurify.support.lib.optional.Optional;
 import rx.Observable;
 import rx.Subscriber;
 

@@ -2,6 +2,8 @@ package io.github.izzyleung.zhihudailypurify.observable;
 
 import android.text.TextUtils;
 
+import com.annimon.stream.Stream;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,11 +18,13 @@ import java.util.List;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.bean.Question;
 import io.github.izzyleung.zhihudailypurify.bean.Story;
+import io.github.izzyleung.zhihudailypurify.bean.StoryWithDocument;
 import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.support.lib.optional.Optional;
 import rx.Observable;
 
 import static io.github.izzyleung.zhihudailypurify.observable.Helper.getHtml;
+import static io.github.izzyleung.zhihudailypurify.observable.Helper.toNonempty;
 
 public class DailyNewsFromZhihuObservable {
     private static final String QUESTION_SELECTOR = "div.question";
@@ -28,13 +32,18 @@ public class DailyNewsFromZhihuObservable {
     private static final String QUESTION_LINKS_SELECTOR = "div.view-more a";
 
     public static Observable<List<DailyNews>> ofDate(String date) {
-        return getHtml(Constants.Urls.ZHIHU_DAILY_BEFORE, date)
+        Observable<Story> stories = getHtml(Constants.Urls.ZHIHU_DAILY_BEFORE, date)
                 .flatMap(DailyNewsFromZhihuObservable::getStoriesJsonArrayObservable)
-                .flatMap(jsonArray -> getStoriesObservable(jsonArray, date))
-                .flatMap(DailyNewsFromZhihuObservable::updateNewsDocument)
-                .map(DailyNewsFromZhihuObservable::convertStoryToDailyNews)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .flatMap(DailyNewsFromZhihuObservable::getStoriesObservable);
+
+        Observable<Document> documents = stories
+                .flatMap(DailyNewsFromZhihuObservable::getDocumentObservable);
+
+        Observable<StoryWithDocument> storyWithDocuments
+                = toNonempty(Observable.zip(stories, documents, StoryWithDocument::create));
+
+        return toNonempty(storyWithDocuments.map(DailyNewsFromZhihuObservable::convertToDailyNews))
+                .doOnNext(news -> news.setDate(date))
                 .toList();
     }
 
@@ -49,12 +58,12 @@ public class DailyNewsFromZhihuObservable {
         });
     }
 
-    private static Observable<Story> getStoriesObservable(JSONArray newsArray, String date) {
+    private static Observable<Story> getStoriesObservable(JSONArray newsArray) {
         return Observable.create(subscriber -> {
             try {
                 for (int i = 0; i < newsArray.length(); i++) {
                     JSONObject newsJson = newsArray.getJSONObject(i);
-                    subscriber.onNext(getStoryFromJSON(newsJson, date));
+                    subscriber.onNext(getStoryFromJSON(newsJson));
                 }
 
                 subscriber.onCompleted();
@@ -64,10 +73,9 @@ public class DailyNewsFromZhihuObservable {
         });
     }
 
-    private static Story getStoryFromJSON(JSONObject jsonStory, String date) throws JSONException {
+    private static Story getStoryFromJSON(JSONObject jsonStory) throws JSONException {
         Story story = new Story();
 
-        story.setDate(date);
         story.setStoryId(jsonStory.getInt("id"));
         story.setDailyTitle(jsonStory.getString("title"));
         story.setThumbnailUrl(getThumbnailUrlForStory(jsonStory));
@@ -83,10 +91,9 @@ public class DailyNewsFromZhihuObservable {
         }
     }
 
-    private static Observable<Story> updateNewsDocument(Story news) {
+    private static Observable<Document> getDocumentObservable(Story news) {
         return getHtml(Constants.Urls.ZHIHU_DAILY_OFFLINE_NEWS, news.getStoryId())
-                .map(DailyNewsFromZhihuObservable::getStoryDocument)
-                .map(news::updateDocument);
+                .map(DailyNewsFromZhihuObservable::getStoryDocument);
     }
 
     private static Document getStoryDocument(String json) {
@@ -98,12 +105,23 @@ public class DailyNewsFromZhihuObservable {
         }
     }
 
-    private static Optional<DailyNews> convertStoryToDailyNews(Story story) {
-        Document document = story.getDocument();
+    private static Optional<DailyNews> convertToDailyNews(StoryWithDocument storyWithDocument) {
+        DailyNews result = null;
+
+        Story story = storyWithDocument.getStory();
+        Document document = storyWithDocument.getDocument();
         String dailyTitle = story.getDailyTitle();
 
-        return DailyNews.createFromStory(story)
-                .flatMap(news -> news.updateQuestions(getQuestions(document, dailyTitle)));
+        List<Question> questions = getQuestions(document, dailyTitle);
+        if (Stream.of(questions).allMatch(Question::isValidZhihuQuestion)) {
+            result = new DailyNews();
+
+            result.setDailyTitle(dailyTitle);
+            result.setThumbnailUrl(story.getThumbnailUrl());
+            result.setQuestions(questions);
+        }
+
+        return Optional.ofNullable(result);
     }
 
     private static List<Question> getQuestions(Document document, String dailyTitle) {

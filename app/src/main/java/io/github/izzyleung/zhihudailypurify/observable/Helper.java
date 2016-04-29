@@ -15,6 +15,7 @@ import java.util.List;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.support.lib.Http;
+import io.github.izzyleung.zhihudailypurify.support.lib.optional.Optional;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -77,6 +78,10 @@ public class Helper {
                 }
             }
         });
+    }
+
+    static <T> Observable<T> toNonempty(Observable<Optional<T>> optionalObservable) {
+        return optionalObservable.filter(Optional::isPresent).map(Optional::get);
     }
 
     static Observable<List<DailyNews>> toNewsListObservable(Observable<String> htmlObservable) {

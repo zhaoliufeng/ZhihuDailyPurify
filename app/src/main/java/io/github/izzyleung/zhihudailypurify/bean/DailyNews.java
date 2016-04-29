@@ -1,10 +1,6 @@
 package io.github.izzyleung.zhihudailypurify.bean;
 
-import com.annimon.stream.Stream;
-
 import java.util.List;
-
-import io.github.izzyleung.zhihudailypurify.support.lib.optional.Optional;
 
 public final class DailyNews {
     private String date;
@@ -46,40 +42,5 @@ public final class DailyNews {
 
     public boolean hasMultipleQuestions() {
         return this.getQuestions().size() > 1;
-    }
-
-    public Optional<DailyNews> updateQuestions(List<Question> questions) {
-        if (Stream.of(questions).allMatch(Question::isValidZhihuQuestion)) {
-            DailyNews result = copy(this);
-            result.setQuestions(questions);
-            return Optional.of(result);
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    public static Optional<DailyNews> createFromStory(Story story) {
-        if (story.getDocument() == null) {
-            return Optional.empty();
-        }
-
-        DailyNews result = new DailyNews();
-
-        result.setDate(story.getDate());
-        result.setThumbnailUrl(story.getThumbnailUrl());
-        result.setDailyTitle(story.getDailyTitle());
-
-        return Optional.of(result);
-    }
-
-    private static DailyNews copy(DailyNews news) {
-        DailyNews result = new DailyNews();
-
-        result.setDate(news.getDate());
-        result.setDailyTitle(news.getDailyTitle());
-        result.setThumbnailUrl(news.getThumbnailUrl());
-        result.setQuestions(news.getQuestions());
-
-        return result;
     }
 }

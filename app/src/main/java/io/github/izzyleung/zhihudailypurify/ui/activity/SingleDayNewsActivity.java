@@ -21,21 +21,22 @@ public class SingleDayNewsActivity extends BaseActivity {
         Fragment newFragment = new NewsListFragment();
 
         String dateString = bundle.getString(Constants.BundleKeys.DATE);
-        Date date;
+        Calendar calendar = Calendar.getInstance();
         try {
-            date = Constants.Dates.simpleDateFormat.parse(dateString);
-        } catch (ParseException e) {
-            // This shall never happen.
-            date = Constants.Dates.birthday;
+            Date date = Constants.Dates.simpleDateFormat.parse(dateString);
+            calendar.setTime(date);
+            calendar.add(Calendar.DAY_OF_YEAR, -1);
+        } catch (ParseException ignored) {
+
         }
 
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(DateFormat.getDateInstance().format(date));
+        getSupportActionBar().setTitle(DateFormat.getDateInstance().format(calendar.getTime()));
 
         bundle.putString(Constants.BundleKeys.DATE, dateString);
         bundle.putBoolean(Constants.BundleKeys.IS_FIRST_PAGE,
-                isSameDay(date, Calendar.getInstance().getTime()));
+                isSameDay(calendar, Calendar.getInstance()));
         bundle.putBoolean(Constants.BundleKeys.IS_SINGLE, true);
 
         newFragment.setArguments(bundle);
@@ -46,7 +47,8 @@ public class SingleDayNewsActivity extends BaseActivity {
                 .commit();
     }
 
-    private boolean isSameDay(Date first, Date second) {
-        return first.equals(second);
+    private boolean isSameDay(Calendar first, Calendar second) {
+        return first.get(Calendar.YEAR) == second.get(Calendar.YEAR)
+                && first.get(Calendar.DAY_OF_YEAR) == second.get(Calendar.DAY_OF_YEAR);
     }
 }

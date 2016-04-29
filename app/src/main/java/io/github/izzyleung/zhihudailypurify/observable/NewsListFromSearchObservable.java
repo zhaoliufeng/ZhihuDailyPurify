@@ -9,7 +9,7 @@ import rx.Observable;
 import static io.github.izzyleung.zhihudailypurify.observable.Helper.getHtml;
 import static io.github.izzyleung.zhihudailypurify.observable.Helper.toNewsListObservable;
 
-public class DailyNewsFromSearchObservable {
+public class NewsListFromSearchObservable {
     public static Observable<List<DailyNews>> withKeyword(String keyword) {
         return toNewsListObservable(getHtml(Constants.Urls.SEARCH, "q", keyword));
     }

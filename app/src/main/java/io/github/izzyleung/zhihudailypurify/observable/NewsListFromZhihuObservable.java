@@ -1,6 +1,7 @@
 package io.github.izzyleung.zhihudailypurify.observable;
 
 import android.text.TextUtils;
+import android.util.Pair;
 
 import com.annimon.stream.Stream;
 
@@ -18,7 +19,6 @@ import java.util.List;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
 import io.github.izzyleung.zhihudailypurify.bean.Question;
 import io.github.izzyleung.zhihudailypurify.bean.Story;
-import io.github.izzyleung.zhihudailypurify.bean.StoryWithDocument;
 import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.support.lib.optional.Optional;
 import rx.Observable;
@@ -26,23 +26,25 @@ import rx.Observable;
 import static io.github.izzyleung.zhihudailypurify.observable.Helper.getHtml;
 import static io.github.izzyleung.zhihudailypurify.observable.Helper.toNonempty;
 
-public class DailyNewsFromZhihuObservable {
+public class NewsListFromZhihuObservable {
     private static final String QUESTION_SELECTOR = "div.question";
     private static final String QUESTION_TITLES_SELECTOR = "h2.question-title";
     private static final String QUESTION_LINKS_SELECTOR = "div.view-more a";
 
     public static Observable<List<DailyNews>> ofDate(String date) {
         Observable<Story> stories = getHtml(Constants.Urls.ZHIHU_DAILY_BEFORE, date)
-                .flatMap(DailyNewsFromZhihuObservable::getStoriesJsonArrayObservable)
-                .flatMap(DailyNewsFromZhihuObservable::getStoriesObservable);
+                .flatMap(NewsListFromZhihuObservable::getStoriesJsonArrayObservable)
+                .flatMap(NewsListFromZhihuObservable::getStoriesObservable);
 
         Observable<Document> documents = stories
-                .flatMap(DailyNewsFromZhihuObservable::getDocumentObservable);
+                .flatMap(NewsListFromZhihuObservable::getDocumentObservable);
 
-        Observable<StoryWithDocument> storyWithDocuments
-                = toNonempty(Observable.zip(stories, documents, StoryWithDocument::create));
+        Observable<Optional<Pair<Story, Document>>> optionalStoryNDocuments
+                = Observable.zip(stories, documents, NewsListFromZhihuObservable::createPair);
 
-        return toNonempty(storyWithDocuments.map(DailyNewsFromZhihuObservable::convertToDailyNews))
+        Observable<Pair<Story, Document>> storyNDocuments = toNonempty(optionalStoryNDocuments);
+
+        return toNonempty(storyNDocuments.map(NewsListFromZhihuObservable::convertToDailyNews))
                 .doOnNext(news -> news.setDate(date))
                 .toList();
     }
@@ -93,7 +95,7 @@ public class DailyNewsFromZhihuObservable {
 
     private static Observable<Document> getDocumentObservable(Story news) {
         return getHtml(Constants.Urls.ZHIHU_DAILY_OFFLINE_NEWS, news.getStoryId())
-                .map(DailyNewsFromZhihuObservable::getStoryDocument);
+                .map(NewsListFromZhihuObservable::getStoryDocument);
     }
 
     private static Document getStoryDocument(String json) {
@@ -105,11 +107,15 @@ public class DailyNewsFromZhihuObservable {
         }
     }
 
-    private static Optional<DailyNews> convertToDailyNews(StoryWithDocument storyWithDocument) {
+    private static Optional<Pair<Story, Document>> createPair(Story story, Document document) {
+        return Optional.ofNullable(document == null ? null : Pair.create(story, document));
+    }
+
+    private static Optional<DailyNews> convertToDailyNews(Pair<Story, Document> pair) {
         DailyNews result = null;
 
-        Story story = storyWithDocument.getStory();
-        Document document = storyWithDocument.getDocument();
+        Story story = pair.first;
+        Document document = pair.second;
         String dailyTitle = story.getDailyTitle();
 
         List<Question> questions = getQuestions(document, dailyTitle);

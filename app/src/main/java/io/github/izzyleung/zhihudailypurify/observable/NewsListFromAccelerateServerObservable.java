@@ -9,7 +9,7 @@ import rx.Observable;
 import static io.github.izzyleung.zhihudailypurify.observable.Helper.getHtml;
 import static io.github.izzyleung.zhihudailypurify.observable.Helper.toNewsListObservable;
 
-public class DailyNewsFromAccelerateServerObservable {
+public class NewsListFromAccelerateServerObservable {
     public static Observable<List<DailyNews>> ofDate(String date) {
         return toNewsListObservable(getHtml(Constants.Urls.ZHIHU_DAILY_PURIFY_BEFORE, date));
     }

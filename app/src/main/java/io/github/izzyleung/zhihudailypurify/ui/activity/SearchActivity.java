@@ -10,7 +10,7 @@ import java.util.List;
 
 import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.observable.DailyNewsFromSearchObservable;
+import io.github.izzyleung.zhihudailypurify.observable.NewsListFromSearchObservable;
 import io.github.izzyleung.zhihudailypurify.ui.fragment.SearchNewsFragment;
 import io.github.izzyleung.zhihudailypurify.ui.widget.IzzySearchView;
 import rx.Observer;
@@ -64,7 +64,7 @@ public class SearchActivity extends BaseActivity implements Observer<List<DailyN
         searchView.setOnQueryTextListener(query -> {
             dialog.show();
             searchView.clearFocus();
-            searchSubscription = DailyNewsFromSearchObservable.withKeyword(query)
+            searchSubscription = NewsListFromSearchObservable.withKeyword(query)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .doOnSubscribe(this::onSubscribe)

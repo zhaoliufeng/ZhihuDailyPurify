@@ -16,9 +16,9 @@ import io.github.izzyleung.zhihudailypurify.R;
 import io.github.izzyleung.zhihudailypurify.ZhihuDailyPurifyApplication;
 import io.github.izzyleung.zhihudailypurify.adapter.NewsAdapter;
 import io.github.izzyleung.zhihudailypurify.bean.DailyNews;
-import io.github.izzyleung.zhihudailypurify.observable.DailyNewsFromAccelerateServerObservable;
-import io.github.izzyleung.zhihudailypurify.observable.DailyNewsFromDatabaseObservable;
-import io.github.izzyleung.zhihudailypurify.observable.DailyNewsFromZhihuObservable;
+import io.github.izzyleung.zhihudailypurify.observable.NewsListFromAccelerateServerObservable;
+import io.github.izzyleung.zhihudailypurify.observable.NewsListFromDatabaseObservable;
+import io.github.izzyleung.zhihudailypurify.observable.NewsListFromZhihuObservable;
 import io.github.izzyleung.zhihudailypurify.support.Constants;
 import io.github.izzyleung.zhihudailypurify.task.SaveNewsListTask;
 import io.github.izzyleung.zhihudailypurify.ui.activity.BaseActivity;
@@ -79,7 +79,7 @@ public class NewsListFragment extends Fragment
     public void onResume() {
         super.onResume();
 
-        DailyNewsFromDatabaseObservable.ofDate(date)
+        NewsListFromDatabaseObservable.ofDate(date)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this);
@@ -111,9 +111,9 @@ public class NewsListFragment extends Fragment
 
     private Observable<List<DailyNews>> getNewsListObservable() {
         if (shouldSubscribeToZhihu()) {
-            return DailyNewsFromZhihuObservable.ofDate(date);
+            return NewsListFromZhihuObservable.ofDate(date);
         } else {
-            return DailyNewsFromAccelerateServerObservable.ofDate(date);
+            return NewsListFromAccelerateServerObservable.ofDate(date);
         }
     }
 

@@ -31,9 +31,8 @@ public class SaveNewsListTask extends AsyncTask<Void, Void, Void> {
         String date = newsList.get(0).getDate();
 
         List<DailyNews> originalData = dataSource.newsOfTheDay(date);
-        boolean isDataUnchanged = originalData == null || originalData.equals(newsList);
 
-        if (!isDataUnchanged) {
+        if (originalData == null || !originalData.equals(newsList)) {
             dataSource.insertOrUpdateNewsList(date, new GsonBuilder().create().toJson(newsList));
         }
     }

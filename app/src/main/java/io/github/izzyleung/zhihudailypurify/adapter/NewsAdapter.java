@@ -158,10 +158,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CardViewHolder
 
     private DialogInterface.OnClickListener makeGoToZhihuDialogClickListener(Context context, DailyNews dailyNews) {
         return (dialog, which) -> {
-            String questionTitle = dailyNews.getQuestions().get(which).getTitle(),
-                    questionUrl = dailyNews.getQuestions().get(which).getUrl();
+            String questionUrl = dailyNews.getQuestions().get(which).getUrl();
 
-            shareQuestion(context, questionTitle, questionUrl);
+            goToZhihu(context, questionUrl);
         };
     }
 

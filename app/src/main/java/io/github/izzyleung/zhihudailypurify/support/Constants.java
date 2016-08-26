@@ -18,8 +18,8 @@ public final class Constants {
     public static final class Urls {
         public static final String ZHIHU_DAILY_BEFORE = "http://news.at.zhihu.com/api/4/news/before/";
         public static final String ZHIHU_DAILY_OFFLINE_NEWS = "http://news-at.zhihu.com/api/4/news/";
-        public static final String ZHIHU_DAILY_PURIFY_BEFORE = "http://zhihu-daily-purify.azurewebsites.net/news/";
-        public static final String SEARCH = "http://zhihu-daily-purify.azurewebsites.net/search/";
+        public static final String ZHIHU_DAILY_PURIFY_BEFORE = "http://zhihudailypurify.herokuapp.com/news/";
+        public static final String SEARCH = "http://zhihudailypurify.herokuapp.com/search/";
     }
 
     public static final class Dates {
